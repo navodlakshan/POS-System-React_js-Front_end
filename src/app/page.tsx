@@ -10,7 +10,9 @@ export default function Home() {
         <div className="flex-1">
           <Header/>
           <Metrics/>
-          <SalesChart/>
+            <div className="p-8">
+                <SalesChart/>
+            </div>
         </div>
       </div>
   );

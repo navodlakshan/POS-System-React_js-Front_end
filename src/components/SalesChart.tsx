@@ -4,7 +4,7 @@ export const SalesChart = () => {
     const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
     return (
-        <div className="bg-background text-foreground p-6 rounded-lg shadow-md mt-4 px-8">
+        <div className="bg-background text-foreground p-6 rounded-lg shadow-md mt-4">
             <h2 className="text-lg font-semibold mb-4">Sales Details</h2>
             <div className="flex justify-between">
                 {months.map((month, index) => (
