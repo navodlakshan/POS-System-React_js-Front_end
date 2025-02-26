@@ -1,8 +1,8 @@
 "use client";
 
-import { Sidebar } from "@/components/Sidebar";
 import React, { useState } from "react";
 import { Header } from "@/components/Header";
+import { Sidebar } from "@/components/Sidebar";
 
 export default function Settings() {
     const [isSidebarVisible, setIsSidebarVisible] = useState(true);
@@ -16,7 +16,7 @@ export default function Settings() {
             {isSidebarVisible && <Sidebar />}
             <div className="flex-1 bg-gradient-to-r from-gray-300 via-gray-400 to-gray-500">
                 <Header onMenuClick={toggleSidebar} />
-                <div className="p-6">
+                <div className="p-4">
                     <div className="flex items-center text-gray-500">
                         <h2 className="text-2xl font-bold mb-4">Settings</h2>
                     </div>

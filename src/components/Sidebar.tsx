@@ -36,18 +36,18 @@ export const Sidebar = () => {
                         {isProductsDropdownOpen && (
                             <ul className="pl-6 mt-2 transition-all duration-300 ease-in-out">
                                 <li className="mb-2 hover:text-blue-400 cursor-pointer">
-                                    <Link href="/profile" className="block">
-                                        Profile
+                                    <Link href="/Products/ViewProducts" className="block">
+                                        View Products
                                     </Link>
                                 </li>
                                 <li className="mb-2 hover:text-blue-400 cursor-pointer">
-                                    <Link href="/security" className="block">
-                                        Security
+                                    <Link href="/Products/AddProducts" className="block">
+                                        Add Products
                                     </Link>
                                 </li>
                                 <li className="mb-2 hover:text-blue-400 cursor-pointer">
-                                    <Link href="/notifications" className="block">
-                                        Notifications
+                                    <Link href="/Products/Categories" className="block">
+                                        Categories
                                     </Link>
                                 </li>
                             </ul>
@@ -64,7 +64,7 @@ export const Sidebar = () => {
 
                     {/* Customers Link */}
                     <li className="mb-3 hover:text-blue-400 cursor-pointer">
-                        <Link href="/customers" className="text-xl flex items-center">
+                        <Link href="/Customers" className="text-xl flex items-center">
                             <img src="/Customers.svg" alt="Customers" className="w-6 h-6 mr-3" />
                             Customers
                         </Link>
@@ -72,7 +72,7 @@ export const Sidebar = () => {
 
                     {/* Refunds Link */}
                     <li className="mb-3 hover:text-blue-400 cursor-pointer">
-                        <Link href="/refunds" className="text-xl flex items-center">
+                        <Link href="/Refunds" className="text-xl flex items-center">
                             <img src="/Refunds.svg" alt="Refunds" className="w-6 h-6 mr-3" />
                             Refunds
                         </Link>
@@ -87,18 +87,18 @@ export const Sidebar = () => {
                         {isReportsDropdownOpen && (
                             <ul className="pl-6 mt-2 transition-all duration-300 ease-in-out">
                                 <li className="mb-2 hover:text-blue-400 cursor-pointer">
-                                    <Link href="/reports/profile" className="block">
-                                        Profile
+                                    <Link href="/Reports/ProductReport" className="block">
+                                        Product Report
                                     </Link>
                                 </li>
                                 <li className="mb-2 hover:text-blue-400 cursor-pointer">
-                                    <Link href="/reports/security" className="block">
-                                        Security
+                                    <Link href="/Reports/StaffReport" className="block">
+                                        Staff Report
                                     </Link>
                                 </li>
                                 <li className="mb-2 hover:text-blue-400 cursor-pointer">
-                                    <Link href="/reports/notifications" className="block">
-                                        Notifications
+                                    <Link href="/Reports/FinancialReport" className="block">
+                                        Financial Report
                                     </Link>
                                 </li>
                             </ul>
