@@ -233,9 +233,6 @@ export default function ViewProducts() {
                                 </TableFooter>
                             </Table>
                         </TableContainer>
-                        <div className="mt-4 text-sm text-gray-600">
-                            Showing data 1 to {productsState.length} of 250K entries
-                        </div>
                     </div>
                 </div>
             </div>
