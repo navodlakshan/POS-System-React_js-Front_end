@@ -15,7 +15,7 @@ export const SalesChart = () => {
             </div>
             {/* Placeholder for Chart */}
             <div className="mt-4 h-40 bg-gray-200 rounded-lg flex items-center justify-center">
-                <p className="text-gray-500">Chart Placeholder</p>
+                <p className="text-gray-600">Chart Placeholder</p>
             </div>
         </div>
     );

@@ -1,85 +1,116 @@
 "use client"; // Mark this component as a Client Component
 
 import React, { useState } from 'react';
+import Link from 'next/link';
 
 export const Sidebar = () => {
-    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+    const [isProductsDropdownOpen, setIsProductsDropdownOpen] = useState(false);
+    const [isReportsDropdownOpen, setIsReportsDropdownOpen] = useState(false);
 
-    const toggleDropdown = () => {
-        setIsDropdownOpen(!isDropdownOpen);
+    const toggleProductsDropdown = () => {
+        setIsProductsDropdownOpen(!isProductsDropdownOpen);
+    };
+
+    const toggleReportsDropdown = () => {
+        setIsReportsDropdownOpen(!isReportsDropdownOpen);
     };
 
     return (
-        <aside className="w-64 bg-sky-800 text-white p-4 shadow-lg">
+        <aside className="w-64 bg-gradient-to-r from-blue-600 via-blue-700 to-blue-800 text-white p-4 shadow-lg">
             <h2 className="text-5xl font-bold pb-8">Admin</h2>
             <div className="border-t-2 border-gray-500 my-6"></div>
             <nav>
                 <div className="flex items-center mb-6">
-                    <img src="dashboard.svg" alt="Dashboard" className="w-8 h-8 mr-3" />
-                    <h2 className="text-3xl font-semibold">Dashboard</h2>
+                    <Link href="/Dashboard" className="text-xl flex items-center">
+                        <img src="/dashboard.svg" alt="Dashboard" className="w-8 h-8 mr-3" />
+                        <h2 className="text-3xl font-semibold">Dashboard</h2>
+                    </Link>
                 </div>
                 <ul>
-                    <li className="mb-3 hover:text-blue-500 cursor-pointer" onClick={toggleDropdown}>
-                        <div className="text-xl flex items-center">
-                            <img src="Products.svg" alt="Dashboard" className="w-6 h-6 mr-3"/>
+                    {/* Products Dropdown */}
+                    <li className="mb-3 hover:text-blue-400 cursor-pointer">
+                        <div className="text-xl flex items-center" onClick={toggleProductsDropdown}>
+                            <img src="/Products.svg" alt="Products" className="w-6 h-6 mr-3" />
                             Products
                         </div>
-                        {isDropdownOpen && (
-                            <ul className="pl-6 mt-2">
-                                <li className="mb-2 hover:text-blue-500 cursor-pointer">
-                                    <a href="">Profile</a>
+                        {isProductsDropdownOpen && (
+                            <ul className="pl-6 mt-2 transition-all duration-300 ease-in-out">
+                                <li className="mb-2 hover:text-blue-400 cursor-pointer">
+                                    <Link href="/profile" className="block">
+                                        Profile
+                                    </Link>
                                 </li>
-                                <li className="mb-2 hover:text-blue-500 cursor-pointer">
-                                    <a href="">Security</a>
+                                <li className="mb-2 hover:text-blue-400 cursor-pointer">
+                                    <Link href="/security" className="block">
+                                        Security
+                                    </Link>
                                 </li>
-                                <li className="mb-2 hover:text-blue-500 cursor-pointer">
-                                    <a href="">Notifications</a>
+                                <li className="mb-2 hover:text-blue-400 cursor-pointer">
+                                    <Link href="/notifications" className="block">
+                                        Notifications
+                                    </Link>
                                 </li>
                             </ul>
                         )}
                     </li>
-                    <li className="mb-3 hover:text-blue-500 cursor-pointer">
-                        <a href="" className="text-xl flex items-center">
-                            <img src="Sales.svg" alt="Dashboard" className="w-6 h-6 mr-3" />
+
+                    {/* Sales Link */}
+                    <li className="mb-3 hover:text-blue-400 cursor-pointer">
+                        <Link href="/sales" className="text-xl flex items-center">
+                            <img src="/Sales.svg" alt="Sales" className="w-6 h-6 mr-3" />
                             Sales
-                        </a>
+                        </Link>
                     </li>
-                    <li className="mb-3 hover:text-blue-500 cursor-pointer">
-                        <a href="" className="text-xl flex items-center">
-                            <img src="Customers.svg" alt="Dashboard" className="w-6 h-6 mr-3" />
+
+                    {/* Customers Link */}
+                    <li className="mb-3 hover:text-blue-400 cursor-pointer">
+                        <Link href="/customers" className="text-xl flex items-center">
+                            <img src="/Customers.svg" alt="Customers" className="w-6 h-6 mr-3" />
                             Customers
-                        </a>
+                        </Link>
                     </li>
-                    <li className="mb-3 hover:text-blue-500 cursor-pointer">
-                        <a href="" className="text-xl flex items-center">
-                            <img src="Refunds.svg" alt="Dashboard" className="w-6 h-6 mr-3" />
+
+                    {/* Refunds Link */}
+                    <li className="mb-3 hover:text-blue-400 cursor-pointer">
+                        <Link href="/refunds" className="text-xl flex items-center">
+                            <img src="/Refunds.svg" alt="Refunds" className="w-6 h-6 mr-3" />
                             Refunds
-                        </a>
+                        </Link>
                     </li>
-                    <li className="mb-3 hover:text-blue-500 cursor-pointer" onClick={toggleDropdown}>
-                        <div className="text-xl flex items-center">
-                            <img src="Reports.svg" alt="Dashboard" className="w-6 h-6 mr-3" />
+
+                    {/* Reports Dropdown */}
+                    <li className="mb-3 hover:text-blue-400 cursor-pointer">
+                        <div className="text-xl flex items-center" onClick={toggleReportsDropdown}>
+                            <img src="/Reports.svg" alt="Reports" className="w-6 h-6 mr-3" />
                             Reports
                         </div>
-                        {isDropdownOpen && (
-                            <ul className="pl-6 mt-2">
-                                <li className="mb-2 hover:text-blue-500 cursor-pointer">
-                                    <a href="">Profile</a>
+                        {isReportsDropdownOpen && (
+                            <ul className="pl-6 mt-2 transition-all duration-300 ease-in-out">
+                                <li className="mb-2 hover:text-blue-400 cursor-pointer">
+                                    <Link href="/reports/profile" className="block">
+                                        Profile
+                                    </Link>
                                 </li>
-                                <li className="mb-2 hover:text-blue-500 cursor-pointer">
-                                    <a href="">Security</a>
+                                <li className="mb-2 hover:text-blue-400 cursor-pointer">
+                                    <Link href="/reports/security" className="block">
+                                        Security
+                                    </Link>
                                 </li>
-                                <li className="mb-2 hover:text-blue-500 cursor-pointer">
-                                    <a href="">Notifications</a>
+                                <li className="mb-2 hover:text-blue-400 cursor-pointer">
+                                    <Link href="/reports/notifications" className="block">
+                                        Notifications
+                                    </Link>
                                 </li>
                             </ul>
                         )}
                     </li>
-                    <li className="mb-3 hover:text-blue-500 cursor-pointer">
-                        <a href="" className="text-xl flex items-center">
-                            <img src="Settings.svg" alt="Dashboard" className="w-6 h-6 mr-3" />
+
+                    {/* Settings Link */}
+                    <li className="mb-3 hover:text-blue-400 cursor-pointer">
+                        <Link href="/Settings" className="text-xl flex items-center">
+                            <img src="/Settings.svg" alt="Settings" className="w-6 h-6 mr-3" />
                             Settings
-                        </a>
+                        </Link>
                     </li>
                 </ul>
             </nav>
