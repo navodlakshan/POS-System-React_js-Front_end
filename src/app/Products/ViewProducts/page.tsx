@@ -18,8 +18,11 @@ import FirstPageIcon from "@mui/icons-material/FirstPage";
 import KeyboardArrowLeft from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
 import LastPageIcon from "@mui/icons-material/LastPage";
-import { TableHead, Modal, TextField, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from "@mui/material";
+import { TableHead, Modal, TextField, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, InputAdornment, Typography } from "@mui/material";
 import Image from "next/image";
+import SearchIcon from "@mui/icons-material/Search";
+import { Select, MenuItem, FormControl, InputLabel } from "@mui/material";
+import { SelectChangeEvent } from "@mui/material/Select";
 
 interface TablePaginationActionsProps {
     count: number;
@@ -101,13 +104,15 @@ export default function ViewProducts() {
     const [editProduct, setEditProduct] = useState<typeof products[0] | null>(null);
     const [deleteProduct, setDeleteProduct] = useState<typeof products[0] | null>(null);
     const [productsState, setProductsState] = useState(products);
+    const [searchQuery, setSearchQuery] = useState("");
+    const [sortBy, setSortBy] = useState("name");
+    const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
 
     const toggleSidebar = () => {
         setIsSidebarVisible(!isSidebarVisible);
     };
 
     const handleChangePage = (event: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => {
-        console.log(event); // Example usage
         setPage(newPage);
     };
 
@@ -142,7 +147,44 @@ export default function ViewProducts() {
         }
     };
 
-    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - productsState.length) : 0;
+    const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setSearchQuery(event.target.value);
+        setPage(0);
+    };
+
+    const handleSortChange = (event: SelectChangeEvent<string>) => {
+        setSortBy(event.target.value);
+    };
+
+    const handleSortOrderChange = (event: SelectChangeEvent<"asc" | "desc">) => {
+        setSortOrder(event.target.value as "asc" | "desc");
+    };
+
+    const filteredProducts = productsState.filter((product) =>
+        product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        product.sku.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        product.category.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+
+    const sortedProducts = filteredProducts.sort((a, b) => {
+        if (sortBy === "name") {
+            return sortOrder === "asc" ? a.name.localeCompare(b.name) : b.name.localeCompare(a.name);
+        } else if (sortBy === "quantity") {
+            return sortOrder === "asc" ? a.quantity - b.quantity : b.quantity - a.quantity;
+        } else if (sortBy === "price") {
+            const priceA = parseFloat(a.price.replace(/[^0-9.-]+/g, ""));
+            const priceB = parseFloat(b.price.replace(/[^0-9.-]+/g, ""));
+            return sortOrder === "asc" ? priceA - priceB : priceB - priceA;
+        }
+        return 0;
+    });
+
+    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - sortedProducts.length) : 0;
+
+    // Calculate the range of entries being shown
+    const startEntry = page * rowsPerPage + 1;
+    const endEntry = Math.min((page + 1) * rowsPerPage, sortedProducts.length);
+    const totalEntries = sortedProducts.length;
 
     return (
         <div className="flex min-h-screen">
@@ -154,6 +196,48 @@ export default function ViewProducts() {
                         <h2 className="text-2xl font-bold mb-4">Products</h2>
                     </div>
                     <div className="p-6 bg-background text-gray-500 rounded-lg shadow-md">
+                        <h2 className="text-xl font-bold mb-4">All Products</h2>
+                        <div className="flex justify-between mb-4">
+                            <TextField
+                                placeholder="Search products..."
+                                variant="outlined"
+                                size="small"
+                                value={searchQuery}
+                                onChange={handleSearch}
+                                InputProps={{
+                                    startAdornment: (
+                                        <InputAdornment position="start">
+                                            <SearchIcon />
+                                        </InputAdornment>
+                                    ),
+                                }}
+                            />
+                            <div className="flex gap-4">
+                                <FormControl variant="outlined" size="small">
+                                    <InputLabel>Sort By</InputLabel>
+                                    <Select
+                                        value={sortBy}
+                                        onChange={handleSortChange}
+                                        label="Sort By"
+                                    >
+                                        <MenuItem value="name">Name</MenuItem>
+                                        <MenuItem value="quantity">Quantity</MenuItem>
+                                        <MenuItem value="price">Price</MenuItem>
+                                    </Select>
+                                </FormControl>
+                                <FormControl variant="outlined" size="small">
+                                    <InputLabel>Order</InputLabel>
+                                    <Select
+                                        value={sortOrder}
+                                        onChange={handleSortOrderChange}
+                                        label="Order"
+                                    >
+                                        <MenuItem value="asc">Ascending</MenuItem>
+                                        <MenuItem value="desc">Descending</MenuItem>
+                                    </Select>
+                                </FormControl>
+                            </div>
+                        </div>
                         <TableContainer component={Paper}>
                             <Table sx={{ minWidth: 500 }} aria-label="custom pagination table">
                                 <TableHead>
@@ -169,8 +253,8 @@ export default function ViewProducts() {
                                 </TableHead>
                                 <TableBody>
                                     {(rowsPerPage > 0
-                                            ? productsState.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                                            : productsState
+                                            ? sortedProducts.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                                            : sortedProducts
                                     ).map((product, index) => (
                                         <TableRow key={index}>
                                             <TableCell component="th" scope="row">
@@ -211,24 +295,31 @@ export default function ViewProducts() {
                                 </TableBody>
                                 <TableFooter>
                                     <TableRow>
-                                        <TablePagination
-                                            rowsPerPageOptions={[5, 10, 25, { label: "All", value: -1 }]}
-                                            colSpan={7}
-                                            count={productsState.length}
-                                            rowsPerPage={rowsPerPage}
-                                            page={page}
-                                            slotProps={{
-                                                select: {
-                                                    inputProps: {
-                                                        "aria-label": "rows per page",
-                                                    },
-                                                    native: true,
-                                                },
-                                            }}
-                                            onPageChange={handleChangePage}
-                                            onRowsPerPageChange={handleChangeRowsPerPage}
-                                            ActionsComponent={TablePaginationActions}
-                                        />
+                                        <TableCell colSpan={7} sx={{ borderBottom: "none" }}>
+                                            <Box component="span" sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", p: 2 }}>
+                                                <Typography variant="body2" color="textSecondary">
+                                                    Showing data {startEntry} to {endEntry} of {totalEntries} entries
+                                                </Typography>
+                                                <TablePagination
+                                                    rowsPerPageOptions={[5, 10, 25, { label: "All", value: -1 }]}
+                                                    colSpan={7}
+                                                    count={sortedProducts.length}
+                                                    rowsPerPage={rowsPerPage}
+                                                    page={page}
+                                                    slotProps={{
+                                                        select: {
+                                                            inputProps: {
+                                                                "aria-label": "rows per page",
+                                                            },
+                                                            native: true,
+                                                        },
+                                                    }}
+                                                    onPageChange={handleChangePage}
+                                                    onRowsPerPageChange={handleChangeRowsPerPage}
+                                                    ActionsComponent={TablePaginationActions}
+                                                />
+                                            </Box>
+                                        </TableCell>
                                     </TableRow>
                                 </TableFooter>
                             </Table>

@@ -23,7 +23,7 @@ export default function LoginPage() {
                     <img
                         src="https://raw.githubusercontent.com/MartinHeinz/MartinHeinz/master/wave.gif"
                         alt="Wave"
-                        className="w-6 h-6 ml-2"
+                        className="w-8 h-8 ml-2"
                     />
                 </h2>
                 <form>

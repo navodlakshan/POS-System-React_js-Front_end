@@ -33,6 +33,7 @@ export const Sidebar = () => {
                             <img src="/Products.svg" alt="Products" className="w-6 h-6 mr-3" />
                             Products
                         </div>
+                    </li>
                         {isProductsDropdownOpen && (
                             <ul className="pl-6 mt-2 transition-all duration-300 ease-in-out">
                                 <li className="mb-2 hover:text-blue-400 cursor-pointer">
@@ -46,13 +47,18 @@ export const Sidebar = () => {
                                     </Link>
                                 </li>
                                 <li className="mb-2 hover:text-blue-400 cursor-pointer">
-                                    <Link href="/Products/Categories" className="block">
+                                    <Link href="/Products/AddCategories" className="block">
                                         Categories
+                                    </Link>
+                                </li>
+                                <li className="mb-2 hover:text-blue-400 cursor-pointer">
+                                    <Link href="/Products/AddAttributes" className="block">
+                                        Attributes
                                     </Link>
                                 </li>
                             </ul>
                         )}
-                    </li>
+
 
                     {/* Sales Link */}
                     <li className="mb-3 hover:text-blue-400 cursor-pointer">

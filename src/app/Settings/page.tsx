@@ -31,9 +31,8 @@ export default function Settings() {
                         <label className="mt-6 text-xl font-semibold">Username</label>
                         <input
                             type="text"
-                            className="w-full p-2 mb-4 border rounded bg-gray-100"
-                            value="Username"
-                            readOnly
+                            placeholder="Username"
+                            className="w-full p-2 mb-2 border rounded bg-gray-100"
                         />
                         <button className="bg-green-600 text-white px-4 py-2 rounded">Update</button>
 
