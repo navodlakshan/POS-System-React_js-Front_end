@@ -18,17 +18,17 @@ export const Header = ({ onMenuClick }: HeaderProps) => {
                     className="w-6 h-6 mr-8 cursor-pointer"
                     onClick={onMenuClick} // Use the prop here
                 />
-                <h1 className="text-2xl font-bold">Dashboard</h1>
+                <h1 className="text-3xl font-bold text-white">Dashboard</h1>
             </div>
             <nav>
                 <ul className="flex space-x-4 items-center">
                     <li>
-                        <Link href="/Login" className="text-foreground hover:text-blue-500">
+                        <Link href="/Login" className="text-white hover:text-blue-500">
                             Sign In
                         </Link>
                     </li>
                     <li>
-                        <Link href="/SignUp" className="text-foreground hover:text-blue-500">
+                        <Link href="/SignUp" className="text-white hover:text-blue-500">
                             Sign Up
                         </Link>
                     </li>
