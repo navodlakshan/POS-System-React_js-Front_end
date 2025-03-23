@@ -62,7 +62,7 @@ export const Sidebar = () => {
 
                     {/* Sales Link */}
                     <li className="mb-3 hover:text-blue-400 cursor-pointer">
-                        <Link href="/sales" className="text-xl flex items-center">
+                        <Link href="/Sales" className="text-xl flex items-center">
                             <img src="/Sales.svg" alt="Sales" className="w-6 h-6 mr-3" />
                             Sales
                         </Link>
