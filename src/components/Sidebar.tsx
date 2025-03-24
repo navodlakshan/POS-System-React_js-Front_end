@@ -78,7 +78,7 @@ export const Sidebar = () => {
 
                     {/* Refunds Link */}
                     <li className="mb-3 hover:text-blue-400 cursor-pointer">
-                        <Link href="/Refunds" className="text-xl flex items-center">
+                        <Link href="/Refund" className="text-xl flex items-center">
                             <img src="/Refunds.svg" alt="Refunds" className="w-6 h-6 mr-3" />
                             Refunds
                         </Link>
