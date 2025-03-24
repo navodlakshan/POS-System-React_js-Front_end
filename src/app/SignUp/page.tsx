@@ -2,13 +2,30 @@
 
 import React from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 
 export default function SignupPage() {
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-gray-300 via-gray-400 to-gray-500">
-            <div className="bg-background p-8 rounded-lg shadow-lg w-96">
-                <h1 className="text-2xl font-bold mb-6 text-center">ABC POS System</h1>
-                <h2 className="text-xl mb-4 text-center">Sign Up</h2>
+        <div className="min-h-screen flex items-center justify-center bg-gray-300">
+            {/* Marketing Image on the left */}
+            <div className="hidden md:block h-full ">
+                <div className="h-full flex items-center justify-center p-4">
+                    <Image
+                        src="/Marketing.jpg"
+                        alt="Marketing"
+                        width={3000}
+                        height={2500}
+                        className="w-full h-auto rounded-lg object-cover"
+                        priority
+                    />
+                </div>
+            </div>
+
+            {/* SignUp Form */}
+        <div className="w-full flex items-center justify-center p-4">
+            <div className="bg-gray-300 rounded-lg shadow-sm">
+                <h1 className="text-6xl font-bold mb-6 text-center">ABC POS System</h1>
+                <h2 className="text-2xl mb-4 text-center">Sign Up</h2>
                 <form>
                     <div className="mb-4">
                         <label className="block text-sm font-medium mb-2" htmlFor="username">
@@ -45,7 +62,7 @@ export default function SignupPage() {
                     </div>
                     <button
                         type="submit"
-                        className="w-full bg-blue-800 text-white py-2 rounded-lg hover:bg-blue-600 transition-colors duration-300"
+                        className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition-colors duration-300"
                     >
                         Sign Up
                     </button>
@@ -57,6 +74,7 @@ export default function SignupPage() {
                     </Link>
                 </p>
             </div>
+        </div>
         </div>
     );
 }
