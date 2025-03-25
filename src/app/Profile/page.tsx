@@ -4,7 +4,7 @@ import React, { useState, useRef } from "react";
 import { Header } from "@/components/Header";
 import { Sidebar } from "@/components/Sidebar";
 
-export default function Settings() {
+export default function Profile() {
     const [isSidebarVisible, setIsSidebarVisible] = useState(true);
     const [profileImage, setProfileImage] = useState<string | null>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
@@ -34,9 +34,9 @@ export default function Settings() {
         <div className="flex min-h-screen">
             {isSidebarVisible && <Sidebar />}
             <div className="flex-1 bg-gradient-to-r from-gray-300 via-gray-400 to-gray-500">
-                <Header onMenuClick={toggleSidebar} />
+                <Header onMenuClick={toggleSidebar} profileImage={profileImage} />
                 <div className="p-4">
-                    <h2 className="text-2xl font-bold mb-6">Settings</h2>
+                    <h2 className="text-2xl font-bold mb-6">Profile</h2>
 
                     <div className="bg-white p-6 rounded-lg shadow-md w-full md:w-2/3">
                         <div className="flex items-center mb-6">
@@ -69,62 +69,39 @@ export default function Settings() {
                                     className="hidden"
                                 />
                             </div>
-                            <h3 className="ml-4 text-xl font-semibold">Change Profile</h3>
+                            <h3 className="ml-4 text-xl font-semibold">Profile Picture</h3>
                         </div>
 
-                        <div className="mb-6">
-                            <label className="block text-gray-700 mb-2">Username</label>
-                            <div className="flex gap-4">
+                        <div className="space-y-4">
+                            <div>
+                                <label className="block text-gray-700 mb-1">Username</label>
                                 <input
                                     type="text"
-                                    placeholder="Username"
-                                    className="flex-1 p-2 border rounded bg-gray-50"
+                                    defaultValue="current_username"
+                                    className="w-full p-2 border rounded bg-gray-50"
                                 />
-                                <button className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded transition-colors">
-                                    Update
-                                </button>
+                            </div>
+                            <div>
+                                <label className="block text-gray-700 mb-1">Email</label>
+                                <input
+                                    type="email"
+                                    defaultValue="user@example.com"
+                                    className="w-full p-2 border rounded bg-gray-50"
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-gray-700 mb-1">Phone Number</label>
+                                <input
+                                    type="tel"
+                                    defaultValue="+1234567890"
+                                    className="w-full p-2 border rounded bg-gray-50"
+                                />
                             </div>
                         </div>
 
-                        <div className="border-t pt-6">
-                            <h3 className="text-xl font-semibold mb-4">Change Password</h3>
-
-                            <div className="space-y-4 mb-6">
-                                <div>
-                                    <label className="block text-gray-700 mb-1">Current Password</label>
-                                    <input
-                                        type="password"
-                                        placeholder="Current Password"
-                                        className="w-full p-2 border rounded bg-gray-50"
-                                    />
-                                </div>
-                                <div>
-                                    <label className="block text-gray-700 mb-1">New password</label>
-                                    <input
-                                        type="password"
-                                        placeholder="New password"
-                                        className="w-full p-2 border rounded bg-gray-50"
-                                    />
-                                </div>
-                                <div>
-                                    <label className="block text-gray-700 mb-1">Confirm new password</label>
-                                    <input
-                                        type="password"
-                                        placeholder="Confirm new password"
-                                        className="w-full p-2 border rounded bg-gray-50"
-                                    />
-                                </div>
-                            </div>
-
-                            <div className="flex gap-4">
-                                <button className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded transition-colors">
-                                    Update
-                                </button>
-                                <button className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded transition-colors">
-                                    Delete
-                                </button>
-                            </div>
-                        </div>
+                        <button className="mt-6 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded transition-colors">
+                            Save Changes
+                        </button>
                     </div>
                 </div>
             </div>
