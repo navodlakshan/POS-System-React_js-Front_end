@@ -88,26 +88,116 @@ function TablePaginationActions(props: TablePaginationActionsProps) {
     );
 }
 
-const sales = [
+interface Sale {
+    billId: number;
+    name: string;
+    sku: string;
+    category: string;
+    quantity: number;
+    price: string;
+    soldBy: string;
+    date: string;
+}
+
+const sales: Sale[] = [
     {
         billId: 1,
-        name: "Leptap IP",
-        sku: "lupiXII",
+        name: "Laptop i7",
+        sku: "Lap001",
         category: "Computer",
         quantity: 78,
-        price: "Rs. 70,000",
+        price: "Rs.70,000",
         soldBy: "Athens",
-        date: "2024/03/07", // Ensure this is a string
+        date: "2024/03/07",
     },
-    // Add more sales entries as needed
+    {
+        billId: 2,
+        name: "Laptop i7",
+        sku: "Lap001",
+        category: "Computer",
+        quantity: 78,
+        price: "Rs.70,000",
+        soldBy: "Athens",
+        date: "2024/03/07",
+    },
+    {
+        billId: 3,
+        name: "Laptop i7",
+        sku: "Lap001",
+        category: "Computer",
+        quantity: 78,
+        price: "Rs.70,000",
+        soldBy: "Athens",
+        date: "2024/03/07",
+    },
+    {
+        billId: 4,
+        name: "Laptop i7",
+        sku: "Lap001",
+        category: "Computer",
+        quantity: 78,
+        price: "Rs.70,000",
+        soldBy: "Athens",
+        date: "2024/03/07",
+    },
+    {
+        billId: 5,
+        name: "Laptop i7",
+        sku: "Lap001",
+        category: "Computer",
+        quantity: 78,
+        price: "Rs.70,000",
+        soldBy: "Athens",
+        date: "2024/03/07",
+    },
+    {
+        billId: 6,
+        name: "Laptop i7",
+        sku: "Lap001",
+        category: "Computer",
+        quantity: 78,
+        price: "Rs.70,000",
+        soldBy: "Athens",
+        date: "2024/03/07",
+    },
+    {
+        billId: 7,
+        name: "Laptop i7",
+        sku: "Lap001",
+        category: "Computer",
+        quantity: 78,
+        price: "Rs.70,000",
+        soldBy: "Athens",
+        date: "2024/03/07",
+    },
+    {
+        billId: 8,
+        name: "Laptop i7",
+        sku: "Lap001",
+        category: "Computer",
+        quantity: 78,
+        price: "Rs.70,000",
+        soldBy: "Athens",
+        date: "2024/03/07",
+    },
+    {
+        billId: 9,
+        name: "Laptop i7",
+        sku: "Lap001",
+        category: "Computer",
+        quantity: 78,
+        price: "Rs.70,000",
+        soldBy: "Athens",
+        date: "2024/03/07",
+    },
 ];
 
 export default function ViewSales() {
     const [isSidebarVisible, setIsSidebarVisible] = useState(true);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
-    const [editSale, setEditSale] = useState<typeof sales[0] | null>(null);
-    const [deleteSale, setDeleteSale] = useState<typeof sales[0] | null>(null);
+    const [editSale, setEditSale] = useState<Sale | null>(null);
+    const [deleteSale, setDeleteSale] = useState<Sale | null>(null);
     const [salesState, setSalesState] = useState(sales);
     const [searchQuery, setSearchQuery] = useState("");
     const [sortBy, setSortBy] = useState("name");
@@ -123,6 +213,7 @@ export default function ViewSales() {
         soldBy: "",
         date: "", // Initialize as a string
     });
+
     const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
     const toggleSidebar = () => {
@@ -138,11 +229,11 @@ export default function ViewSales() {
         setPage(0);
     };
 
-    const handleEdit = (sale: typeof sales[0]) => {
+    const handleEdit = (sale: Sale) => {
         setEditSale(sale);
     };
 
-    const handleDelete = (sale: typeof sales[0]) => {
+    const handleDelete = (sale: Sale) => {
         setDeleteSale(sale);
     };
 
@@ -177,6 +268,12 @@ export default function ViewSales() {
         setSortOrder(event.target.value as "asc" | "desc");
     };
 
+    const filteredSales = salesState.filter((sale) =>
+        sale.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        sale.sku.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        sale.category.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+
     const validateForm = () => {
         const newErrors: { [key: string]: string } = {};
         if (!newSale.name) newErrors.name = "Name is required";
@@ -208,23 +305,13 @@ export default function ViewSales() {
         });
     };
 
-    const filteredSales = salesState.filter((sale) =>
-        sale.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        sale.sku.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        sale.category.toLowerCase().includes(searchQuery.toLowerCase())
-    );
-
     const sortedSales = filteredSales.sort((a, b) => {
         if (sortBy === "name") {
             return sortOrder === "asc" ? a.name.localeCompare(b.name) : b.name.localeCompare(a.name);
-        } else if (sortBy === "quantity") {
-            return sortOrder === "asc" ? a.quantity - b.quantity : b.quantity - a.quantity;
         } else if (sortBy === "price") {
             const priceA = parseFloat(a.price.replace(/[^0-9.-]+/g, ""));
             const priceB = parseFloat(b.price.replace(/[^0-9.-]+/g, ""));
             return sortOrder === "asc" ? priceA - priceB : priceB - priceA;
-        } else if (sortBy === "date") {
-            return sortOrder === "asc" ? new Date(a.date).getTime() - new Date(b.date).getTime() : new Date(b.date).getTime() - new Date(a.date).getTime();
         }
         return 0;
     });
@@ -242,7 +329,7 @@ export default function ViewSales() {
             <div className="flex-1 bg-gradient-to-r from-gray-300 via-gray-400 to-gray-500">
                 <Header onMenuClick={toggleSidebar} />
                 <div className="p-4">
-                    <div className="flex items-center justify-between text-gray-500">
+                    <div className="flex items-center text-gray-500">
                         <h2 className="text-2xl font-bold mb-4">Sales</h2>
                     </div>
                     <div className="p-6 bg-background text-gray-500 rounded-lg shadow-md">
@@ -349,30 +436,28 @@ export default function ViewSales() {
                                 <TableFooter>
                                     <TableRow>
                                         <TableCell colSpan={8} sx={{ borderBottom: "none" }}>
-                                            <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", p: 2 }}>
+                                            <Box component="span" sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", p: 2 }}>
                                                 <Typography variant="body2" color="textSecondary">
                                                     Showing data {startEntry} to {endEntry} of {totalEntries} entries
                                                 </Typography>
-                                                <Box sx={{ display: "flex", alignItems: "center" }}>
-                                                    <TablePagination
-                                                        rowsPerPageOptions={[5, 10, 25, { label: "All", value: -1 }]}
-                                                        colSpan={8}
-                                                        count={sortedSales.length}
-                                                        rowsPerPage={rowsPerPage}
-                                                        page={page}
-                                                        slotProps={{
-                                                            select: {
-                                                                inputProps: {
-                                                                    "aria-label": "rows per page",
-                                                                },
-                                                                native: true,
+                                                <TablePagination
+                                                    rowsPerPageOptions={[5, 10, 25, { label: "All", value: -1 }]}
+                                                    colSpan={7}
+                                                    count={sortedSales.length}
+                                                    rowsPerPage={rowsPerPage}
+                                                    page={page}
+                                                    slotProps={{
+                                                        select: {
+                                                            inputProps: {
+                                                                "aria-label": "rows per page",
                                                             },
-                                                        }}
-                                                        onPageChange={handleChangePage}
-                                                        onRowsPerPageChange={handleChangeRowsPerPage}
-                                                        ActionsComponent={TablePaginationActions}
-                                                    />
-                                                </Box>
+                                                            native: true,
+                                                        },
+                                                    }}
+                                                    onPageChange={handleChangePage}
+                                                    onRowsPerPageChange={handleChangeRowsPerPage}
+                                                    ActionsComponent={TablePaginationActions}
+                                                />
                                             </Box>
                                         </TableCell>
                                     </TableRow>
@@ -393,8 +478,6 @@ export default function ViewSales() {
                         onChange={(e) => setEditSale({ ...editSale!, name: e.target.value })}
                         fullWidth
                         margin="normal"
-                        error={!!errors.name}
-                        helperText={errors.name}
                     />
                     <TextField
                         label="SKU"
@@ -402,8 +485,6 @@ export default function ViewSales() {
                         onChange={(e) => setEditSale({ ...editSale!, sku: e.target.value })}
                         fullWidth
                         margin="normal"
-                        error={!!errors.sku}
-                        helperText={errors.sku}
                     />
                     <TextField
                         label="Category"
@@ -411,17 +492,6 @@ export default function ViewSales() {
                         onChange={(e) => setEditSale({ ...editSale!, category: e.target.value })}
                         fullWidth
                         margin="normal"
-                        error={!!errors.category}
-                        helperText={errors.category}
-                    />
-                    <TextField
-                        label="Quantity"
-                        value={editSale?.quantity || 0}
-                        onChange={(e) => setEditSale({ ...editSale!, quantity: parseInt(e.target.value, 10) })}
-                        fullWidth
-                        margin="normal"
-                        error={!!errors.quantity}
-                        helperText={errors.quantity}
                     />
                     <TextField
                         label="Price"
@@ -429,8 +499,6 @@ export default function ViewSales() {
                         onChange={(e) => setEditSale({ ...editSale!, price: e.target.value })}
                         fullWidth
                         margin="normal"
-                        error={!!errors.price}
-                        helperText={errors.price}
                     />
                     <TextField
                         label="Sold By"
@@ -438,20 +506,14 @@ export default function ViewSales() {
                         onChange={(e) => setEditSale({ ...editSale!, soldBy: e.target.value })}
                         fullWidth
                         margin="normal"
-                        error={!!errors.soldBy}
-                        helperText={errors.soldBy}
-                        sx={{ mb: 2 }} // Add margin bottom to create a gap
                     />
-                    <LocalizationProvider dateAdapter={AdapterDayjs}>
-                        <DatePicker
-                            label="Date"
-                            value={editSale?.date ? dayjs(editSale.date) : null}
-                            onChange={(newValue: Dayjs | null) => {
-                                setEditSale({ ...editSale!, date: newValue ? newValue.format('YYYY/MM/DD') : "" });
-                            }}
-                            sx={{ width: '100%' }} // Ensure DatePicker takes full width
-                        />
-                    </LocalizationProvider>
+                    <TextField
+                        label="Date"
+                        value={editSale?.date || ""}
+                        onChange={(e) => setEditSale({ ...editSale!, date: e.target.value })}
+                        fullWidth
+                        margin="normal"
+                    />
                     <Button variant="contained" color="primary" onClick={handleSave} sx={{ mt: 2 }}>
                         Save
                     </Button>
