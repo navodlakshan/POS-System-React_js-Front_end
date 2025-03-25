@@ -90,26 +90,26 @@ export const Sidebar = () => {
                             <img src="/Reports.svg" alt="Reports" className="w-6 h-6 mr-3" />
                             Reports
                         </div>
+                    </li>
                         {isReportsDropdownOpen && (
                             <ul className="pl-6 mt-2 transition-all duration-300 ease-in-out">
                                 <li className="mb-2 hover:text-blue-400 cursor-pointer">
-                                    <Link href="/Reports/ProductReport" className="block">
+                                    <Link href="/Report/Product Report" className="block">
                                         Product Report
                                     </Link>
                                 </li>
                                 <li className="mb-2 hover:text-blue-400 cursor-pointer">
-                                    <Link href="/Reports/StaffReport" className="block">
+                                    <Link href="/Report/Staff Report" className="block">
                                         Staff Report
                                     </Link>
                                 </li>
                                 <li className="mb-2 hover:text-blue-400 cursor-pointer">
-                                    <Link href="/Reports/FinancialReport" className="block">
+                                    <Link href="/Report/Financial Report" className="block">
                                         Financial Report
                                     </Link>
                                 </li>
                             </ul>
                         )}
-                    </li>
 
                     {/* Settings Link */}
                     <li className="mb-3 hover:text-blue-400 cursor-pointer">

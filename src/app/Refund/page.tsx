@@ -19,13 +19,10 @@ import KeyboardArrowLeft from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
 import LastPageIcon from "@mui/icons-material/LastPage";
 import { TableHead, Modal, TextField, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, InputAdornment, Typography } from "@mui/material";
+import Image from "next/image";
 import SearchIcon from "@mui/icons-material/Search";
 import { Select, MenuItem, FormControl, InputLabel } from "@mui/material";
 import { SelectChangeEvent } from "@mui/material/Select";
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import dayjs, { Dayjs } from 'dayjs';
 
 interface TablePaginationActionsProps {
     count: number;
@@ -88,88 +85,17 @@ function TablePaginationActions(props: TablePaginationActionsProps) {
     );
 }
 
-interface Refund {
-    id: number;
-    name: string;
-    date: string;
-    status: string;
-    probability: string;
-    customer: string;
-    notes: string;
-}
+const Refunds = [
+    {
+        image: "https://via.placeholder.com/50",
+        name: "Laptop 7",
+        sku: "Lap001",
+        date: "2024/03/07",
+        category: "Computer",
+        quantity: 78,
+        price: "Rs.70,000",
+        soldBy: "Athens",
 
-const refunds: Refund[] = [
-    {
-        id: 1,
-        name: "Leptep (F)",
-        date: "2020",
-        status: "31.05/06",
-        probability: "2024/07/14",
-        customer: "Production Issues",
-        notes: "Powers | Wired | Successful",
-    },
-    {
-        id: 2,
-        name: "Leptep (F)",
-        date: "2021",
-        status: "31.05/06",
-        probability: "2024/07/14",
-        customer: "Production Issues",
-        notes: "Powers | Wired | Successful",
-    },
-    {
-        id: 3,
-        name: "Leptep (F)",
-        date: "2022",
-        status: "31.05/06",
-        probability: "2024/07/14",
-        customer: "Production Issues",
-        notes: "Powers | Wired | Successful",
-    },
-    {
-        id: 4,
-        name: "Leptep (F)",
-        date: "2023",
-        status: "31.05/06",
-        probability: "2024/07/14",
-        customer: "Production Issues",
-        notes: "Powers | Wired | Successful",
-    },
-    {
-        id: 5,
-        name: "Leptep (F)",
-        date: "2024",
-        status: "31.05/06",
-        probability: "2024/07/14",
-        customer: "Production Issues",
-        notes: "Powers | Wired | Successful",
-    },
-    {
-        id: 6,
-        name: "Leptep (F)",
-        date: "2025",
-        status: "31.05/06",
-        probability: "2024/07/14",
-        customer: "Production Issues",
-        notes: "Powers | Wired | Successful",
-    },
-    {
-        id: 7,
-        name: "Leptep (F)",
-        date: "2026",
-        status: "31.05/06",
-        probability: "2024/07/14",
-        customer: "Production Issues",
-        notes: "Powers | Wired | Successful",
-    },
-    {
-        id: 8,
-        name: "Leptep (F)",
-        date: "2027",
-        status: "31.05/06",
-        probability: "2024/07/14",
-        customer: "Production Issues",
-        notes: "Powers | Wired | Successful",
     },
 ];
 
@@ -177,9 +103,9 @@ export default function ViewRefund() {
     const [isSidebarVisible, setIsSidebarVisible] = useState(true);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
-    const [editRefund, setEditRefund] = useState<Refund | null>(null);
-    const [deleteRefund, setDeleteRefund] = useState<Refund | null>(null);
-    const [refundsState, setRefundsState] = useState(refunds);
+    const [editProduct, setEditProduct] = useState<typeof Refunds[0] | null>(null);
+    const [deleteProduct, setDeleteProduct] = useState<typeof Refunds[0] | null>(null);
+    const [productsState, setProductsState] = useState(Refunds);
     const [searchQuery, setSearchQuery] = useState("");
     const [sortBy, setSortBy] = useState("name");
     const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
@@ -197,29 +123,29 @@ export default function ViewRefund() {
         setPage(0);
     };
 
-    const handleEdit = (refund: Refund) => {
-        setEditRefund(refund);
+    const handleEdit = (product: typeof Refunds[0]) => {
+        setEditProduct(product);
     };
 
-    const handleDelete = (refund: Refund) => {
-        setDeleteRefund(refund);
+    const handleDelete = (product: typeof Refunds[0]) => {
+        setDeleteProduct(product);
     };
 
     const handleSave = () => {
-        if (editRefund) {
-            const updatedRefunds = refundsState.map((r) =>
-                r.id === editRefund.id ? editRefund : r
+        if (editProduct) {
+            const updatedProducts = productsState.map((p) =>
+                p.sku === editProduct.sku ? editProduct : p
             );
-            setRefundsState(updatedRefunds);
-            setEditRefund(null);
+            setProductsState(updatedProducts);
+            setEditProduct(null);
         }
     };
 
     const handleConfirmDelete = () => {
-        if (deleteRefund) {
-            const updatedRefunds = refundsState.filter((r) => r.id !== deleteRefund.id);
-            setRefundsState(updatedRefunds);
-            setDeleteRefund(null);
+        if (deleteProduct) {
+            const updatedProducts = productsState.filter((p) => p.sku !== deleteProduct.sku);
+            setProductsState(updatedProducts);
+            setDeleteProduct(null);
         }
     };
 
@@ -236,29 +162,29 @@ export default function ViewRefund() {
         setSortOrder(event.target.value as "asc" | "desc");
     };
 
-    const filteredRefunds = refundsState.filter((refund) =>
-        refund.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        refund.customer.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        refund.notes.toLowerCase().includes(searchQuery.toLowerCase())
+    const filteredProducts = productsState.filter((product) =>
+        product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        product.sku.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        product.category.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
-    const sortedRefunds = filteredRefunds.sort((a, b) => {
+    const sortedProducts = filteredProducts.sort((a, b) => {
         if (sortBy === "name") {
             return sortOrder === "asc" ? a.name.localeCompare(b.name) : b.name.localeCompare(a.name);
-        } else if (sortBy === "date") {
-            return sortOrder === "asc" ? a.date.localeCompare(b.date) : b.date.localeCompare(a.date);
-        } else if (sortBy === "status") {
-            return sortOrder === "asc" ? a.status.localeCompare(b.status) : b.status.localeCompare(a.status);
+        } else if (sortBy === "price") {
+            const priceA = parseFloat(a.price.replace(/[^0-9.-]+/g, ""));
+            const priceB = parseFloat(b.price.replace(/[^0-9.-]+/g, ""));
+            return sortOrder === "asc" ? priceA - priceB : priceB - priceA;
         }
         return 0;
     });
 
-    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - sortedRefunds.length) : 0;
+    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - sortedProducts.length) : 0;
 
     // Calculate the range of entries being shown
     const startEntry = page * rowsPerPage + 1;
-    const endEntry = Math.min((page + 1) * rowsPerPage, sortedRefunds.length);
-    const totalEntries = sortedRefunds.length;
+    const endEntry = Math.min((page + 1) * rowsPerPage, sortedProducts.length);
+    const totalEntries = sortedProducts.length;
 
     return (
         <div className="flex min-h-screen">
@@ -266,14 +192,14 @@ export default function ViewRefund() {
             <div className="flex-1 bg-gradient-to-r from-gray-300 via-gray-400 to-gray-500">
                 <Header onMenuClick={toggleSidebar} />
                 <div className="p-4">
-                    <div className="flex items-center justify-between text-gray-500">
-                        <h2 className="text-2xl font-bold mb-4">Refund</h2>
+                    <div className="flex items-center text-gray-500">
+                        <h2 className="text-2xl font-bold mb-4">Products</h2>
                     </div>
                     <div className="p-6 bg-background text-gray-500 rounded-lg shadow-md">
                         <h2 className="text-xl font-bold mb-4">All Products</h2>
                         <div className="flex justify-between mb-4">
                             <TextField
-                                placeholder="Search refunds..."
+                                placeholder="Search products..."
                                 variant="outlined"
                                 size="small"
                                 value={searchQuery}
@@ -295,8 +221,8 @@ export default function ViewRefund() {
                                         label="Sort By"
                                     >
                                         <MenuItem value="name">Name</MenuItem>
-                                        <MenuItem value="date">Date</MenuItem>
-                                        <MenuItem value="status">Status</MenuItem>
+                                        <MenuItem value="quantity">Quantity</MenuItem>
+                                        <MenuItem value="price">Price</MenuItem>
                                     </Select>
                                 </FormControl>
                                 <FormControl variant="outlined" size="small">
@@ -316,37 +242,45 @@ export default function ViewRefund() {
                             <Table sx={{ minWidth: 500 }} aria-label="custom pagination table">
                                 <TableHead>
                                     <TableRow>
+                                        <TableCell>Image</TableCell>
                                         <TableCell>Name</TableCell>
-                                        <TableCell>Date</TableCell>
-                                        <TableCell>Status</TableCell>
-                                        <TableCell>Probability</TableCell>
-                                        <TableCell>Customer</TableCell>
-                                        <TableCell>Notes</TableCell>
+                                        <TableCell>SKU</TableCell>
+                                        <TableCell>Category</TableCell>
+                                        <TableCell>Quantity</TableCell>
+                                        <TableCell>Price</TableCell>
                                         <TableCell>Action</TableCell>
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
                                     {(rowsPerPage > 0
-                                            ? sortedRefunds.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                                            : sortedRefunds
-                                    ).map((refund, index) => (
+                                            ? sortedProducts.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                                            : sortedProducts
+                                    ).map((product, index) => (
                                         <TableRow key={index}>
-                                            <TableCell>{refund.name}</TableCell>
-                                            <TableCell>{refund.date}</TableCell>
-                                            <TableCell>{refund.status}</TableCell>
-                                            <TableCell>{refund.probability}</TableCell>
-                                            <TableCell>{refund.customer}</TableCell>
-                                            <TableCell>{refund.notes}</TableCell>
+                                            <TableCell component="th" scope="row">
+                                                <Image
+                                                    src={product.image}
+                                                    alt={product.name}
+                                                    width={40}
+                                                    height={40}
+                                                    className="rounded"
+                                                />
+                                            </TableCell>
+                                            <TableCell>{product.name}</TableCell>
+                                            <TableCell>{product.sku}</TableCell>
+                                            <TableCell>{product.category}</TableCell>
+                                            <TableCell>{product.quantity}</TableCell>
+                                            <TableCell>{product.price}</TableCell>
                                             <TableCell>
                                                 <button
                                                     className="bg-blue-500 text-white px-3 py-1 rounded mr-2"
-                                                    onClick={() => handleEdit(refund)}
+                                                    onClick={() => handleEdit(product)}
                                                 >
                                                     Update
                                                 </button>
                                                 <button
                                                     className="bg-red-500 text-white px-3 py-1 rounded"
-                                                    onClick={() => handleDelete(refund)}
+                                                    onClick={() => handleDelete(product)}
                                                 >
                                                     Delete
                                                 </button>
@@ -355,37 +289,35 @@ export default function ViewRefund() {
                                     ))}
                                     {emptyRows > 0 && (
                                         <TableRow style={{ height: 53 * emptyRows }}>
-                                            <TableCell colSpan={7} />
+                                            <TableCell colSpan={8} />
                                         </TableRow>
                                     )}
                                 </TableBody>
                                 <TableFooter>
                                     <TableRow>
-                                        <TableCell colSpan={7} sx={{ borderBottom: "none" }}>
-                                            <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", p: 2 }}>
+                                        <TableCell colSpan={8} sx={{ borderBottom: "none" }}>
+                                            <Box component="span" sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", p: 2 }}>
                                                 <Typography variant="body2" color="textSecondary">
                                                     Showing data {startEntry} to {endEntry} of {totalEntries} entries
                                                 </Typography>
-                                                <Box sx={{ display: "flex", alignItems: "center" }}>
-                                                    <TablePagination
-                                                        rowsPerPageOptions={[5, 10, 25, { label: "All", value: -1 }]}
-                                                        colSpan={7}
-                                                        count={sortedRefunds.length}
-                                                        rowsPerPage={rowsPerPage}
-                                                        page={page}
-                                                        slotProps={{
-                                                            select: {
-                                                                inputProps: {
-                                                                    "aria-label": "rows per page",
-                                                                },
-                                                                native: true,
+                                                <TablePagination
+                                                    rowsPerPageOptions={[5, 10, 25, { label: "All", value: -1 }]}
+                                                    colSpan={7}
+                                                    count={sortedProducts.length}
+                                                    rowsPerPage={rowsPerPage}
+                                                    page={page}
+                                                    slotProps={{
+                                                        select: {
+                                                            inputProps: {
+                                                                "aria-label": "rows per page",
                                                             },
-                                                        }}
-                                                        onPageChange={handleChangePage}
-                                                        onRowsPerPageChange={handleChangeRowsPerPage}
-                                                        ActionsComponent={TablePaginationActions}
-                                                    />
-                                                </Box>
+                                                            native: true,
+                                                        },
+                                                    }}
+                                                    onPageChange={handleChangePage}
+                                                    onRowsPerPageChange={handleChangeRowsPerPage}
+                                                    ActionsComponent={TablePaginationActions}
+                                                />
                                             </Box>
                                         </TableCell>
                                     </TableRow>
@@ -397,48 +329,41 @@ export default function ViewRefund() {
             </div>
 
             {/* Update Modal */}
-            <Modal open={!!editRefund} onClose={() => setEditRefund(null)}>
+            <Modal open={!!editProduct} onClose={() => setEditProduct(null)}>
                 <Box sx={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)", width: 400, backgroundColor: "background.paper", boxShadow: 24, p: 4 }}>
-                    <h2 className="text-xl font-bold mb-4">Edit Refund</h2>
+                    <h2 className="text-xl font-bold mb-4">Edit Product</h2>
                     <TextField
                         label="Name"
-                        value={editRefund?.name || ""}
-                        onChange={(e) => setEditRefund({ ...editRefund!, name: e.target.value })}
+                        value={editProduct?.name || ""}
+                        onChange={(e) => setEditProduct({ ...editProduct!, name: e.target.value })}
                         fullWidth
                         margin="normal"
                     />
                     <TextField
-                        label="Date"
-                        value={editRefund?.date || ""}
-                        onChange={(e) => setEditRefund({ ...editRefund!, date: e.target.value })}
+                        label="SKU"
+                        value={editProduct?.sku || ""}
+                        onChange={(e) => setEditProduct({ ...editProduct!, sku: e.target.value })}
                         fullWidth
                         margin="normal"
                     />
                     <TextField
-                        label="Status"
-                        value={editRefund?.status || ""}
-                        onChange={(e) => setEditRefund({ ...editRefund!, status: e.target.value })}
+                        label="Category"
+                        value={editProduct?.category || ""}
+                        onChange={(e) => setEditProduct({ ...editProduct!, category: e.target.value })}
                         fullWidth
                         margin="normal"
                     />
                     <TextField
-                        label="Probability"
-                        value={editRefund?.probability || ""}
-                        onChange={(e) => setEditRefund({ ...editRefund!, probability: e.target.value })}
+                        label="Quantity"
+                        value={editProduct?.quantity || ""}
+                        onChange={(e) => setEditProduct({ ...editProduct!, quantity: parseInt(e.target.value) })}
                         fullWidth
                         margin="normal"
                     />
                     <TextField
-                        label="Customer"
-                        value={editRefund?.customer || ""}
-                        onChange={(e) => setEditRefund({ ...editRefund!, customer: e.target.value })}
-                        fullWidth
-                        margin="normal"
-                    />
-                    <TextField
-                        label="Notes"
-                        value={editRefund?.notes || ""}
-                        onChange={(e) => setEditRefund({ ...editRefund!, notes: e.target.value })}
+                        label="Price"
+                        value={editProduct?.price || ""}
+                        onChange={(e) => setEditProduct({ ...editProduct!, price: e.target.value })}
                         fullWidth
                         margin="normal"
                     />
@@ -449,15 +374,15 @@ export default function ViewRefund() {
             </Modal>
 
             {/* Delete Confirmation Dialog */}
-            <Dialog open={!!deleteRefund} onClose={() => setDeleteRefund(null)}>
-                <DialogTitle>Delete Refund</DialogTitle>
+            <Dialog open={!!deleteProduct} onClose={() => setDeleteProduct(null)}>
+                <DialogTitle>Delete Product</DialogTitle>
                 <DialogContent>
                     <DialogContentText>
-                        Are you sure you want to delete the refund for &quot;{deleteRefund?.name}&quot;?
+                        Are you sure you want to delete the product &quot;{deleteProduct?.name}&quot;?
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={() => setDeleteRefund(null)}>Cancel</Button>
+                    <Button onClick={() => setDeleteProduct(null)}>Cancel</Button>
                     <Button onClick={handleConfirmDelete} color="error">
                         Delete
                     </Button>

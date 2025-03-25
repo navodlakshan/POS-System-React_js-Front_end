@@ -94,7 +94,6 @@ const products = [
         quantity: 78,
         price: "Rs. 70,000",
     },
-    // Add more products as needed
 ];
 
 export default function ViewProducts() {
@@ -169,8 +168,6 @@ export default function ViewProducts() {
     const sortedProducts = filteredProducts.sort((a, b) => {
         if (sortBy === "name") {
             return sortOrder === "asc" ? a.name.localeCompare(b.name) : b.name.localeCompare(a.name);
-        } else if (sortBy === "quantity") {
-            return sortOrder === "asc" ? a.quantity - b.quantity : b.quantity - a.quantity;
         } else if (sortBy === "price") {
             const priceA = parseFloat(a.price.replace(/[^0-9.-]+/g, ""));
             const priceB = parseFloat(b.price.replace(/[^0-9.-]+/g, ""));
@@ -289,13 +286,13 @@ export default function ViewProducts() {
                                     ))}
                                     {emptyRows > 0 && (
                                         <TableRow style={{ height: 53 * emptyRows }}>
-                                            <TableCell colSpan={7} />
+                                            <TableCell colSpan={8} />
                                         </TableRow>
                                     )}
                                 </TableBody>
                                 <TableFooter>
                                     <TableRow>
-                                        <TableCell colSpan={7} sx={{ borderBottom: "none" }}>
+                                        <TableCell colSpan={8} sx={{ borderBottom: "none" }}>
                                             <Box component="span" sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", p: 2 }}>
                                                 <Typography variant="body2" color="textSecondary">
                                                     Showing data {startEntry} to {endEntry} of {totalEntries} entries
