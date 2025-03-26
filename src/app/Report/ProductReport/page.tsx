@@ -351,14 +351,6 @@ export default function ProductReportPage() {
                 <div className="p-4">
                     <div className="flex items-center justify-between text-gray-500 mb-4">
                         <h2 className="text-2xl font-bold">Product Report</h2>
-                        <Button
-                            variant="contained"
-                            color="primary"
-                            startIcon={<AddIcon />}
-                            onClick={handleAddDialogOpen}
-                        >
-                            Add Product
-                        </Button>
                     </div>
                     <div className="p-6 bg-background text-gray-500 rounded-lg shadow-md">
                         <div className="flex justify-between mb-4">
@@ -438,18 +430,24 @@ export default function ProductReportPage() {
                                             <TableCell>{product.currentQuantity}</TableCell>
                                             <TableCell>{product.refunded}</TableCell>
                                             <TableCell>
-                                                <IconButton
-                                                    color="primary"
-                                                    onClick={() => handleEditDialogOpen(product)}
+                                                <button
+                                                    className="bg-green-500 text-white px-3 py-1 rounded mr-2"
+                                                    onClick={() => handleAddDialogOpen(true)}
                                                 >
-                                                    <EditIcon />
-                                                </IconButton>
-                                                <IconButton
-                                                    color="error"
-                                                    onClick={() => handleDeleteDialogOpen(product)}
+                                                    Add
+                                                </button>
+                                                <button
+                                                    className="bg-blue-500 text-white px-3 py-1 rounded mr-2"
+                                                    onClick={() => handleEditDialogOpen(true)}
                                                 >
-                                                    <DeleteIcon />
-                                                </IconButton>
+                                                    Update
+                                                </button>
+                                                <button
+                                                    className="bg-red-500 text-white px-3 py-1 rounded"
+                                                    onClick={() => handleDeleteDialogOpen(true)}
+                                                >
+                                                    Delete
+                                                </button>
                                             </TableCell>
                                         </TableRow>
                                     ))}
