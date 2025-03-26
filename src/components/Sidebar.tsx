@@ -94,17 +94,17 @@ export const Sidebar = () => {
                         {isReportsDropdownOpen && (
                             <ul className="pl-6 mt-2 transition-all duration-300 ease-in-out">
                                 <li className="mb-2 hover:text-blue-400 cursor-pointer">
-                                    <Link href="/Report/Product Report" className="block">
+                                    <Link href="/Report/ProductReport" className="block">
                                         Product Report
                                     </Link>
                                 </li>
                                 <li className="mb-2 hover:text-blue-400 cursor-pointer">
-                                    <Link href="/Report/Staff Report" className="block">
+                                    <Link href="/Report/StaffReport" className="block">
                                         Staff Report
                                     </Link>
                                 </li>
                                 <li className="mb-2 hover:text-blue-400 cursor-pointer">
-                                    <Link href="/Report/Financial Report" className="block">
+                                    <Link href="/Report/FinancialReport" className="block">
                                         Financial Report
                                     </Link>
                                 </li>

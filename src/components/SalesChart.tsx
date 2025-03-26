@@ -35,7 +35,7 @@ const chartConfig = {
 
 export const SalesChart = () => {
     return (
-        <div className="bg-background text-foreground p-6 rounded-lg shadow-md mt-4">
+        <div className="bg-cyan-500 text-foreground p-6 rounded-lg shadow-md mt-4">
             <h2 className="text-lg font-semibold mb-4">Sales Details</h2>
             <Card>
                 <CardHeader>
