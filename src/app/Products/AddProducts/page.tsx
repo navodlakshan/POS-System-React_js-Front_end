@@ -4,6 +4,8 @@ import React, { useState } from "react";
 import { Header } from "@/components/Header";
 import { Sidebar } from "@/components/Sidebar";
 import { Box, TextField, Button, Select, MenuItem, FormControl, InputLabel, Typography, Paper } from "@mui/material";
+import CancelIcon from "@mui/icons-material/Cancel";
+import SaveIcon from "@mui/icons-material/Save";
 
 export default function AddProduct() {
     const [isSidebarVisible, setIsSidebarVisible] = useState(true);
@@ -83,6 +85,23 @@ export default function AddProduct() {
         } else {
             console.log("Form has errors. Please fix them.");
         }
+    };
+
+    const handleCancel = () => {
+        // Reset form fields
+        setProductName("");
+        setCategory("");
+        setProductType("Single Product");
+        setColor("");
+        setSKU("");
+        setPrice("");
+        setImage(null);
+        setErrors({
+            productName: "",
+            category: "",
+            price: "",
+            image: "",
+        });
     };
 
     return (
@@ -183,10 +202,14 @@ export default function AddProduct() {
                                     {errors.image && <Typography variant="caption" color="error">{errors.image}</Typography>}
                                 </Box>
                                 <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2 }}>
-                                    <Button type="submit" variant="contained" color="primary">
+                                    <Button type="submit" variant="contained" color="primary" startIcon={<SaveIcon />}>
                                         Add
                                     </Button>
-                                    <Button variant="outlined" color="secondary">
+                                    <Button
+                                        variant="outlined"
+                                        startIcon={<CancelIcon />}
+                                        onClick={handleCancel}
+                                    >
                                         Cancel
                                     </Button>
                                 </Box>

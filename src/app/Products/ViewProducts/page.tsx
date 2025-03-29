@@ -23,6 +23,8 @@ import Image from "next/image";
 import SearchIcon from "@mui/icons-material/Search";
 import { Select, MenuItem, FormControl, InputLabel } from "@mui/material";
 import { SelectChangeEvent } from "@mui/material/Select";
+import SaveIcon from "@mui/icons-material/Save";
+import CancelIcon from "@mui/icons-material/Cancel";
 
 interface TablePaginationActionsProps {
     count: number;
@@ -364,9 +366,14 @@ export default function ViewProducts() {
                         fullWidth
                         margin="normal"
                     />
-                    <Button variant="contained" color="primary" onClick={handleSave} sx={{ mt: 2 }}>
-                        Save
-                    </Button>
+                    <DialogActions>
+                        <Button variant="contained" color="primary" startIcon={<SaveIcon />} onClick={handleSave}>
+                            Save
+                        </Button>
+                        <Button variant="outlined" startIcon={<CancelIcon />} onClick={() => setEditProduct(null)}>
+                            Cancel
+                        </Button>
+                    </DialogActions>
                 </Box>
             </Modal>
 
@@ -379,8 +386,8 @@ export default function ViewProducts() {
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={() => setDeleteProduct(null)}>Cancel</Button>
-                    <Button onClick={handleConfirmDelete} color="error">
+                    <Button variant="outlined" onClick={() => setDeleteProduct(null)}>Cancel</Button>
+                    <Button variant="contained" color="error" onClick={handleConfirmDelete}>
                         Delete
                     </Button>
                 </DialogActions>
