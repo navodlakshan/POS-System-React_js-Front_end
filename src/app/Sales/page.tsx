@@ -18,14 +18,16 @@ import FirstPageIcon from "@mui/icons-material/FirstPage";
 import KeyboardArrowLeft from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
 import LastPageIcon from "@mui/icons-material/LastPage";
-import { TableHead, Modal, TextField, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, InputAdornment, Typography } from "@mui/material";
+import { TableHead, Modal, TextField, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, InputAdornment, Typography, Grid } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import { Select, MenuItem, FormControl, InputLabel } from "@mui/material";
 import { SelectChangeEvent } from "@mui/material/Select";
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import dayjs, { Dayjs } from 'dayjs';
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import dayjs, { Dayjs } from "dayjs";
+import CancelIcon from "@mui/icons-material/Cancel";
+import SaveIcon from "@mui/icons-material/Save";
 
 interface TablePaginationActionsProps {
     count: number;
@@ -99,7 +101,18 @@ interface Sale {
     date: string;
 }
 
-const sales: Sale[] = [
+interface NewSale {
+    billId: number;
+    name: string;
+    sku: string;
+    category: string;
+    quantity: number;
+    price: string;
+    soldBy: string;
+    date: string;
+}
+
+const initialSales: Sale[] = [
     {
         billId: 1,
         name: "Laptop i7",
@@ -194,16 +207,13 @@ const sales: Sale[] = [
 
 export default function ViewSales() {
     const [isSidebarVisible, setIsSidebarVisible] = useState(true);
+    const [salesState, setSalesState] = useState<Sale[]>(initialSales);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
     const [editSale, setEditSale] = useState<Sale | null>(null);
     const [deleteSale, setDeleteSale] = useState<Sale | null>(null);
-    const [salesState, setSalesState] = useState(sales);
-    const [searchQuery, setSearchQuery] = useState("");
-    const [sortBy, setSortBy] = useState("name");
-    const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
     const [isAddSaleModalOpen, setIsAddSaleModalOpen] = useState(false);
-    const [newSale, setNewSale] = useState({
+    const [newSale, setNewSale] = useState<NewSale>({
         billId: 0,
         name: "",
         sku: "",
@@ -211,10 +221,12 @@ export default function ViewSales() {
         quantity: 0,
         price: "",
         soldBy: "",
-        date: "", // Initialize as a string
+        date: ""
     });
-
-    const [errors, setErrors] = useState<{ [key: string]: string }>({});
+    const [errors, setErrors] = useState<Record<string, string>>({});
+    const [searchQuery, setSearchQuery] = useState("");
+    const [sortBy, setSortBy] = useState("name");
+    const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
 
     const toggleSidebar = () => {
         setIsSidebarVisible(!isSidebarVisible);
@@ -268,15 +280,9 @@ export default function ViewSales() {
         setSortOrder(event.target.value as "asc" | "desc");
     };
 
-    const filteredSales = salesState.filter((sale) =>
-        sale.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        sale.sku.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        sale.category.toLowerCase().includes(searchQuery.toLowerCase())
-    );
-
     const validateForm = () => {
-        const newErrors: { [key: string]: string } = {};
-        if (!newSale.name) newErrors.name = "Name is required";
+        const newErrors: Record<string, string> = {};
+        if (!newSale.name) newErrors.name = "Product name is required";
         if (!newSale.sku) newErrors.sku = "SKU is required";
         if (!newSale.category) newErrors.category = "Category is required";
         if (!newSale.quantity) newErrors.quantity = "Quantity is required";
@@ -290,8 +296,12 @@ export default function ViewSales() {
     const handleAddSale = () => {
         if (!validateForm()) return;
 
-        const newSaleWithId = { ...newSale, billId: salesState.length + 1 };
-        setSalesState([...salesState, newSaleWithId]);
+        const newSaleEntry: Sale = {
+            ...newSale,
+            billId: salesState.length + 1
+        };
+
+        setSalesState([...salesState, newSaleEntry]);
         setIsAddSaleModalOpen(false);
         setNewSale({
             billId: 0,
@@ -301,9 +311,15 @@ export default function ViewSales() {
             quantity: 0,
             price: "",
             soldBy: "",
-            date: "", // Reset to an empty string
+            date: ""
         });
     };
+
+    const filteredSales = salesState.filter((sale) =>
+        sale.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        sale.sku.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        sale.category.toLowerCase().includes(searchQuery.toLowerCase())
+    );
 
     const sortedSales = filteredSales.sort((a, b) => {
         if (sortBy === "name") {
@@ -312,13 +328,16 @@ export default function ViewSales() {
             const priceA = parseFloat(a.price.replace(/[^0-9.-]+/g, ""));
             const priceB = parseFloat(b.price.replace(/[^0-9.-]+/g, ""));
             return sortOrder === "asc" ? priceA - priceB : priceB - priceA;
+        } else if (sortBy === "date") {
+            return sortOrder === "asc"
+                ? new Date(a.date).getTime() - new Date(b.date).getTime()
+                : new Date(b.date).getTime() - new Date(a.date).getTime();
         }
         return 0;
     });
 
     const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - sortedSales.length) : 0;
 
-    // Calculate the range of entries being shown
     const startEntry = page * rowsPerPage + 1;
     const endEntry = Math.min((page + 1) * rowsPerPage, sortedSales.length);
     const totalEntries = sortedSales.length;
@@ -388,7 +407,7 @@ export default function ViewSales() {
                                         <TableCell>Price</TableCell>
                                         <TableCell>Sold By</TableCell>
                                         <TableCell>Date</TableCell>
-                                        <TableCell>Action</TableCell>
+                                        <TableCell>Actions</TableCell>
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
@@ -429,20 +448,20 @@ export default function ViewSales() {
                                     ))}
                                     {emptyRows > 0 && (
                                         <TableRow style={{ height: 53 * emptyRows }}>
-                                            <TableCell colSpan={8} />
+                                            <TableCell colSpan={9} />
                                         </TableRow>
                                     )}
                                 </TableBody>
                                 <TableFooter>
                                     <TableRow>
-                                        <TableCell colSpan={8} sx={{ borderBottom: "none" }}>
+                                        <TableCell colSpan={9} sx={{ borderBottom: "none" }}>
                                             <Box component="span" sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", p: 2 }}>
                                                 <Typography variant="body2" color="textSecondary">
                                                     Showing data {startEntry} to {endEntry} of {totalEntries} entries
                                                 </Typography>
                                                 <TablePagination
                                                     rowsPerPageOptions={[5, 10, 25, { label: "All", value: -1 }]}
-                                                    colSpan={7}
+                                                    colSpan={9}
                                                     count={sortedSales.length}
                                                     rowsPerPage={rowsPerPage}
                                                     page={page}
@@ -494,6 +513,13 @@ export default function ViewSales() {
                         margin="normal"
                     />
                     <TextField
+                        label="Quantity"
+                        value={editSale?.quantity || ""}
+                        onChange={(e) => setEditSale({ ...editSale!, quantity: parseInt(e.target.value) })}
+                        fullWidth
+                        margin="normal"
+                    />
+                    <TextField
                         label="Price"
                         value={editSale?.price || ""}
                         onChange={(e) => setEditSale({ ...editSale!, price: e.target.value })}
@@ -514,9 +540,18 @@ export default function ViewSales() {
                         fullWidth
                         margin="normal"
                     />
-                    <Button variant="contained" color="primary" onClick={handleSave} sx={{ mt: 2 }}>
-                        Save
-                    </Button>
+                    <DialogActions>
+                        <Button variant="contained" color="primary" startIcon={<SaveIcon />} onClick={handleSave}>
+                            Save
+                        </Button>
+                        <Button
+                            variant="outlined"
+                            startIcon={<CancelIcon />}
+                            onClick={() => setEditSale(null)}
+                        >
+                            Cancel
+                        </Button>
+                    </DialogActions>
                 </Box>
             </Modal>
 
@@ -529,8 +564,8 @@ export default function ViewSales() {
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={() => setDeleteSale(null)}>Cancel</Button>
-                    <Button onClick={handleConfirmDelete} color="error">
+                    <Button variant="outlined" onClick={() => setDeleteSale(null)}>Cancel</Button>
+                    <Button color="error" variant="contained" onClick={handleConfirmDelete}>
                         Delete
                     </Button>
                 </DialogActions>
@@ -538,86 +573,134 @@ export default function ViewSales() {
 
             {/* Add Sale Modal */}
             <Modal open={isAddSaleModalOpen} onClose={() => setIsAddSaleModalOpen(false)}>
-                <Box sx={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)", width: 400, backgroundColor: "background.paper", boxShadow: 24, p: 4 }}>
-                    <h2 className="text-xl font-bold mb-4">Add Sale</h2>
-                    <TextField
-                        label="Name"
-                        value={newSale.name}
-                        onChange={(e) => setNewSale({ ...newSale, name: e.target.value })}
-                        fullWidth
-                        margin="normal"
-                        error={!!errors.name}
-                        helperText={errors.name}
-                    />
-                    <TextField
-                        label="SKU"
-                        value={newSale.sku}
-                        onChange={(e) => setNewSale({ ...newSale, sku: e.target.value })}
-                        fullWidth
-                        margin="normal"
-                        error={!!errors.sku}
-                        helperText={errors.sku}
-                    />
-                    <FormControl fullWidth margin="normal">
-                        <InputLabel>Category</InputLabel>
-                        <Select
-                            value={newSale.category}
-                            onChange={(e) => setNewSale({ ...newSale, category: e.target.value })}
-                            label="Category"
-                            error={!!errors.category}
+                <Grid sx={{
+                    position: "absolute",
+                    top: "50%",
+                    left: "50%",
+                    transform: "translate(-50%, -50%)",
+                    width: 500,
+                    backgroundColor: "background.paper",
+                    boxShadow: 24,
+                    p: 4,
+                    borderRadius: 2
+                }}>
+                    <Typography variant="h6" component="h2" sx={{ mb: 3, fontWeight: 'bold' }}>
+                        Add New Sale
+                    </Typography>
+
+                    <Grid container spacing={2}>
+                        <Grid item xs={12} sm={6}>
+                            <TextField
+                                label="Product Name"
+                                value={newSale.name}
+                                onChange={(e) => setNewSale({ ...newSale, name: e.target.value })}
+                                fullWidth
+                                margin="normal"
+                                error={!!errors.name}
+                                helperText={errors.name}
+                            />
+                        </Grid>
+                        <Grid item xs={12} sm={6}>
+                            <TextField
+                                label="SKU"
+                                value={newSale.sku}
+                                onChange={(e) => setNewSale({ ...newSale, sku: e.target.value })}
+                                fullWidth
+                                margin="normal"
+                                error={!!errors.sku}
+                                helperText={errors.sku}
+                            />
+                        </Grid>
+
+                        <Grid item xs={12} sm={6}>
+                            <FormControl fullWidth margin="normal">
+                                <InputLabel>Category</InputLabel>
+                                <Select
+                                    value={newSale.category}
+                                    onChange={(e) => setNewSale({ ...newSale, category: e.target.value })}
+                                    label="Category"
+                                    error={!!errors.category}
+                                >
+                                    <MenuItem value="Computer">Computer</MenuItem>
+                                    <MenuItem value="Mobile Phone">Mobile Phone</MenuItem>
+                                </Select>
+                                {errors.category && <Typography variant="caption" color="error">{errors.category}</Typography>}
+                            </FormControl>
+                        </Grid>
+
+                        <Grid item xs={12} sm={6}>
+                            <TextField
+                                label="Quantity"
+                                value={newSale.quantity}
+                                onChange={(e) => setNewSale({ ...newSale, quantity: parseInt(e.target.value) })}
+                                fullWidth
+                                margin="normal"
+                                error={!!errors.quantity}
+                                helperText={errors.quantity}
+                            />
+                        </Grid>
+
+                        <Grid item xs={12} sm={6}>
+                            <TextField
+                                label="Price"
+                                value={newSale.price}
+                                onChange={(e) => setNewSale({ ...newSale, price: e.target.value })}
+                                fullWidth
+                                margin="normal"
+                                error={!!errors.price}
+                                helperText={errors.price}
+                            />
+                        </Grid>
+
+                        <Grid item xs={12} sm={6}>
+                            <TextField
+                                label="Sold By"
+                                value={newSale.soldBy}
+                                onChange={(e) => setNewSale({ ...newSale, soldBy: e.target.value })}
+                                fullWidth
+                                margin="normal"
+                                error={!!errors.soldBy}
+                                helperText={errors.soldBy}
+                            />
+                        </Grid>
+
+                        <Grid item xs={12}>
+                            <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                <DatePicker
+                                    label="Sale Date"
+                                    value={newSale.date ? dayjs(newSale.date) : null}
+                                    onChange={(newValue: Dayjs | null) => {
+                                        setNewSale({ ...newSale, date: newValue ? newValue.format('YYYY/MM/DD') : "" });
+                                    }}
+                                    sx={{ width: '100%', mt: 2 }}
+                                    slotProps={{
+                                        textField: {
+                                            error: !!errors.date,
+                                            helperText: errors.date
+                                        }
+                                    }}
+                                />
+                            </LocalizationProvider>
+                        </Grid>
+                    </Grid>
+                    <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2, mt: 3 }}>
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            startIcon={<SaveIcon />}
+                            onClick={handleAddSale}
                         >
-                            <MenuItem value="Computer">Computer</MenuItem>
-                            <MenuItem value="Mobile Phone">Mobile Phone</MenuItem>
-                        </Select>
-                        {errors.category && <Typography variant="caption" color="error">{errors.category}</Typography>}
-                    </FormControl>
-                    <TextField
-                        label="Quantity"
-                        value={newSale.quantity}
-                        onChange={(e) => setNewSale({ ...newSale, quantity: parseInt(e.target.value, 10) })}
-                        fullWidth
-                        margin="normal"
-                        error={!!errors.quantity}
-                        helperText={errors.quantity}
-                    />
-                    <TextField
-                        label="Price"
-                        value={newSale.price}
-                        onChange={(e) => setNewSale({ ...newSale, price: e.target.value })}
-                        fullWidth
-                        margin="normal"
-                        error={!!errors.price}
-                        helperText={errors.price}
-                    />
-                    <TextField
-                        label="Sold By"
-                        value={newSale.soldBy}
-                        onChange={(e) => setNewSale({ ...newSale, soldBy: e.target.value })}
-                        fullWidth
-                        margin="normal"
-                        error={!!errors.soldBy}
-                        helperText={errors.soldBy}
-                        sx={{ mb: 2 }} // Add margin bottom to create a gap
-                    />
-                    <LocalizationProvider dateAdapter={AdapterDayjs}>
-                        <DatePicker
-                            label="Date"
-                            value={newSale.date ? dayjs(newSale.date) : null}
-                            onChange={(newValue: Dayjs | null) => {
-                                setNewSale({ ...newSale, date: newValue ? newValue.format('YYYY/MM/DD') : "" });
-                            }}
-                            sx={{ width: '100%', mb: 2 }} // Ensure DatePicker takes full width
-                        />
-                    </LocalizationProvider>
-                    <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2 }}>
-                        <Button variant="contained" color="primary" onClick={handleAddSale} sx={{ mt: 2 }}>
-                            Add
+                            Add Sale
                         </Button>
-                        <Button variant="outlined" color="secondary" onClick={() => setIsAddSaleModalOpen(false)} sx={{ mt: 2 }}>
+                        <Button
+                            variant="outlined"
+                            startIcon={<CancelIcon />}
+                            onClick={() => setIsAddSaleModalOpen(false)}
+                        >
                             Cancel
                         </Button>
                     </Box>
-                </Box>
+                </Grid>
             </Modal>
         </div>
     );

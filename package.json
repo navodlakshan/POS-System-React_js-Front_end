@@ -30,6 +30,7 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
+    "@mui/x-charts": "^7.28.0",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",

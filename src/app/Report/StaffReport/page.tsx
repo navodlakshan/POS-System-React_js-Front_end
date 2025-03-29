@@ -24,6 +24,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import { TextField, InputAdornment } from "@mui/material";
 import { Select, MenuItem, FormControl, InputLabel } from "@mui/material";
 import { SelectChangeEvent } from "@mui/material/Select";
+import PrintIcon from "@mui/icons-material/Print";
 
 interface TablePaginationActionsProps {
     count: number;
@@ -90,23 +91,24 @@ interface StaffProduct {
     id: number;
     image: string;
     name: string;
-    totalProductSize: string;
-    totalNumber: string;
+    totalProductSale: number;
+    totalRevenue: number;
 }
 
 const initialProducts: StaffProduct[] = [
-    { id: 1, image: "", name: "content", totalProductSize: "0/50", totalNumber: "<800" },
-    { id: 2, image: "", name: "content", totalProductSize: "0/50", totalNumber: "<800" },
-    { id: 3, image: "", name: "content", totalProductSize: "0/50", totalNumber: "<800" },
-    { id: 4, image: "", name: "content", totalProductSize: "0/50", totalNumber: "<800" },
-    { id: 5, image: "", name: "content", totalProductSize: "0/50", totalNumber: "<800" },
-    { id: 6, image: "", name: "content", totalProductSize: "0/50", totalNumber: "<800" },
-    { id: 7, image: "", name: "content", totalProductSize: "0/50", totalNumber: "<800" },
+    { id: 1, image: "", name: "saman", totalProductSale: 678, totalRevenue: 4500 },
+    { id: 2, image: "", name: "saman", totalProductSale: 678, totalRevenue: 4500 },
+    { id: 3, image: "", name: "saman", totalProductSale: 678, totalRevenue: 4500 },
+    { id: 4, image: "", name: "saman", totalProductSale: 678, totalRevenue: 4500 },
+    { id: 5, image: "", name: "saman", totalProductSale: 678, totalRevenue: 4500 },
+    { id: 6, image: "", name: "saman", totalProductSale: 678, totalRevenue: 4500 },
+    { id: 7, image: "", name: "saman", totalProductSale: 678, totalRevenue: 4500 },
+    { id: 8, image: "", name: "saman", totalProductSale: 678, totalRevenue: 4500 },
 ];
 
 export default function StaffReportPage() {
     const [isSidebarVisible, setIsSidebarVisible] = useState(true);
-    const [products] = useState<StaffProduct[]>(initialProducts); // Removed setProducts
+    const [products] = useState<StaffProduct[]>(initialProducts);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
     const [searchQuery, setSearchQuery] = useState("");
@@ -141,13 +143,72 @@ export default function StaffReportPage() {
         setPage(0);
     };
 
+    const handlePrint = () => {
+        const printWindow = window.open('', '_blank', 'width=800,height=600');
+        if (printWindow) {
+            printWindow.document.write(`
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <title>Staff Report</title>
+                    <style>
+                        body { font-family: Arial, sans-serif; margin: 20px; }
+                        .header { text-align: center; margin-bottom: 20px; }
+                        .title { font-size: 24px; font-weight: bold; }
+                        .date { font-size: 14px; color: #666; }
+                        table { width: 100%; border-collapse: collapse; }
+                        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+                        th { background-color: #f2f2f2; }
+                        .footer { margin-top: 20px; text-align: center; font-size: 12px; color: #666; }
+                    </style>
+                </head>
+                <body>
+                    <div class="header">
+                        <div class="title">Staff Report</div>
+                        <div class="date">Generated on ${new Date().toLocaleDateString()}</div>
+                    </div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Image</th>
+                                <th>Name</th>
+                                <th>Total Product Sale</th>
+                                <th>Total Revenue</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${products.map(product => `
+                                <tr>
+                                    <td></td>
+                                    <td>${product.name}</td>
+                                    <td>${product.totalProductSale}</td>
+                                    <td>${product.totalRevenue}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                    <div class="footer">
+                        Showing data 1 to ${products.length} of ${products.length} entries
+                    </div>
+                    <script>
+                        setTimeout(() => {
+                            window.print();
+                            window.close();
+                        }, 500);
+                    </script>
+                </body>
+                </html>
+            `);
+            printWindow.document.close();
+        }
+    };
+
     const filteredProducts = products.filter((product) =>
         product.name.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
     const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - filteredProducts.length) : 0;
 
-    // Calculate the range of entries being shown
     const startEntry = page * rowsPerPage + 1;
     const endEntry = Math.min((page + 1) * rowsPerPage, filteredProducts.length);
     const totalEntries = filteredProducts.length;
@@ -188,12 +249,17 @@ export default function StaffReportPage() {
                                         <MenuItem value="january">January</MenuItem>
                                         <MenuItem value="february">February</MenuItem>
                                         <MenuItem value="march">March</MenuItem>
-                                        {/* Add more months as needed */}
                                     </Select>
                                 </FormControl>
                             </div>
                             <div className="flex gap-2">
-                                <Button variant="contained" color="primary" size="small">
+                                <Button
+                                    variant="contained"
+                                    color="primary"
+                                    size="small"
+                                    startIcon={<PrintIcon />}
+                                    onClick={handlePrint}
+                                >
                                     Print
                                 </Button>
                                 <TextField
@@ -218,8 +284,8 @@ export default function StaffReportPage() {
                                     <TableRow>
                                         <TableCell>Image</TableCell>
                                         <TableCell>Name</TableCell>
-                                        <TableCell>Total Product Size</TableCell>
-                                        <TableCell>Total number</TableCell>
+                                        <TableCell>Total Product Sale</TableCell>
+                                        <TableCell>Total Revenue</TableCell>
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
@@ -242,8 +308,8 @@ export default function StaffReportPage() {
                                                 )}
                                             </TableCell>
                                             <TableCell>{product.name}</TableCell>
-                                            <TableCell>{product.totalProductSize}</TableCell>
-                                            <TableCell>{product.totalNumber}</TableCell>
+                                            <TableCell>{product.totalProductSale}</TableCell>
+                                            <TableCell>{product.totalRevenue}</TableCell>
                                         </TableRow>
                                     ))}
                                     {emptyRows > 0 && (
@@ -257,7 +323,7 @@ export default function StaffReportPage() {
                                         <TableCell colSpan={4} sx={{ borderBottom: "none" }}>
                                             <Box component="span" sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", p: 2 }}>
                                                 <Typography variant="body2" color="textSecondary">
-                                                    Showing {startEntry} to {endEntry} of {totalEntries} entries
+                                                    Showing data {startEntry} to {endEntry} of {totalEntries} entries
                                                 </Typography>
                                                 <TablePagination
                                                     rowsPerPageOptions={[5, 10, 25, { label: "All", value: -1 }]}

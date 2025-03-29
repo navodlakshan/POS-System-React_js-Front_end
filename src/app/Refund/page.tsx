@@ -27,6 +27,9 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import dayjs, { Dayjs } from "dayjs";
+import CancelIcon from "@mui/icons-material/Cancel";
+import SaveIcon from "@mui/icons-material/Save";
+import PrintIcon from "@mui/icons-material/Print";
 
 interface TablePaginationActionsProps {
     count: number;
@@ -484,9 +487,18 @@ export default function RefundPage() {
                         margin="normal"
                     />
 
-                    <Button variant="contained" color="primary" onClick={handleSave} sx={{ mt: 2 }}>
+                    <DialogActions>
+                    <Button variant="contained" color="primary" startIcon={<SaveIcon />} onClick={handleSave}>
                         Save
                     </Button>
+                    <Button
+                        variant="outlined"
+                        startIcon={<CancelIcon />}
+                        onClick={() => setEditProduct(null)}
+                    >
+                        Cancel
+                    </Button>
+                    </DialogActions>
                 </Box>
             </Modal>
 
@@ -499,8 +511,8 @@ export default function RefundPage() {
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={() => setDeleteProduct(null)}>Cancel</Button>
-                    <Button onClick={handleConfirmDelete} color="error">
+                    <Button variant="outlined" onClick={() => setDeleteProduct(null)}>Cancel</Button>
+                    <Button  color="error" variant="contained" onClick={handleConfirmDelete}>
                         Delete
                     </Button>
                 </DialogActions>
@@ -662,16 +674,15 @@ export default function RefundPage() {
                         <Button
                             variant="contained"
                             color="primary"
+                            startIcon={<SaveIcon />}
                             onClick={handleAddRefund}
-                            sx={{ px: 4 }}
                         >
                             Process Refund
                         </Button>
                         <Button
                             variant="outlined"
-                            color="secondary"
+                            startIcon={<CancelIcon />}
                             onClick={() => setIsAddRefundModalOpen(false)}
-                            sx={{ px: 4 }}
                         >
                             Cancel
                         </Button>
