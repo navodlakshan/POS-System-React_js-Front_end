@@ -1,3 +1,5 @@
+// src/app/Report/StaffReport/page.tsx
+
 "use client";
 
 import React, { useState } from "react";
@@ -114,9 +116,14 @@ export default function StaffReportPage() {
     const [searchQuery, setSearchQuery] = useState("");
     const [statusFilter, setStatusFilter] = useState("all");
     const [monthFilter, setMonthFilter] = useState("all");
+    const [darkMode, setDarkMode] = useState(false);
 
     const toggleSidebar = () => {
         setIsSidebarVisible(!isSidebarVisible);
+    };
+
+    const toggleDarkMode = () => {
+        setDarkMode(!darkMode);
     };
 
     const handleChangePage = (event: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => {
@@ -214,18 +221,27 @@ export default function StaffReportPage() {
     const totalEntries = filteredProducts.length;
 
     return (
-        <div className="flex min-h-screen">
+        <div className={`flex min-h-screen ${darkMode ? 'bg-gray-900' : 'bg-white'}`}>
             {isSidebarVisible && <Sidebar />}
-            <div className="flex-1 bg-gradient-to-r from-gray-300 via-gray-400 to-gray-500">
-                <Header onMenuClick={toggleSidebar} />
+            <div className="flex-1">
+                <Header
+                    onMenuClick={toggleSidebar}
+                    onThemeToggle={toggleDarkMode}
+                    darkMode={darkMode}
+                    notificationCount={0}
+                />
                 <div className="p-4">
-                    <div className="flex items-center text-gray-500">
-                        <h2 className="text-2xl font-bold mb-4">Staff Report</h2>
+                    <div className="flex items-center">
+                        <h2 className={`text-2xl font-bold mb-4 ${darkMode ? 'text-white' : 'text-gray-800'}`}>
+                            Staff Report
+                        </h2>
                     </div>
-                    <div className="p-6 bg-background text-gray-500 rounded-lg shadow-md">
+                    <div className={`p-6 rounded-lg shadow-md ${darkMode ? 'bg-gray-800' : 'bg-white'}`}>
                         <div className="flex justify-between mb-4">
                             <div className="flex items-center gap-2">
-                                <Typography variant="body1">All Products</Typography>
+                                <Typography variant="body1" color={darkMode ? 'text.secondary' : 'text.primary'}>
+                                    All Products
+                                </Typography>
                                 <FormControl variant="outlined" size="small">
                                     <InputLabel>Status</InputLabel>
                                     <Select
