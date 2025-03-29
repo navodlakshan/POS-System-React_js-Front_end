@@ -1,30 +1,53 @@
+// src/components/Header.tsx
 "use client";
 
 import Link from 'next/link';
 import React, { useState } from 'react';
-import Avatar from '@mui/material/Avatar';
-import Menu from '@mui/material/Menu';
-import MenuItem from '@mui/material/MenuItem';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import Divider from '@mui/material/Divider';
-import IconButton from '@mui/material/IconButton';
-import Tooltip from '@mui/material/Tooltip';
-import Settings from '@mui/icons-material/Settings';
-import Logout from '@mui/icons-material/Logout';
-import Person from '@mui/icons-material/Person';
 import { useRouter } from 'next/navigation';
+import {
+    Avatar,
+    Menu,
+    MenuItem,
+    ListItemIcon,
+    Divider,
+    IconButton,
+    Tooltip,
+    Badge,
+    Box
+} from '@mui/material';
+import {
+    Settings,
+    Logout,
+    Person,
+    Menu as MenuIcon,
+    Notifications,
+    Dashboard,
+    Login,
+    HowToReg,
+    LightMode,
+    DarkMode
+} from '@mui/icons-material';
 
 interface HeaderProps {
     onMenuClick: () => void;
+    onThemeToggle: () => void;
+    darkMode: boolean;
     profileImage?: string | null;
+    notificationCount?: number;
 }
 
-export const Header = ({ onMenuClick, profileImage }: HeaderProps) => {
+export const Header = ({
+                           onMenuClick,
+                           onThemeToggle,
+                           darkMode,
+                           profileImage,
+                           notificationCount = 0
+                       }: HeaderProps) => {
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
     const router = useRouter();
 
-    const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+    const handleMenuClick = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorEl(event.currentTarget);
     };
 
@@ -32,123 +55,141 @@ export const Header = ({ onMenuClick, profileImage }: HeaderProps) => {
         setAnchorEl(null);
     };
 
-    const handleViewProfile = () => {
-        router.push('/Profile');
-        handleClose();
-    };
-
-    const handleSettings = () => {
-        router.push('/Settings');
-        handleClose();
-    };
-
-    const handleLogout = () => {
-        // Add your logout logic here (clear tokens, etc.)
-        router.push('/Login');
+    const handleNavigation = (path: string) => {
+        router.push(path);
         handleClose();
     };
 
     return (
-        <header className="bg-slate-600 text-foreground p-4 flex justify-between items-center">
-            <div className="flex items-center">
-                <img
-                    src="/Menu.svg"
-                    alt="Menu"
-                    className="w-6 h-6 mr-8 cursor-pointer"
-                    onClick={onMenuClick}
-                />
-                <h1 className="text-3xl font-bold text-white">Dashboard</h1>
-            </div>
-            <nav>
-                <ul className="flex space-x-4 items-center">
-                    <li>
-                        <Link href="/Login" className="text-white hover:text-blue-500">
-                            Sign In
-                        </Link>
-                    </li>
-                    <li>
-                        <Link href="/SignUp" className="text-white hover:text-blue-500">
-                            Sign Up
-                        </Link>
-                    </li>
-                    <li>
-                        <Tooltip title="Account settings">
+        <header className="bg-gradient-to-r from-blue-600 to-blue-800 text-white p-3 shadow-md">
+            <div className="max-w-7xl mx-auto flex justify-between items-center">
+                <div className="flex items-center space-x-4">
+                    <IconButton
+                        color="inherit"
+                        onClick={onMenuClick}
+                        aria-label="Toggle sidebar"
+                        className="hover:bg-blue-700"
+                    >
+                        <MenuIcon />
+                    </IconButton>
+
+                    <Link href="/" className="flex items-center">
+                        <Dashboard className="mr-2" />
+                        <h1 className="text-xl font-bold hidden sm:block">Admin Dashboard</h1>
+                    </Link>
+                </div>
+
+                <nav className="flex items-center space-x-4">
+                    <Tooltip title="Toggle Dark Mode">
+                        <IconButton
+                            color="inherit"
+                            onClick={onThemeToggle}
+                            className="hover:bg-blue-700"
+                        >
+                            {darkMode ? <LightMode /> : <DarkMode />}
+                        </IconButton>
+                    </Tooltip>
+
+                    <Tooltip title="Notifications">
+                        <IconButton color="inherit" className="hover:bg-blue-700">
+                            <Badge badgeContent={notificationCount} color="error">
+                                <Notifications />
+                            </Badge>
+                        </IconButton>
+                    </Tooltip>
+
+                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                        <Tooltip title="Account menu">
                             <IconButton
-                                onClick={handleClick}
+                                onClick={handleMenuClick}
                                 size="small"
-                                sx={{ ml: 2 }}
+                                color="inherit"
+                                className="hover:bg-blue-700"
                                 aria-controls={open ? 'account-menu' : undefined}
                                 aria-haspopup="true"
                                 aria-expanded={open ? 'true' : undefined}
                             >
                                 <Avatar
-                                    sx={{ width: 40, height: 40 }}
+                                    sx={{ width: 36, height: 36 }}
                                     src={profileImage || undefined}
+                                    alt="User profile"
                                 >
                                     {!profileImage && <Person />}
                                 </Avatar>
                             </IconButton>
                         </Tooltip>
-                        <Menu
-                            anchorEl={anchorEl}
-                            id="account-menu"
-                            open={open}
-                            onClose={handleClose}
-                            onClick={handleClose}
-                            slotProps={{
-                                paper: {
-                                    elevation: 0,
-                                    sx: {
-                                        overflow: 'visible',
-                                        filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
-                                        mt: 1.5,
-                                        '& .MuiAvatar-root': {
-                                            width: 32,
-                                            height: 32,
-                                            ml: -0.5,
-                                            mr: 1,
-                                        },
-                                        '&::before': {
-                                            content: '""',
-                                            display: 'block',
-                                            position: 'absolute',
-                                            top: 0,
-                                            right: 14,
-                                            width: 10,
-                                            height: 10,
-                                            bgcolor: 'background.paper',
-                                            transform: 'translateY(-50%) rotate(45deg)',
-                                            zIndex: 0,
-                                        },
-                                    },
+                    </Box>
+
+                    <Menu
+                        anchorEl={anchorEl}
+                        id="account-menu"
+                        open={open}
+                        onClose={handleClose}
+                        onClick={handleClose}
+                        PaperProps={{
+                            elevation: 3,
+                            sx: {
+                                width: 220,
+                                overflow: 'visible',
+                                mt: 1.5,
+                                '& .MuiAvatar-root': {
+                                    width: 32,
+                                    height: 32,
+                                    ml: 1,
+                                    mr: 1,
                                 },
-                            }}
-                            transformOrigin={{ horizontal: 'right', vertical: 'top' }}
-                            anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
-                        >
-                            <MenuItem onClick={handleViewProfile}>
-                                <ListItemIcon>
-                                    <Person fontSize="small" />
-                                </ListItemIcon>
-                                View Profile
-                            </MenuItem>
-                            <MenuItem onClick={handleSettings}>
-                                <ListItemIcon>
-                                    <Settings fontSize="small" />
-                                </ListItemIcon>
-                                Settings
-                            </MenuItem>
-                            <Divider />
-                            <MenuItem onClick={handleLogout}>
-                                <ListItemIcon>
-                                    <Logout fontSize="small" />
-                                </ListItemIcon>
-                                Logout
-                            </MenuItem>
-                        </Menu>
-                    </li>
-                </ul>
-            </nav>
+                                '&:before': {
+                                    content: '""',
+                                    display: 'block',
+                                    position: 'absolute',
+                                    top: 0,
+                                    right: 14,
+                                    width: 10,
+                                    height: 10,
+                                    bgcolor: 'background.paper',
+                                    transform: 'translateY(-50%) rotate(45deg)',
+                                    zIndex: 0,
+                                },
+                            },
+                        }}
+                        transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+                        anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+                    >
+                        <MenuItem onClick={() => handleNavigation('/Profile')}>
+                            <ListItemIcon>
+                                <Person fontSize="small" />
+                            </ListItemIcon>
+                            My Profile
+                        </MenuItem>
+                        <MenuItem onClick={() => handleNavigation('/Settings')}>
+                            <ListItemIcon>
+                                <Settings fontSize="small" />
+                            </ListItemIcon>
+                            Settings
+                        </MenuItem>
+                        <Divider />
+                        <MenuItem onClick={() => handleNavigation('/Login')}>
+                            <ListItemIcon>
+                                <Login fontSize="small" />
+                            </ListItemIcon>
+                            Login
+                        </MenuItem>
+                        <MenuItem onClick={() => handleNavigation('/SignUp')}>
+                            <ListItemIcon>
+                                <HowToReg fontSize="small" />
+                            </ListItemIcon>
+                            Register
+                        </MenuItem>
+                        <Divider />
+                        <MenuItem onClick={() => handleNavigation('/Login')}>
+                            <ListItemIcon>
+                                <Logout fontSize="small" color="error" />
+                            </ListItemIcon>
+                            <span className="text-red-500">Logout</span>
+                        </MenuItem>
+                    </Menu>
+                </nav>
+            </div>
         </header>
     );
 };
