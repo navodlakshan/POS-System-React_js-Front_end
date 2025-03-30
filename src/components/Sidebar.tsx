@@ -41,7 +41,6 @@ export const Sidebar = () => {
             dropdown: {
                 items: [
                     { name: "View Products", path: "/Products/ViewProducts" },
-                    { name: "Add Products", path: "/Products/AddProducts" },
                     { name: "Categories", path: "/Products/AddCategories" },
                     { name: "Attributes", path: "/Products/AddAttributes" }
                 ]
