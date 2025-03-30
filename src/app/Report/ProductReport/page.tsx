@@ -456,6 +456,15 @@ export default function ProductReportPage() {
                                 >
                                     Add Sale
                                 </Button>
+                                <Button
+                                    variant="contained"
+                                    color="primary"
+                                    size="small"
+                                    startIcon={<PrintIcon />}
+                                    onClick={handlePrintPreview}
+                                >
+                                    Print
+                                </Button>
                                 <FormControl variant="outlined" size="small">
                                     <InputLabel>Sort By</InputLabel>
                                     <Select
@@ -480,15 +489,6 @@ export default function ProductReportPage() {
                                         <MenuItem value="desc">Descending</MenuItem>
                                     </Select>
                                 </FormControl>
-                                <Button
-                                    variant="contained"
-                                    color="primary"
-                                    size="small"
-                                    startIcon={<PrintIcon />}
-                                    onClick={handlePrintPreview}
-                                >
-                                    Print
-                                </Button>
                             </div>
                         </div>
                         <TableContainer component={Paper}>
