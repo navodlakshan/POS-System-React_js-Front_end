@@ -81,7 +81,7 @@ export default function AttributeManagement() {
     };
 
     return (
-        <div className={`flex min-h-screen ${darkMode ? 'dark' : ''}`}>
+        <div className={`flex min-h-screen ${darkMode ? 'bg-gray-900' : 'bg-white'}`}>
             {isSidebarVisible && <Sidebar />}
             <div className="flex-1 transition-all">
                 <Header
