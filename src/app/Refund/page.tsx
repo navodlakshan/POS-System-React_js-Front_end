@@ -304,7 +304,7 @@ export default function RefundPage() {
     return (
         <div className={`flex min-h-screen ${darkMode ? 'bg-gray-900' : 'bg-white'}`}>
             {isSidebarVisible && <Sidebar />}
-            <div className="flex-1 bg-gradient-to-r from-gray-300 via-gray-400 to-gray-500">
+            <div className="flex-1 transition-all">
                 <Header
                     onMenuClick={toggleSidebar}
                     onThemeToggle={toggleDarkMode}

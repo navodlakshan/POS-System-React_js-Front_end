@@ -557,7 +557,7 @@ export default function FinancialReportPage() {
     return (
         <div className={`flex min-h-screen ${darkMode ? 'dark' : ''}`}>
             {isSidebarVisible && <Sidebar />}
-            <div className="flex-1 bg-gradient-to-r from-gray-300 via-gray-400 to-gray-500 dark:from-gray-700 dark:via-gray-800 dark:to-gray-900">
+            <div className="flex-1 transition-all">
                 <Header
                     onMenuClick={toggleSidebar}
                     onThemeToggle={toggleDarkMode}

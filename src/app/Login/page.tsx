@@ -165,18 +165,13 @@ export default function LoginPage() {
             <div className="hidden md:flex md:w-1/2 items-center justify-center p-8">
                 <div className="relative w-full h-full max-w-2xl">
                     <Image
-                        src="/Marketing.jpg"
+                        src="/Infinity.gif"
                         alt="POS System Dashboard"
                         width={800}
                         height={600}
                         className="rounded-xl shadow-xl object-cover"
                         priority
                     />
-                    <div className="absolute inset-0 bg-black bg-opacity-20 rounded-xl"></div>
-                    <div className="absolute bottom-8 left-8 right-8 text-white">
-                        <h2 className="text-3xl font-bold mb-2">ABC POS System</h2>
-                        <p className="text-lg opacity-90">Streamline your business operations with our powerful point-of-sale solution</p>
-                    </div>
                 </div>
             </div>
 

@@ -31,6 +31,8 @@ export default function Settings() {
 
     const toggleDarkMode = () => {
         setDarkMode(!darkMode);
+        // You might want to persist this preference in localStorage
+        localStorage.setItem('darkMode', JSON.stringify(!darkMode));
     };
 
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -135,27 +137,27 @@ export default function Settings() {
     };
 
     return (
-        <div className={"flex min-h-screen bg-gray-50 ${darkMode ? 'dark bg-gray-900' : 'bg-gray-50'}"}>
+        <div className={`flex min-h-screen ${darkMode ? 'dark bg-gray-900' : 'bg-gray-50'}`}>
             {isSidebarVisible && <Sidebar />}
-            <div className="flex-1 transition-all bg-gradient-to-r from-gray-300 via-gray-400 to-gray-500 dark:from-gray-700 dark:via-gray-800 dark:to-gray-900">
+            <div className="flex-1 transition-all">
                 <Header
                     onMenuClick={toggleSidebar}
                     onThemeToggle={toggleDarkMode}
                     darkMode={darkMode}
                     profileImage={profileImage}
                 />
-                <div className="p-4 md:p-6 text-gray-500 dark:text-gray-300">
-                    <h2 className={"text-2xl font-bold mb-4 text-gray-800 ${darkMode ? 'text-white' : 'text-gray-800'}"}>
+                <div className={`p-4 md:p-6 ${darkMode ? 'text-gray-300' : 'text-gray-500'}`}>
+                    <h2 className={`text-2xl font-bold mb-4 ${darkMode ? 'text-white' : 'text-gray-800'}`}>
                         Account Settings
                     </h2>
 
-                    <div className={"bg-white p-6 rounded-lg shadow-md w-full max-w-3xl ${darkMode ? 'bg-gray-800' : 'bg-white'}"}>
+                    <div className={`p-6 rounded-lg shadow-md w-full max-w-3xl ${darkMode ? 'bg-gray-800' : 'bg-white'}`}>
                         {/* Profile Section */}
                         <div className="mb-8">
                             <div className="flex items-center mb-6">
                                 <div className="relative group">
                                     <div
-                                        className={"w-20 h-20 rounded-full ${darkMode ? 'bg-gray-700' : 'bg-gray-200'} flex items-center justify-center overflow-hidden cursor-pointer relative"}
+                                        className={`w-20 h-20 rounded-full ${darkMode ? 'bg-gray-700' : 'bg-gray-200'} flex items-center justify-center overflow-hidden cursor-pointer relative`}
                                         onClick={triggerFileInput}
                                     >
                                         {profileImage ? (
@@ -188,10 +190,10 @@ export default function Settings() {
                                     />
                                 </div>
                                 <div className="ml-6">
-                                    <h3 className={"text-xl font-semibold ${darkMode ? 'text-white' : 'text-gray-800'}"}>
+                                    <h3 className={`text-xl font-semibold ${darkMode ? 'text-white' : 'text-gray-800'}`}>
                                         Profile Picture
                                     </h3>
-                                    <p className={"text-sm ${darkMode ? 'text-gray-400' : 'text-gray-500'}"}>
+                                    <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
                                         Click to upload new photo (max 2MB)
                                     </p>
                                 </div>
@@ -199,7 +201,7 @@ export default function Settings() {
 
                             <form onSubmit={handleProfileUpdate}>
                                 <div className="mb-4">
-                                    <label className={"block mb-2 font-medium ${darkMode ? 'text-gray-300' : 'text-gray-700'}"}>
+                                    <label className={`block mb-2 font-medium ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
                                         Username
                                     </label>
                                     <div className="flex gap-3">

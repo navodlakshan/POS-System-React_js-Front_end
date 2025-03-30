@@ -28,8 +28,7 @@ export default function Dashboard() {
     return (
         <div className={`flex min-h-screen ${darkMode ? 'dark' : ''}`}>
             {isSidebarVisible && <Sidebar />}
-
-            <div className="flex-1 bg-gray-100 dark:bg-gray-900 transition-colors duration-200">
+            <div className="flex-1 transition-all">
                 <Header
                     onMenuClick={toggleSidebar}
                     onThemeToggle={toggleDarkMode}
