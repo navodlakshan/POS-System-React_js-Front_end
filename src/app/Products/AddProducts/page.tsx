@@ -16,6 +16,7 @@ export default function AddProduct() {
     const [SKU, setSKU] = useState("");
     const [price, setPrice] = useState("");
     const [image, setImage] = useState<File | null>(null);
+    const [darkMode, setDarkMode] = useState(false);
 
     // State for validation errors
     const [errors, setErrors] = useState({
@@ -27,6 +28,10 @@ export default function AddProduct() {
 
     const toggleSidebar = () => {
         setIsSidebarVisible(!isSidebarVisible);
+    };
+
+    const toggleDarkMode = () => {
+        setDarkMode(!darkMode);
     };
 
     const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -105,27 +110,43 @@ export default function AddProduct() {
     };
 
     return (
-        <div className="flex min-h-screen">
+        <div className={`flex min-h-screen ${darkMode ? 'bg-gray-900' : 'bg-white'}`}>
             {isSidebarVisible && <Sidebar />}
-            <div className="flex-1 bg-gradient-to-r from-gray-300 via-gray-400 to-gray-500">
-                <Header onMenuClick={toggleSidebar} />
+            <div className="flex-1 bg-gradient-to-r from-gray-300 via-gray-400 to-gray-500 dark:from-gray-700 dark:via-gray-800 dark:to-gray-900">
+                <Header
+                    onMenuClick={toggleSidebar}
+                    onThemeToggle={toggleDarkMode}
+                    darkMode={darkMode}
+                    notificationCount={0}
+                />
                 <div className="p-4">
-                    <div className="flex items-center text-gray-500">
-                        <h2 className="text-2xl font-bold mb-4">Products</h2>
+                    <div className="flex items-center text-gray-500 dark:text-gray-300">
+                        <h2 className={"text-2xl font-bold mb-4 ${darkMode ? 'text-white' : 'text-gray-800'}"}>Products</h2>
                     </div>
-                    <div className="p-6 bg-background text-gray-500 rounded-lg shadow-md">
-                        <h2 className="text-xl font-bold mb-4">All Products</h2>
-                        <Paper sx={{ p: 4 }}>
-                            <Typography variant="h6" gutterBottom>
+                    <div className={"p-6 bg-background text-gray-500 dark:text-gray-300 rounded-lg shadow-md dark:bg-gray-800 ${darkMode ? 'bg-gray-800' : 'bg-white'}"}>
+                        <h2 className={"text-xl font-bold mb-4 ${darkMode ? 'text-white' : 'text-gray-800'}"}>All Products</h2>
+                        <Paper sx={{ p: 4, bgcolor: darkMode ? 'background.paper' : '' }}>
+                            <Typography variant="h6" gutterBottom color={darkMode ? 'text.primary' : 'text.primary'}>
                                 Add Product
                             </Typography>
-                            <Box component="form" noValidate autoComplete="off" onSubmit={handleSubmit} sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+                            <Box
+                                component="form"
+                                noValidate
+                                autoComplete="off"
+                                onSubmit={handleSubmit}
+                                sx={{
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    gap: 3,
+                                    color: darkMode ? 'text.primary' : 'text.primary'
+                                }}
+                            >
                                 <TextField
                                     label="Product Name"
                                     value={productName}
                                     onChange={(e) => {
                                         setProductName(e.target.value);
-                                        setErrors((prev) => ({ ...prev, productName: "" })); // Clear error on change
+                                        setErrors((prev) => ({ ...prev, productName: "" }));
                                     }}
                                     fullWidth
                                     error={!!errors.productName}
@@ -137,7 +158,7 @@ export default function AddProduct() {
                                         value={category}
                                         onChange={(e) => {
                                             setCategory(e.target.value as string);
-                                            setErrors((prev) => ({ ...prev, category: "" })); // Clear error on change
+                                            setErrors((prev) => ({ ...prev, category: "" }));
                                         }}
                                         label="Category"
                                     >
@@ -174,7 +195,7 @@ export default function AddProduct() {
                                     value={price}
                                     onChange={(e) => {
                                         setPrice(e.target.value);
-                                        setErrors((prev) => ({ ...prev, price: "" })); // Clear error on change
+                                        setErrors((prev) => ({ ...prev, price: "" }));
                                     }}
                                     fullWidth
                                     error={!!errors.price}
@@ -182,7 +203,7 @@ export default function AddProduct() {
                                 />
 
                                 <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                                    <Typography variant="body1">Image</Typography>
+                                    <Typography variant="body1" color={darkMode ? 'text.primary' : 'text.primary'}>Image</Typography>
                                     <Button
                                         variant="contained"
                                         component="label"
@@ -195,14 +216,19 @@ export default function AddProduct() {
                                         />
                                     </Button>
                                     {image && (
-                                        <Typography variant="body2">
+                                        <Typography variant="body2" color={darkMode ? 'text.primary' : 'text.primary'}>
                                             Selected file: {image.name}
                                         </Typography>
                                     )}
                                     {errors.image && <Typography variant="caption" color="error">{errors.image}</Typography>}
                                 </Box>
                                 <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2 }}>
-                                    <Button type="submit" variant="contained" color="primary" startIcon={<SaveIcon />}>
+                                    <Button
+                                        type="submit"
+                                        variant="contained"
+                                        color="primary"
+                                        startIcon={<SaveIcon />}
+                                    >
                                         Add
                                     </Button>
                                     <Button

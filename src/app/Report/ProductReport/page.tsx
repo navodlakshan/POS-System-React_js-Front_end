@@ -139,9 +139,14 @@ export default function ProductReportPage() {
         refunded: 0
     });
     const [errors, setErrors] = useState<Record<string, string>>({});
+    const [darkMode, setDarkMode] = useState(false);
 
     const toggleSidebar = () => {
         setIsSidebarVisible(!isSidebarVisible);
+    };
+
+    const toggleDarkMode = () => {
+        setDarkMode(!darkMode);
     };
 
     const handleChangePage = (event: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => {
@@ -413,15 +418,19 @@ export default function ProductReportPage() {
     const totalEntries = sortedProducts.length;
 
     return (
-        <div className="flex min-h-screen">
+        <div className={`flex min-h-screen ${darkMode ? 'dark' : ''}`}>
             {isSidebarVisible && <Sidebar />}
-            <div className="flex-1 bg-gradient-to-r from-gray-300 via-gray-400 to-gray-500">
-                <Header onMenuClick={toggleSidebar} />
+            <div className="flex-1 bg-gradient-to-r from-gray-300 via-gray-400 to-gray-500 dark:from-gray-700 dark:via-gray-800 dark:to-gray-900">
+                <Header
+                    onMenuClick={toggleSidebar}
+                    onThemeToggle={toggleDarkMode}
+                    darkMode={darkMode}
+                />
                 <div className="p-4">
-                    <div className="flex items-center text-gray-500">
+                    <div className="flex items-center text-gray-500 dark:text-gray-300">
                         <h2 className="text-2xl font-bold mb-4">Product Report</h2>
                     </div>
-                    <div className="p-6 bg-background text-gray-500 rounded-lg shadow-md">
+                    <div className="p-6 bg-background text-gray-500 dark:text-gray-300 rounded-lg shadow-md dark:bg-gray-800">
                         <h2 className="text-xl font-bold mb-4">All Products</h2>
                         <div className="flex justify-between mb-4">
                             <TextField
@@ -439,6 +448,14 @@ export default function ProductReportPage() {
                                 }}
                             />
                             <div className="flex gap-4">
+                                <Button
+                                    variant="contained"
+                                    color="primary"
+                                    size="small"
+                                    onClick={() => setIsAddProductModalOpen(true)}
+                                >
+                                    Add Sale
+                                </Button>
                                 <FormControl variant="outlined" size="small">
                                     <InputLabel>Sort By</InputLabel>
                                     <Select
@@ -513,25 +530,23 @@ export default function ProductReportPage() {
                                             <TableCell>{product.quantity}</TableCell>
                                             <TableCell>{product.currentQuantity}</TableCell>
                                             <TableCell>{product.refunded}</TableCell>
-                                            <TableCell>
-                                                <button
-                                                    className="bg-green-500 text-white px-3 py-1 rounded mr-2"
-                                                    onClick={() => setIsAddProductModalOpen(true)}
-                                                >
-                                                    Add
-                                                </button>
-                                                <button
-                                                    className="bg-blue-500 text-white px-3 py-1 rounded mr-2"
+                                            <TableCell sx={{ display: 'flex', gap: 1 }}>
+                                                <Button
+                                                    variant="contained"
+                                                    color= "primary"
+                                                    size="small"
                                                     onClick={() => handleEdit(product)}
                                                 >
                                                     Update
-                                                </button>
-                                                <button
-                                                    className="bg-red-500 text-white px-3 py-1 rounded"
+                                                </Button>
+                                                <Button
+                                                    variant="contained"
+                                                    color="error"
+                                                    size="small"
                                                     onClick={() => handleDelete(product)}
                                                 >
                                                     Delete
-                                                </button>
+                                                </Button>
                                             </TableCell>
                                         </TableRow>
                                     ))}
@@ -578,7 +593,17 @@ export default function ProductReportPage() {
 
             {/* Update Modal */}
             <Modal open={!!editProduct} onClose={() => setEditProduct(null)}>
-                <Box sx={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)", width: 400, backgroundColor: "background.paper", boxShadow: 24, p: 4 }}>
+                <Box sx={{
+                    position: "absolute",
+                    top: "50%",
+                    left: "50%",
+                    transform: "translate(-50%, -50%)",
+                    width: 400,
+                    backgroundColor: darkMode ? "background.paper" : "background.default",
+                    boxShadow: 24,
+                    p: 4,
+                    color: darkMode ? "text.primary" : "text.secondary"
+                }}>
                     <h2 className="text-xl font-bold mb-4">Edit Product</h2>
                     <TextField
                         label="Name"
@@ -664,10 +689,11 @@ export default function ProductReportPage() {
                     left: "50%",
                     transform: "translate(-50%, -50%)",
                     width: 500,
-                    backgroundColor: "background.paper",
+                    backgroundColor: darkMode ? "background.paper" : "background.default",
                     boxShadow: 24,
                     p: 4,
-                    borderRadius: 2
+                    borderRadius: 2,
+                    color: darkMode ? "text.primary" : "text.secondary"
                 }}>
                     <Typography variant="h6" component="h2" sx={{ mb: 3, fontWeight: 'bold' }}>
                         Add New Product
@@ -767,12 +793,13 @@ export default function ProductReportPage() {
                     transform: 'translate(-50%, -50%)',
                     width: '80%',
                     maxWidth: 800,
-                    bgcolor: 'background.paper',
+                    bgcolor: darkMode ? "background.paper" : "background.default",
                     boxShadow: 24,
                     p: 4,
                     borderRadius: 2,
                     maxHeight: '90vh',
-                    overflow: 'auto'
+                    overflow: 'auto',
+                    color: darkMode ? "text.primary" : "text.secondary"
                 }}>
                     <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
                         <Typography variant="h6" component="h2" sx={{ fontWeight: 'bold' }}>

@@ -108,9 +108,14 @@ export default function ViewProducts() {
     const [searchQuery, setSearchQuery] = useState("");
     const [sortBy, setSortBy] = useState("name");
     const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
+    const [darkMode, setDarkMode] = useState(false);
 
     const toggleSidebar = () => {
         setIsSidebarVisible(!isSidebarVisible);
+    };
+
+    const toggleDarkMode = () => {
+        setDarkMode(!darkMode);
     };
 
     const handleChangePage = (event: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => {
@@ -186,15 +191,19 @@ export default function ViewProducts() {
     const totalEntries = sortedProducts.length;
 
     return (
-        <div className="flex min-h-screen">
+        <div className={`flex min-h-screen ${darkMode ? 'dark' : ''}`}>
             {isSidebarVisible && <Sidebar />}
-            <div className="flex-1 bg-gradient-to-r from-gray-300 via-gray-400 to-gray-500">
-                <Header onMenuClick={toggleSidebar} />
+            <div className="flex-1 bg-gradient-to-r from-gray-300 via-gray-400 to-gray-500 dark:from-gray-700 dark:via-gray-800 dark:to-gray-900">
+                <Header
+                    onMenuClick={toggleSidebar}
+                    onThemeToggle={toggleDarkMode}
+                    darkMode={darkMode}
+                />
                 <div className="p-4">
-                    <div className="flex items-center text-gray-500">
+                    <div className="flex items-center text-gray-500 dark:text-gray-300">
                         <h2 className="text-2xl font-bold mb-4">Products</h2>
                     </div>
-                    <div className="p-6 bg-background text-gray-500 rounded-lg shadow-md">
+                    <div className="p-6 bg-background text-gray-500 dark:text-gray-300 rounded-lg shadow-md dark:bg-gray-800">
                         <h2 className="text-xl font-bold mb-4">All Products</h2>
                         <div className="flex justify-between mb-4">
                             <TextField
@@ -329,7 +338,17 @@ export default function ViewProducts() {
 
             {/* Update Modal */}
             <Modal open={!!editProduct} onClose={() => setEditProduct(null)}>
-                <Box sx={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)", width: 400, backgroundColor: "background.paper", boxShadow: 24, p: 4 }}>
+                <Box sx={{
+                    position: "absolute",
+                    top: "50%",
+                    left: "50%",
+                    transform: "translate(-50%, -50%)",
+                    width: 400,
+                    backgroundColor: darkMode ? "background.paper" : "background.default",
+                    boxShadow: 24,
+                    p: 4,
+                    color: darkMode ? "text.primary" : "text.secondary"
+                }}>
                     <h2 className="text-xl font-bold mb-4">Edit Product</h2>
                     <TextField
                         label="Name"

@@ -18,7 +18,20 @@ import FirstPageIcon from "@mui/icons-material/FirstPage";
 import KeyboardArrowLeft from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
 import LastPageIcon from "@mui/icons-material/LastPage";
-import { TableHead, Modal, TextField, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, InputAdornment, Typography, Grid } from "@mui/material";
+import {
+    TableHead,
+    Modal,
+    TextField,
+    Button,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogContentText,
+    DialogTitle,
+    InputAdornment,
+    Typography,
+    Grid
+} from "@mui/material";
 import Image from "next/image";
 import SearchIcon from "@mui/icons-material/Search";
 import { Select, MenuItem, FormControl, InputLabel } from "@mui/material";
@@ -26,10 +39,9 @@ import { SelectChangeEvent } from "@mui/material/Select";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import dayjs, { Dayjs } from "dayjs";
+import dayjs from "dayjs";
 import CancelIcon from "@mui/icons-material/Cancel";
 import SaveIcon from "@mui/icons-material/Save";
-import PrintIcon from "@mui/icons-material/Print";
 
 interface TablePaginationActionsProps {
     count: number;
@@ -99,9 +111,9 @@ interface Refund {
     price: string;
     date: string;
     reason: string;
-    Proceed_by: string;
-    Customer: string;
-    Notes: string;
+    proceed_by: string;
+    customer: string;
+    notes: string;
 }
 
 interface NewRefund {
@@ -110,13 +122,12 @@ interface NewRefund {
     price: string;
     date: string;
     reason: string;
-    Proceed_by: string;
-    Customer: string;
-    Notes: string;
+    proceed_by: string;
+    customer: string;
+    notes: string;
     image: string;
 }
 
-// Moved initialRefunds declaration before the component
 const initialRefunds: Refund[] = [
     {
         image: "https://via.placeholder.com/50",
@@ -125,9 +136,9 @@ const initialRefunds: Refund[] = [
         price: "Rs.70,000",
         date: "2024/03/07",
         reason: "Production Issues",
-        Proceed_by: "Pawan",
-        Customer: "Nimal",
-        Notes: "Successfull",
+        proceed_by: "Pawan",
+        customer: "Nimal",
+        notes: "Successfull",
     },
 ];
 
@@ -150,20 +161,26 @@ export default function RefundPage() {
         price: "",
         date: "",
         reason: "",
-        Proceed_by: "",
-        Customer: "",
-        Notes: ""
+        proceed_by: "",
+        customer: "",
+        notes: ""
     });
     const [errors, setErrors] = useState<Record<string, string>>({});
+    const [darkMode, setDarkMode] = useState(false);
 
     const toggleSidebar = () => {
         setIsSidebarVisible(!isSidebarVisible);
     };
 
+    const toggleDarkMode = () => {
+        setDarkMode(!darkMode);
+    };
+
     const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         if (event.target.files && event.target.files[0]) {
             setImage(event.target.files[0]);
-            setErrors((prev) => ({ ...prev, image: "" })); // Clear image error
+            setNewRefund(prev => ({ ...prev, image: URL.createObjectURL(event.target.files![0]) }));
+            setErrors(prev => ({ ...prev, image: "" }));
         }
     };
 
@@ -186,7 +203,7 @@ export default function RefundPage() {
 
     const handleSave = () => {
         if (editProduct) {
-            const updatedRefunds = refundsState.map((p) =>
+            const updatedRefunds = refundsState.map(p =>
                 p.sku === editProduct.sku ? editProduct : p
             );
             setRefundsState(updatedRefunds);
@@ -196,7 +213,7 @@ export default function RefundPage() {
 
     const handleConfirmDelete = () => {
         if (deleteProduct) {
-            const updatedRefunds = refundsState.filter((p) => p.sku !== deleteProduct.sku);
+            const updatedRefunds = refundsState.filter(p => p.sku !== deleteProduct.sku);
             setRefundsState(updatedRefunds);
             setDeleteProduct(null);
         }
@@ -222,8 +239,8 @@ export default function RefundPage() {
         if (!newRefund.price) newErrors.price = "Price is required";
         if (!newRefund.date) newErrors.date = "Date is required";
         if (!newRefund.reason) newErrors.reason = "Reason is required";
-        if (!newRefund.Proceed_by) newErrors.Proceed_by = "Processed by is required";
-        if (!newRefund.Customer) newErrors.Customer = "Customer name is required";
+        if (!newRefund.proceed_by) newErrors.proceed_by = "Processed by is required";
+        if (!newRefund.customer) newErrors.customer = "Customer name is required";
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
     };
@@ -232,15 +249,15 @@ export default function RefundPage() {
         if (!validateForm()) return;
 
         const newRefundEntry: Refund = {
-            image: "https://via.placeholder.com/50",
+            image: image ? URL.createObjectURL(image) : "https://via.placeholder.com/50",
             name: newRefund.name,
             sku: newRefund.sku,
             price: newRefund.price,
             date: newRefund.date,
             reason: newRefund.reason,
-            Proceed_by: newRefund.Proceed_by,
-            Customer: newRefund.Customer,
-            Notes: newRefund.Notes
+            proceed_by: newRefund.proceed_by,
+            customer: newRefund.customer,
+            notes: newRefund.notes
         };
 
         setRefundsState([...refundsState, newRefundEntry]);
@@ -252,13 +269,14 @@ export default function RefundPage() {
             price: "",
             date: "",
             reason: "",
-            Proceed_by: "",
-            Customer: "",
-            Notes: ""
+            proceed_by: "",
+            customer: "",
+            notes: ""
         });
+        setImage(null);
     };
 
-    const filteredRefunds = refundsState.filter((refund) =>
+    const filteredRefunds = refundsState.filter(refund =>
         refund.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         refund.sku.toLowerCase().includes(searchQuery.toLowerCase())
     );
@@ -279,23 +297,26 @@ export default function RefundPage() {
     });
 
     const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - sortedRefunds.length) : 0;
-
-    // Calculate the range of entries being shown
     const startEntry = page * rowsPerPage + 1;
     const endEntry = Math.min((page + 1) * rowsPerPage, sortedRefunds.length);
     const totalEntries = sortedRefunds.length;
 
     return (
-        <div className="flex min-h-screen">
+        <div className={`flex min-h-screen ${darkMode ? 'bg-gray-900' : 'bg-white'}`}>
             {isSidebarVisible && <Sidebar />}
             <div className="flex-1 bg-gradient-to-r from-gray-300 via-gray-400 to-gray-500">
-                <Header onMenuClick={toggleSidebar} />
+                <Header
+                    onMenuClick={toggleSidebar}
+                    onThemeToggle={toggleDarkMode}
+                    darkMode={darkMode}
+                    notificationCount={0}
+                />
                 <div className="p-4">
-                    <div className="flex items-center text-gray-500">
-                        <h2 className="text-2xl font-bold mb-4">Refund</h2>
+                    <div className="flex items-center text-gray-500 dark:text-gray-300">
+                        <h2 className={"text-2xl font-bold mb-4 ${darkMode ? 'text-white' : 'text-gray-800'}"}>Refund</h2>
                     </div>
-                    <div className="p-6 bg-background text-gray-500 rounded-lg shadow-md">
-                        <h2 className="text-xl font-bold mb-4">All Refunds</h2>
+                    <div className={"p-6 bg-background text-gray-500 dark:text-gray-300 rounded-lg shadow-md dark:bg-gray-800 ${darkMode ? 'bg-gray-800' : 'bg-white'}"}>
+                        <h2 className={"text-xl font-bold mb-4 ${darkMode ? 'text-white' : 'text-gray-800'}"}>All Refunds</h2>
                         <div className="flex justify-between mb-4">
                             <TextField
                                 placeholder="Search refunds..."
@@ -312,6 +333,14 @@ export default function RefundPage() {
                                 }}
                             />
                             <div className="flex gap-4">
+                                <Button
+                                    variant="contained"
+                                    color="primary"
+                                    size="small"
+                                    onClick={() => setIsAddRefundModalOpen(true)}
+                                >
+                                    Add Refund
+                                </Button>
                                 <FormControl variant="outlined" size="small">
                                     <InputLabel>Sort By</InputLabel>
                                     <Select
@@ -374,28 +403,27 @@ export default function RefundPage() {
                                             <TableCell>{refund.price}</TableCell>
                                             <TableCell>{refund.date}</TableCell>
                                             <TableCell>{refund.reason}</TableCell>
-                                            <TableCell>{refund.Proceed_by}</TableCell>
-                                            <TableCell>{refund.Customer}</TableCell>
-                                            <TableCell>{refund.Notes}</TableCell>
+                                            <TableCell>{refund.proceed_by}</TableCell>
+                                            <TableCell>{refund.customer}</TableCell>
+                                            <TableCell>{refund.notes}</TableCell>
                                             <TableCell>
-                                                <button
-                                                    className="bg-green-500 text-white px-3 py-1 rounded mr-2"
-                                                    onClick={() => setIsAddRefundModalOpen(true)}
-                                                >
-                                                    Add
-                                                </button>
-                                                <button
-                                                    className="bg-blue-500 text-white px-3 py-1 rounded mr-2"
+                                                <Button
+                                                    variant="contained"
+                                                    color="primary"
+                                                    size="small"
                                                     onClick={() => handleEdit(refund)}
+                                                    sx={{ mr: 1 }}
                                                 >
                                                     Update
-                                                </button>
-                                                <button
-                                                    className="bg-red-500 text-white px-3 py-1 rounded"
+                                                </Button>
+                                                <Button
+                                                    variant="contained"
+                                                    color="error"
+                                                    size="small"
                                                     onClick={() => handleDelete(refund)}
                                                 >
                                                     Delete
-                                                </button>
+                                                </Button>
                                             </TableCell>
                                         </TableRow>
                                     ))}
@@ -442,7 +470,17 @@ export default function RefundPage() {
 
             {/* Update Modal */}
             <Modal open={!!editProduct} onClose={() => setEditProduct(null)}>
-                <Box sx={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)", width: 400, backgroundColor: "background.paper", boxShadow: 24, p: 4 }}>
+                <Box sx={{
+                    position: "absolute",
+                    top: "50%",
+                    left: "50%",
+                    transform: "translate(-50%, -50%)",
+                    width: 400,
+                    backgroundColor: "background.paper",
+                    boxShadow: 24,
+                    p: 4,
+                    borderRadius: 2
+                }}>
                     <h2 className="text-xl font-bold mb-4">Edit Refund</h2>
                     <TextField
                         label="Name"
@@ -474,30 +512,44 @@ export default function RefundPage() {
                     />
                     <TextField
                         label="Proceed by"
-                        value={editProduct?.Proceed_by || ""}
-                        onChange={(e) => setEditProduct({ ...editProduct!, date: e.target.value })}
+                        value={editProduct?.proceed_by || ""}
+                        onChange={(e) => setEditProduct({ ...editProduct!, proceed_by: e.target.value })}
                         fullWidth
                         margin="normal"
                     />
                     <TextField
                         label="Customer"
-                        value={editProduct?.Customer || ""}
-                        onChange={(e) => setEditProduct({ ...editProduct!, date: e.target.value })}
+                        value={editProduct?.customer || ""}
+                        onChange={(e) => setEditProduct({ ...editProduct!, customer: e.target.value })}
                         fullWidth
                         margin="normal"
                     />
+                    <TextField
+                        label="Notes"
+                        value={editProduct?.notes || ""}
+                        onChange={(e) => setEditProduct({ ...editProduct!, notes: e.target.value })}
+                        fullWidth
+                        margin="normal"
+                        multiline
+                        rows={3}
+                    />
 
-                    <DialogActions>
-                    <Button variant="contained" color="primary" startIcon={<SaveIcon />} onClick={handleSave}>
-                        Save
-                    </Button>
-                    <Button
-                        variant="outlined"
-                        startIcon={<CancelIcon />}
-                        onClick={() => setEditProduct(null)}
-                    >
-                        Cancel
-                    </Button>
+                    <DialogActions sx={{ mt: 2 }}>
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            startIcon={<SaveIcon />}
+                            onClick={handleSave}
+                        >
+                            Save
+                        </Button>
+                        <Button
+                            variant="outlined"
+                            startIcon={<CancelIcon />}
+                            onClick={() => setEditProduct(null)}
+                        >
+                            Cancel
+                        </Button>
                     </DialogActions>
                 </Box>
             </Modal>
@@ -512,7 +564,7 @@ export default function RefundPage() {
                 </DialogContent>
                 <DialogActions>
                     <Button variant="outlined" onClick={() => setDeleteProduct(null)}>Cancel</Button>
-                    <Button  color="error" variant="contained" onClick={handleConfirmDelete}>
+                    <Button color="error" variant="contained" onClick={handleConfirmDelete}>
                         Delete
                     </Button>
                 </DialogActions>
@@ -520,7 +572,7 @@ export default function RefundPage() {
 
             {/* Add Refund Modal */}
             <Modal open={isAddRefundModalOpen} onClose={() => setIsAddRefundModalOpen(false)}>
-                <Grid sx={{
+                <Box sx={{
                     position: "absolute",
                     top: "50%",
                     left: "50%",
@@ -529,7 +581,8 @@ export default function RefundPage() {
                     backgroundColor: "background.paper",
                     boxShadow: 24,
                     p: 4,
-                    borderRadius: 2
+                    borderRadius: 2,
+                    outline: 'none'
                 }}>
                     <Typography variant="h6" component="h2" sx={{ mb: 3, fontWeight: 'bold' }}>
                         Process New Refund
@@ -580,23 +633,23 @@ export default function RefundPage() {
                         <Grid item xs={12} sm={6}>
                             <TextField
                                 label="Customer Name"
-                                value={newRefund.Customer}
-                                onChange={(e) => setNewRefund({ ...newRefund, Customer: e.target.value })}
+                                value={newRefund.customer}
+                                onChange={(e) => setNewRefund({ ...newRefund, customer: e.target.value })}
                                 fullWidth
                                 margin="normal"
-                                error={!!errors.Customer}
-                                helperText={errors.Customer}
+                                error={!!errors.customer}
+                                helperText={errors.customer}
                             />
                         </Grid>
                         <Grid item xs={12} sm={6}>
                             <TextField
                                 label="Processed By"
-                                value={newRefund.Proceed_by}
-                                onChange={(e) => setNewRefund({ ...newRefund, Proceed_by: e.target.value })}
+                                value={newRefund.proceed_by}
+                                onChange={(e) => setNewRefund({ ...newRefund, proceed_by: e.target.value })}
                                 fullWidth
                                 margin="normal"
-                                error={!!errors.Proceed_by}
-                                helperText={errors.Proceed_by}
+                                error={!!errors.proceed_by}
+                                helperText={errors.proceed_by}
                             />
                         </Grid>
 
@@ -606,7 +659,7 @@ export default function RefundPage() {
                                 <DatePicker
                                     label="Refund Date"
                                     value={newRefund.date ? dayjs(newRefund.date) : null}
-                                    onChange={(newValue: Dayjs | null) => {
+                                    onChange={(newValue) => {
                                         setNewRefund({ ...newRefund, date: newValue ? newValue.format('YYYY/MM/DD') : "" });
                                     }}
                                     sx={{ width: '100%', mt: 2 }}
@@ -642,28 +695,30 @@ export default function RefundPage() {
                         <Grid item xs={12}>
                             <TextField
                                 label="Notes"
-                                value={newRefund.Notes}
-                                onChange={(e) => setNewRefund({ ...newRefund, Notes: e.target.value })}
+                                value={newRefund.notes}
+                                onChange={(e) => setNewRefund({ ...newRefund, notes: e.target.value })}
                                 fullWidth
                                 margin="normal"
                                 multiline
                                 rows={3}
                             />
                         </Grid>
-                        <Grid item sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                        <Grid item xs={12}>
                             <Button
                                 variant="contained"
                                 component="label"
+                                fullWidth
                             >
                                 Upload Image
                                 <input
                                     type="file"
                                     hidden
+                                    accept="image/*"
                                     onChange={handleImageChange}
                                 />
                             </Button>
                             {image && (
-                                <Typography variant="body2">
+                                <Typography variant="body2" sx={{ mt: 1 }}>
                                     Selected file: {image.name}
                                 </Typography>
                             )}
@@ -687,7 +742,7 @@ export default function RefundPage() {
                             Cancel
                         </Button>
                     </Box>
-                </Grid>
+                </Box>
             </Modal>
         </div>
     );

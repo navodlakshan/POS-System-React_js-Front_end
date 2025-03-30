@@ -13,9 +13,14 @@ export default function CategoryManagement() {
         { id: "cat2", name: "Laptop 18" },
     ]);
     const [editingCategory, setEditingCategory] = useState<{ id: string; name: string } | null>(null);
+    const [darkMode, setDarkMode] = useState(false);
 
     const toggleSidebar = () => {
         setIsSidebarVisible(!isSidebarVisible);
+    };
+
+    const toggleDarkMode = () => {
+        setDarkMode(!darkMode);
     };
 
     const handleAddCategory = () => {
@@ -54,15 +59,19 @@ export default function CategoryManagement() {
     };
 
     return (
-        <div className="flex min-h-screen">
+        <div className={`flex min-h-screen ${darkMode ? 'dark' : ''}`}>
             {isSidebarVisible && <Sidebar />}
-            <div className="flex-1 bg-gradient-to-r from-gray-300 via-gray-400 to-gray-500">
-                <Header onMenuClick={toggleSidebar} />
+            <div className="flex-1 bg-gradient-to-r from-gray-300 via-gray-400 to-gray-500 dark:from-gray-700 dark:via-gray-800 dark:to-gray-900">
+                <Header
+                    onMenuClick={toggleSidebar}
+                    onThemeToggle={toggleDarkMode}
+                    darkMode={darkMode}
+                />
                 <div className="p-4">
-                    <div className="flex items-center text-gray-500">
+                    <div className="flex items-center text-gray-500 dark:text-gray-300">
                         <h2 className="text-2xl font-bold mb-4">Category Management</h2>
                     </div>
-                    <div className="p-6 bg-background text-gray-500 rounded-lg shadow-md">
+                    <div className="p-6 bg-background text-gray-500 dark:text-gray-300 rounded-lg shadow-md dark:bg-gray-800">
                         <Paper sx={{ p: 4, mb: 4 }}>
                             <Typography variant="h6" gutterBottom>
                                 {editingCategory ? "Edit Category" : "Add Category"}
@@ -78,9 +87,11 @@ export default function CategoryManagement() {
                                     <Button variant="contained" color="primary" onClick={handleAddCategory}>
                                         {editingCategory ? "Update" : "Add"}
                                     </Button>
-                                    <Button variant="outlined" color="secondary" onClick={handleCancelEdit}>
-                                        Cancel
-                                    </Button>
+                                    {editingCategory && (
+                                        <Button variant="outlined" color="secondary" onClick={handleCancelEdit}>
+                                            Cancel
+                                        </Button>
+                                    )}
                                 </Box>
                             </Box>
                         </Paper>
@@ -103,11 +114,11 @@ export default function CategoryManagement() {
                                             <TableRow key={category.id}>
                                                 <TableCell>{category.id}</TableCell>
                                                 <TableCell>{category.name}</TableCell>
-                                                <TableCell>
+                                                <TableCell sx={{ display: 'flex', gap: 1 }}>
                                                     <Button
                                                         variant="contained"
                                                         color="primary"
-                                                        sx={{ mr: 1 }}
+                                                        size="small"
                                                         onClick={() => handleEditCategory(category)}
                                                     >
                                                         Update
@@ -115,6 +126,7 @@ export default function CategoryManagement() {
                                                     <Button
                                                         variant="contained"
                                                         color="error"
+                                                        size="small"
                                                         onClick={() => handleDeleteCategory(category.id)}
                                                     >
                                                         Delete

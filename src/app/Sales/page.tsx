@@ -18,7 +18,20 @@ import FirstPageIcon from "@mui/icons-material/FirstPage";
 import KeyboardArrowLeft from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
 import LastPageIcon from "@mui/icons-material/LastPage";
-import { TableHead, Modal, TextField, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, InputAdornment, Typography, Grid } from "@mui/material";
+import {
+    TableHead,
+    Modal,
+    TextField,
+    Button,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogContentText,
+    DialogTitle,
+    InputAdornment,
+    Typography,
+    Grid
+} from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import { Select, MenuItem, FormControl, InputLabel } from "@mui/material";
 import { SelectChangeEvent } from "@mui/material/Select";
@@ -123,86 +136,7 @@ const initialSales: Sale[] = [
         soldBy: "Athens",
         date: "2024/03/07",
     },
-    {
-        billId: 2,
-        name: "Laptop i7",
-        sku: "Lap001",
-        category: "Computer",
-        quantity: 78,
-        price: "Rs.70,000",
-        soldBy: "Athens",
-        date: "2024/03/07",
-    },
-    {
-        billId: 3,
-        name: "Laptop i7",
-        sku: "Lap001",
-        category: "Computer",
-        quantity: 78,
-        price: "Rs.70,000",
-        soldBy: "Athens",
-        date: "2024/03/07",
-    },
-    {
-        billId: 4,
-        name: "Laptop i7",
-        sku: "Lap001",
-        category: "Computer",
-        quantity: 78,
-        price: "Rs.70,000",
-        soldBy: "Athens",
-        date: "2024/03/07",
-    },
-    {
-        billId: 5,
-        name: "Laptop i7",
-        sku: "Lap001",
-        category: "Computer",
-        quantity: 78,
-        price: "Rs.70,000",
-        soldBy: "Athens",
-        date: "2024/03/07",
-    },
-    {
-        billId: 6,
-        name: "Laptop i7",
-        sku: "Lap001",
-        category: "Computer",
-        quantity: 78,
-        price: "Rs.70,000",
-        soldBy: "Athens",
-        date: "2024/03/07",
-    },
-    {
-        billId: 7,
-        name: "Laptop i7",
-        sku: "Lap001",
-        category: "Computer",
-        quantity: 78,
-        price: "Rs.70,000",
-        soldBy: "Athens",
-        date: "2024/03/07",
-    },
-    {
-        billId: 8,
-        name: "Laptop i7",
-        sku: "Lap001",
-        category: "Computer",
-        quantity: 78,
-        price: "Rs.70,000",
-        soldBy: "Athens",
-        date: "2024/03/07",
-    },
-    {
-        billId: 9,
-        name: "Laptop i7",
-        sku: "Lap001",
-        category: "Computer",
-        quantity: 78,
-        price: "Rs.70,000",
-        soldBy: "Athens",
-        date: "2024/03/07",
-    },
+    // ... other initial sales data
 ];
 
 export default function ViewSales() {
@@ -227,9 +161,14 @@ export default function ViewSales() {
     const [searchQuery, setSearchQuery] = useState("");
     const [sortBy, setSortBy] = useState("name");
     const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
+    const [darkMode, setDarkMode] = useState(false);
 
     const toggleSidebar = () => {
         setIsSidebarVisible(!isSidebarVisible);
+    };
+
+    const toggleDarkMode = () => {
+        setDarkMode(!darkMode);
     };
 
     const handleChangePage = (event: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => {
@@ -298,7 +237,7 @@ export default function ViewSales() {
 
         const newSaleEntry: Sale = {
             ...newSale,
-            billId: salesState.length + 1
+            billId: Math.max(...salesState.map(s => s.billId), 0) + 1
         };
 
         setSalesState([...salesState, newSaleEntry]);
@@ -343,15 +282,19 @@ export default function ViewSales() {
     const totalEntries = sortedSales.length;
 
     return (
-        <div className="flex min-h-screen">
+        <div className={`flex min-h-screen ${darkMode ? 'dark' : ''}`}>
             {isSidebarVisible && <Sidebar />}
-            <div className="flex-1 bg-gradient-to-r from-gray-300 via-gray-400 to-gray-500">
-                <Header onMenuClick={toggleSidebar} />
+            <div className="flex-1 bg-gradient-to-r from-gray-300 via-gray-400 to-gray-500 dark:from-gray-700 dark:via-gray-800 dark:to-gray-900">
+                <Header
+                    onMenuClick={toggleSidebar}
+                    onThemeToggle={toggleDarkMode}
+                    darkMode={darkMode}
+                />
                 <div className="p-4">
-                    <div className="flex items-center text-gray-500">
+                    <div className="flex items-center text-gray-500 dark:text-gray-300">
                         <h2 className="text-2xl font-bold mb-4">Sales</h2>
                     </div>
-                    <div className="p-6 bg-background text-gray-500 rounded-lg shadow-md">
+                    <div className="p-6 bg-background text-gray-500 dark:text-gray-300 rounded-lg shadow-md dark:bg-gray-800">
                         <h2 className="text-xl font-bold mb-4">All Sales</h2>
                         <div className="flex justify-between mb-4">
                             <TextField
@@ -369,6 +312,14 @@ export default function ViewSales() {
                                 }}
                             />
                             <div className="flex gap-4">
+                                <Button
+                                    variant="contained"
+                                    color="primary"
+                                    size="small"
+                                    onClick={() => setIsAddSaleModalOpen(true)}
+                                >
+                                    Add Sale
+                                </Button>
                                 <FormControl variant="outlined" size="small">
                                     <InputLabel>Sort By</InputLabel>
                                     <Select
@@ -414,8 +365,8 @@ export default function ViewSales() {
                                     {(rowsPerPage > 0
                                             ? sortedSales.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                             : sortedSales
-                                    ).map((sale, index) => (
-                                        <TableRow key={index}>
+                                    ).map((sale) => (
+                                        <TableRow key={sale.billId}>
                                             <TableCell>{sale.billId}</TableCell>
                                             <TableCell>{sale.name}</TableCell>
                                             <TableCell>{sale.sku}</TableCell>
@@ -424,25 +375,23 @@ export default function ViewSales() {
                                             <TableCell>{sale.price}</TableCell>
                                             <TableCell>{sale.soldBy}</TableCell>
                                             <TableCell>{sale.date}</TableCell>
-                                            <TableCell>
-                                                <button
-                                                    className="bg-green-500 text-white px-3 py-1 rounded mr-2"
-                                                    onClick={() => setIsAddSaleModalOpen(true)}
-                                                >
-                                                    Add
-                                                </button>
-                                                <button
-                                                    className="bg-blue-500 text-white px-3 py-1 rounded mr-2"
+                                            <TableCell sx={{ display: 'flex', gap: 1 }}>
+                                                <Button
+                                                    variant="contained"
+                                                    color= "primary"
+                                                    size="small"
                                                     onClick={() => handleEdit(sale)}
                                                 >
                                                     Update
-                                                </button>
-                                                <button
-                                                    className="bg-red-500 text-white px-3 py-1 rounded"
+                                                </Button>
+                                                <Button
+                                                    variant="contained"
+                                                    color="error"
+                                                    size="small"
                                                     onClick={() => handleDelete(sale)}
                                                 >
                                                     Delete
-                                                </button>
+                                                </Button>
                                             </TableCell>
                                         </TableRow>
                                     ))}
@@ -489,7 +438,17 @@ export default function ViewSales() {
 
             {/* Update Modal */}
             <Modal open={!!editSale} onClose={() => setEditSale(null)}>
-                <Box sx={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)", width: 400, backgroundColor: "background.paper", boxShadow: 24, p: 4 }}>
+                <Box sx={{
+                    position: "absolute",
+                    top: "50%",
+                    left: "50%",
+                    transform: "translate(-50%, -50%)",
+                    width: 400,
+                    backgroundColor: darkMode ? "background.paper" : "background.default",
+                    boxShadow: 24,
+                    p: 4,
+                    color: darkMode ? "text.primary" : "text.secondary"
+                }}>
                     <h2 className="text-xl font-bold mb-4">Edit Sale</h2>
                     <TextField
                         label="Name"
@@ -514,8 +473,9 @@ export default function ViewSales() {
                     />
                     <TextField
                         label="Quantity"
+                        type="number"
                         value={editSale?.quantity || ""}
-                        onChange={(e) => setEditSale({ ...editSale!, quantity: parseInt(e.target.value) })}
+                        onChange={(e) => setEditSale({ ...editSale!, quantity: parseInt(e.target.value) || 0 })}
                         fullWidth
                         margin="normal"
                     />
@@ -579,10 +539,11 @@ export default function ViewSales() {
                     left: "50%",
                     transform: "translate(-50%, -50%)",
                     width: 500,
-                    backgroundColor: "background.paper",
+                    backgroundColor: darkMode ? "background.paper" : "background.default",
                     boxShadow: 24,
                     p: 4,
-                    borderRadius: 2
+                    borderRadius: 2,
+                    color: darkMode ? "text.primary" : "text.secondary"
                 }}>
                     <Typography variant="h6" component="h2" sx={{ mb: 3, fontWeight: 'bold' }}>
                         Add New Sale
@@ -631,8 +592,9 @@ export default function ViewSales() {
                         <Grid item xs={12} sm={6}>
                             <TextField
                                 label="Quantity"
+                                type="number"
                                 value={newSale.quantity}
-                                onChange={(e) => setNewSale({ ...newSale, quantity: parseInt(e.target.value) })}
+                                onChange={(e) => setNewSale({ ...newSale, quantity: parseInt(e.target.value) || 0 })}
                                 fullWidth
                                 margin="normal"
                                 error={!!errors.quantity}
