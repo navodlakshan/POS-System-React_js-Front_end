@@ -4,6 +4,7 @@ import React, { useState, useRef } from "react";
 import { Header } from "@/components/Header";
 import { Sidebar } from "@/components/Sidebar";
 import { Camera, Check, Edit, Lock, Trash2, User } from "lucide-react";
+import Image from "next/image";
 
 export default function Settings() {
     const [isSidebarVisible, setIsSidebarVisible] = useState(true);
@@ -21,21 +22,25 @@ export default function Settings() {
         confirmPassword: ""
     });
     const [isEditingUsername, setIsEditingUsername] = useState(false);
+    const [darkMode, setDarkMode] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     const toggleSidebar = () => {
         setIsSidebarVisible(!isSidebarVisible);
     };
 
+    const toggleDarkMode = () => {
+        setDarkMode(!darkMode);
+    };
+
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (file) {
-            // Validate image file
             if (!file.type.startsWith('image/')) {
                 alert('Please select an image file (JPEG, PNG)');
                 return;
             }
-            if (file.size > 2 * 1024 * 1024) { // 2MB limit
+            if (file.size > 2 * 1024 * 1024) {
                 alert('Image size should be less than 2MB');
                 return;
             }
@@ -108,7 +113,6 @@ export default function Settings() {
     const handleProfileUpdate = (e: React.FormEvent) => {
         e.preventDefault();
         if (validateForm('profile')) {
-            // Submit profile update
             console.log("Profile updated:", formData.username);
             setIsEditingUsername(false);
             alert("Profile updated successfully!");
@@ -118,7 +122,6 @@ export default function Settings() {
     const handlePasswordUpdate = (e: React.FormEvent) => {
         e.preventDefault();
         if (validateForm('password')) {
-            // Submit password change
             console.log("Password changed");
             setFormData(prev => ({ ...prev, currentPassword: "", newPassword: "", confirmPassword: "" }));
             alert("Password updated successfully!");
@@ -127,36 +130,44 @@ export default function Settings() {
 
     const handleAccountDelete = () => {
         if (confirm("Are you sure you want to delete your account? This action cannot be undone.")) {
-            // Delete account logic
             console.log("Account deletion requested");
         }
     };
 
     return (
-        <div className="flex min-h-screen bg-gray-50">
+        <div className={"flex min-h-screen bg-gray-50 ${darkMode ? 'dark bg-gray-900' : 'bg-gray-50'}"}>
             {isSidebarVisible && <Sidebar />}
-            <div className="flex-1 transition-all">
-                <Header onMenuClick={toggleSidebar} profileImage={profileImage} />
-                <div className="p-4 md:p-6">
-                    <h2 className="text-2xl font-bold mb-6 text-gray-800">Account Settings</h2>
+            <div className="flex-1 transition-all bg-gradient-to-r from-gray-300 via-gray-400 to-gray-500 dark:from-gray-700 dark:via-gray-800 dark:to-gray-900">
+                <Header
+                    onMenuClick={toggleSidebar}
+                    onThemeToggle={toggleDarkMode}
+                    darkMode={darkMode}
+                    profileImage={profileImage}
+                />
+                <div className="p-4 md:p-6 text-gray-500 dark:text-gray-300">
+                    <h2 className={"text-2xl font-bold mb-4 text-gray-800 ${darkMode ? 'text-white' : 'text-gray-800'}"}>
+                        Account Settings
+                    </h2>
 
-                    <div className="bg-white p-6 rounded-lg shadow-md w-full max-w-3xl">
+                    <div className={"bg-white p-6 rounded-lg shadow-md w-full max-w-3xl ${darkMode ? 'bg-gray-800' : 'bg-white'}"}>
                         {/* Profile Section */}
                         <div className="mb-8">
                             <div className="flex items-center mb-6">
                                 <div className="relative group">
                                     <div
-                                        className="w-20 h-20 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden cursor-pointer relative"
+                                        className={"w-20 h-20 rounded-full ${darkMode ? 'bg-gray-700' : 'bg-gray-200'} flex items-center justify-center overflow-hidden cursor-pointer relative"}
                                         onClick={triggerFileInput}
                                     >
                                         {profileImage ? (
-                                            <img
+                                            <Image
                                                 src={profileImage}
                                                 alt="Profile"
+                                                width={80}
+                                                height={80}
                                                 className="w-full h-full object-cover"
                                             />
                                         ) : (
-                                            <User className="w-10 h-10 text-gray-500" />
+                                            <User className={`w-10 h-10 ${darkMode ? 'text-gray-400' : 'text-gray-500'}`} />
                                         )}
                                         <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 flex items-center justify-center transition-all">
                                             <Camera className="text-white opacity-0 group-hover:opacity-100 transition-opacity" />
@@ -177,14 +188,20 @@ export default function Settings() {
                                     />
                                 </div>
                                 <div className="ml-6">
-                                    <h3 className="text-xl font-semibold">Profile Picture</h3>
-                                    <p className="text-sm text-gray-500">Click to upload new photo (max 2MB)</p>
+                                    <h3 className={"text-xl font-semibold ${darkMode ? 'text-white' : 'text-gray-800'}"}>
+                                        Profile Picture
+                                    </h3>
+                                    <p className={"text-sm ${darkMode ? 'text-gray-400' : 'text-gray-500'}"}>
+                                        Click to upload new photo (max 2MB)
+                                    </p>
                                 </div>
                             </div>
 
                             <form onSubmit={handleProfileUpdate}>
                                 <div className="mb-4">
-                                    <label className="block text-gray-700 mb-2 font-medium">Username</label>
+                                    <label className={"block mb-2 font-medium ${darkMode ? 'text-gray-300' : 'text-gray-700'}"}>
+                                        Username
+                                    </label>
                                     <div className="flex gap-3">
                                         <div className="flex-1">
                                             <input
@@ -193,7 +210,7 @@ export default function Settings() {
                                                 value={formData.username}
                                                 onChange={handleInputChange}
                                                 disabled={!isEditingUsername}
-                                                className={`w-full p-3 border rounded-lg ${errors.username ? 'border-red-500' : 'border-gray-300'} ${!isEditingUsername ? 'bg-gray-100' : 'bg-white'}`}
+                                                className={`w-full p-3 border rounded-lg ${errors.username ? 'border-red-500' : 'border-gray-300'} ${!isEditingUsername ? (darkMode ? 'bg-gray-700 text-gray-300' : 'bg-gray-100') : (darkMode ? 'bg-gray-700 text-white' : 'bg-white')}`}
                                             />
                                             {errors.username && <p className="text-red-500 text-sm mt-1">{errors.username}</p>}
                                         </div>
@@ -221,8 +238,8 @@ export default function Settings() {
                         </div>
 
                         {/* Password Section */}
-                        <div className="border-t pt-6">
-                            <h3 className="text-xl font-semibold mb-4 flex items-center gap-2">
+                        <div className={`border-t ${darkMode ? 'border-gray-700' : 'border-gray-200'} pt-6`}>
+                            <h3 className={`text-xl font-semibold mb-4 flex items-center gap-2 ${darkMode ? 'text-white' : 'text-gray-800'}`}>
                                 <Lock className="w-5 h-5" />
                                 Change Password
                             </h3>
@@ -230,35 +247,41 @@ export default function Settings() {
                             <form onSubmit={handlePasswordUpdate}>
                                 <div className="space-y-4 mb-6">
                                     <div>
-                                        <label className="block text-gray-700 mb-2 font-medium">Current Password</label>
+                                        <label className={`block mb-2 font-medium ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                                            Current Password
+                                        </label>
                                         <input
                                             type="password"
                                             name="currentPassword"
                                             value={formData.currentPassword}
                                             onChange={handleInputChange}
-                                            className={`w-full p-3 border rounded-lg ${errors.currentPassword ? 'border-red-500' : 'border-gray-300'}`}
+                                            className={`w-full p-3 border rounded-lg ${errors.currentPassword ? 'border-red-500' : 'border-gray-300'} ${darkMode ? 'bg-gray-700 text-white' : 'bg-white'}`}
                                         />
                                         {errors.currentPassword && <p className="text-red-500 text-sm mt-1">{errors.currentPassword}</p>}
                                     </div>
                                     <div>
-                                        <label className="block text-gray-700 mb-2 font-medium">New Password</label>
+                                        <label className={`block mb-2 font-medium ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                                            New Password
+                                        </label>
                                         <input
                                             type="password"
                                             name="newPassword"
                                             value={formData.newPassword}
                                             onChange={handleInputChange}
-                                            className={`w-full p-3 border rounded-lg ${errors.newPassword ? 'border-red-500' : 'border-gray-300'}`}
+                                            className={`w-full p-3 border rounded-lg ${errors.newPassword ? 'border-red-500' : 'border-gray-300'} ${darkMode ? 'bg-gray-700 text-white' : 'bg-white'}`}
                                         />
                                         {errors.newPassword && <p className="text-red-500 text-sm mt-1">{errors.newPassword}</p>}
                                     </div>
                                     <div>
-                                        <label className="block text-gray-700 mb-2 font-medium">Confirm New Password</label>
+                                        <label className={`block mb-2 font-medium ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                                            Confirm New Password
+                                        </label>
                                         <input
                                             type="password"
                                             name="confirmPassword"
                                             value={formData.confirmPassword}
                                             onChange={handleInputChange}
-                                            className={`w-full p-3 border rounded-lg ${errors.confirmPassword ? 'border-red-500' : 'border-gray-300'}`}
+                                            className={`w-full p-3 border rounded-lg ${errors.confirmPassword ? 'border-red-500' : 'border-gray-300'} ${darkMode ? 'bg-gray-700 text-white' : 'bg-white'}`}
                                         />
                                         {errors.confirmPassword && <p className="text-red-500 text-sm mt-1">{errors.confirmPassword}</p>}
                                     </div>
