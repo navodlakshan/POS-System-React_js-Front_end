@@ -3,16 +3,33 @@
 import React, { useState } from "react";
 import { Header } from "@/components/Header";
 import { Sidebar } from "@/components/Sidebar";
-import { Box, TextField, Button, Select, MenuItem, FormControl, InputLabel, Typography, Paper } from "@mui/material";
+import {
+    Box,
+    TextField,
+    Button,
+    Select,
+    MenuItem,
+    FormControl,
+    InputLabel,
+    Typography,
+    Paper,
+    Divider,
+    Chip,
+    Avatar,
+    InputAdornment
+} from "@mui/material";
 import CancelIcon from "@mui/icons-material/Cancel";
 import SaveIcon from "@mui/icons-material/Save";
+import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+import ImageIcon from "@mui/icons-material/Image";
 
 export default function AddProduct() {
     const [isSidebarVisible, setIsSidebarVisible] = useState(true);
     const [productName, setProductName] = useState("");
     const [category, setCategory] = useState("");
     const [productType, setProductType] = useState("Single Product");
-    const [Color, setColor] = useState("");
+    const [variations, setVariations] = useState<string[]>([]);
+    const [currentVariation, setCurrentVariation] = useState("");
     const [SKU, setSKU] = useState("");
     const [price, setPrice] = useState("");
     const [image, setImage] = useState<File | null>(null);
@@ -37,8 +54,19 @@ export default function AddProduct() {
     const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         if (event.target.files && event.target.files[0]) {
             setImage(event.target.files[0]);
-            setErrors((prev) => ({ ...prev, image: "" })); // Clear image error
+            setErrors(prev => ({ ...prev, image: "" }));
         }
+    };
+
+    const addVariation = () => {
+        if (currentVariation && !variations.includes(currentVariation)) {
+            setVariations([...variations, currentVariation]);
+            setCurrentVariation("");
+        }
+    };
+
+    const removeVariation = (index: number) => {
+        setVariations(variations.filter((_, i) => i !== index));
     };
 
     const validateForm = () => {
@@ -50,28 +78,27 @@ export default function AddProduct() {
             image: "",
         };
 
-        // Validate Product Name
         if (!productName.trim()) {
             newErrors.productName = "Product Name is required";
             isValid = false;
         }
 
-        // Validate Category
         if (!category) {
             newErrors.category = "Category is required";
             isValid = false;
         }
 
-        // Validate Price
         if (!price.trim()) {
             newErrors.price = "Price is required";
             isValid = false;
-        } else if (isNaN(Number(price)) || Number(price) <= 0) {
-            newErrors.price = "Price must be a valid number greater than 0";
+        } else if (isNaN(Number(price))) {
+            newErrors.price = "Price must be a number";
+            isValid = false;
+        } else if (Number(price) <= 0) {
+            newErrors.price = "Price must be greater than 0";
             isValid = false;
         }
 
-        // Validate Image
         if (!image) {
             newErrors.image = "Image is required";
             isValid = false;
@@ -84,20 +111,27 @@ export default function AddProduct() {
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         if (validateForm()) {
-            // Form is valid, proceed with submission
-            console.log("Form submitted successfully!");
-            // Add your form submission logic here
-        } else {
-            console.log("Form has errors. Please fix them.");
+            // Form submission logic would go here
+            console.log({
+                productName,
+                category,
+                productType,
+                variations,
+                SKU,
+                price: Number(price),
+                image
+            });
+            alert("Product added successfully!");
+            handleCancel();
         }
     };
 
     const handleCancel = () => {
-        // Reset form fields
         setProductName("");
         setCategory("");
         setProductType("Single Product");
-        setColor("");
+        setVariations([]);
+        setCurrentVariation("");
         setSKU("");
         setPrice("");
         setImage(null);
@@ -110,64 +144,109 @@ export default function AddProduct() {
     };
 
     return (
-        <div className={`flex min-h-screen ${darkMode ? 'bg-gray-900' : 'bg-white'}`}>
+        <Box sx={{ display: 'flex', minHeight: '100vh', bgcolor: darkMode ? 'background.default' : 'background.paper' }}>
             {isSidebarVisible && <Sidebar />}
-            <div className="flex-1 bg-gradient-to-r from-gray-300 via-gray-400 to-gray-500 dark:from-gray-700 dark:via-gray-800 dark:to-gray-900">
+            <Box sx={{
+                flex: 1,
+                display: 'flex',
+                flexDirection: 'column',
+                bgcolor: darkMode ? 'background.default' : 'background.paper'
+            }}>
                 <Header
                     onMenuClick={toggleSidebar}
                     onThemeToggle={toggleDarkMode}
                     darkMode={darkMode}
                     notificationCount={0}
                 />
-                <div className="p-4">
-                    <div className="flex items-center text-gray-500 dark:text-gray-300">
-                        <h2 className={"text-2xl font-bold mb-4 ${darkMode ? 'text-white' : 'text-gray-800'}"}>Products</h2>
-                    </div>
-                    <div className={"p-6 bg-background text-gray-500 dark:text-gray-300 rounded-lg shadow-md dark:bg-gray-800 ${darkMode ? 'bg-gray-800' : 'bg-white'}"}>
-                        <h2 className={"text-xl font-bold mb-4 ${darkMode ? 'text-white' : 'text-gray-800'}"}>All Products</h2>
-                        <Paper sx={{ p: 4, bgcolor: darkMode ? 'background.paper' : '' }}>
-                            <Typography variant="h6" gutterBottom color={darkMode ? 'text.primary' : 'text.primary'}>
-                                Add Product
-                            </Typography>
-                            <Box
-                                component="form"
-                                noValidate
-                                autoComplete="off"
-                                onSubmit={handleSubmit}
-                                sx={{
-                                    display: 'flex',
-                                    flexDirection: 'column',
-                                    gap: 3,
-                                    color: darkMode ? 'text.primary' : 'text.primary'
-                                }}
-                            >
+                <Box sx={{ p: 3, flex: 1 }}>
+                    <Typography
+                        variant="h4"
+                        component="h1"
+                        gutterBottom
+                        sx={{
+                            color: darkMode ? 'text.primary' : 'text.primary',
+                            fontWeight: 'bold',
+                            mb: 4
+                        }}
+                    >
+                        Add New Product
+                    </Typography>
+
+                    <Paper
+                        elevation={3}
+                        sx={{
+                            p: 4,
+                            bgcolor: darkMode ? 'background.paper' : 'background.paper',
+                            borderRadius: 2
+                        }}
+                    >
+                        <Typography
+                            variant="h6"
+                            gutterBottom
+                            sx={{
+                                color: darkMode ? 'text.primary' : 'text.primary',
+                                mb: 3,
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: 1
+                            }}
+                        >
+                            Product Information
+                        </Typography>
+
+                        <Divider sx={{ mb: 3 }} />
+
+                        <Box
+                            component="form"
+                            noValidate
+                            autoComplete="off"
+                            onSubmit={handleSubmit}
+                            sx={{
+                                display: 'flex',
+                                flexDirection: 'column',
+                                gap: 3
+                            }}
+                        >
+                            <Box sx={{ display: 'flex', gap: 3 }}>
                                 <TextField
                                     label="Product Name"
                                     value={productName}
                                     onChange={(e) => {
                                         setProductName(e.target.value);
-                                        setErrors((prev) => ({ ...prev, productName: "" }));
+                                        setErrors(prev => ({ ...prev, productName: "" }));
                                     }}
                                     fullWidth
                                     error={!!errors.productName}
                                     helperText={errors.productName}
+                                    sx={{ flex: 1 }}
                                 />
-                                <FormControl fullWidth error={!!errors.category}>
+
+                                <FormControl fullWidth error={!!errors.category} sx={{ flex: 1 }}>
                                     <InputLabel>Category</InputLabel>
                                     <Select
                                         value={category}
                                         onChange={(e) => {
                                             setCategory(e.target.value as string);
-                                            setErrors((prev) => ({ ...prev, category: "" }));
+                                            setErrors(prev => ({ ...prev, category: "" }));
                                         }}
                                         label="Category"
                                     >
-                                        <MenuItem value="Category 01">Computer</MenuItem>
-                                        <MenuItem value="Category 02">Mobile Phone</MenuItem>
+                                        <MenuItem value="Computer">Computer</MenuItem>
+                                        <MenuItem value="Mobile Phone">Mobile Phone</MenuItem>
+                                        <MenuItem value="Electronics">Electronics</MenuItem>
+                                        <MenuItem value="Accessories">Accessories</MenuItem>
+                                        <MenuItem value="Home Appliances">Home Appliances</MenuItem>
                                     </Select>
-                                    {errors.category && <Typography variant="caption" color="error">{errors.category}</Typography>}
+                                    {errors.category && (
+                                        <Typography variant="caption" color="error" sx={{ mt: 1 }}>
+                                            {errors.category}
+                                        </Typography>
+                                    )}
                                 </FormControl>
-                                <FormControl fullWidth>
+                            </Box>
+
+                            <Box sx={{ display: 'flex', gap: 3 }}>
+                                <FormControl fullWidth sx={{ flex: 1 }}>
                                     <InputLabel>Product Type</InputLabel>
                                     <Select
                                         value={productType}
@@ -176,74 +255,138 @@ export default function AddProduct() {
                                     >
                                         <MenuItem value="Single Product">Single Product</MenuItem>
                                         <MenuItem value="Variable Product">Variable Product</MenuItem>
+                                        <MenuItem value="Bundle Product">Bundle Product</MenuItem>
                                     </Select>
                                 </FormControl>
-                                <TextField
-                                    label="Variations"
-                                    value={Color}
-                                    onChange={(e) => setColor(e.target.value)}
-                                    fullWidth
-                                />
+
                                 <TextField
                                     label="SKU"
                                     value={SKU}
                                     onChange={(e) => setSKU(e.target.value)}
                                     fullWidth
+                                    sx={{ flex: 1 }}
                                 />
-                                <TextField
-                                    label="Price"
-                                    value={price}
-                                    onChange={(e) => {
-                                        setPrice(e.target.value);
-                                        setErrors((prev) => ({ ...prev, price: "" }));
-                                    }}
-                                    fullWidth
-                                    error={!!errors.price}
-                                    helperText={errors.price}
-                                />
-
-                                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                                    <Typography variant="body1" color={darkMode ? 'text.primary' : 'text.primary'}>Image</Typography>
-                                    <Button
-                                        variant="contained"
-                                        component="label"
-                                    >
-                                        Upload Image
-                                        <input
-                                            type="file"
-                                            hidden
-                                            onChange={handleImageChange}
-                                        />
-                                    </Button>
-                                    {image && (
-                                        <Typography variant="body2" color={darkMode ? 'text.primary' : 'text.primary'}>
-                                            Selected file: {image.name}
-                                        </Typography>
-                                    )}
-                                    {errors.image && <Typography variant="caption" color="error">{errors.image}</Typography>}
-                                </Box>
-                                <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2 }}>
-                                    <Button
-                                        type="submit"
-                                        variant="contained"
-                                        color="primary"
-                                        startIcon={<SaveIcon />}
-                                    >
-                                        Add
-                                    </Button>
-                                    <Button
-                                        variant="outlined"
-                                        startIcon={<CancelIcon />}
-                                        onClick={handleCancel}
-                                    >
-                                        Cancel
-                                    </Button>
-                                </Box>
                             </Box>
-                        </Paper>
-                    </div>
-                </div>
-            </div>
-        </div>
+
+                            {productType === "Variable Product" && (
+                                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                                    <Box sx={{ display: 'flex', gap: 2 }}>
+                                        <TextField
+                                            label="Add Variation"
+                                            value={currentVariation}
+                                            onChange={(e) => setCurrentVariation(e.target.value)}
+                                            fullWidth
+                                        />
+                                        <Button
+                                            variant="outlined"
+                                            onClick={addVariation}
+                                            disabled={!currentVariation}
+                                        >
+                                            Add
+                                        </Button>
+                                    </Box>
+                                    {variations.length > 0 && (
+                                        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+                                            {variations.map((variation, index) => (
+                                                <Chip
+                                                    key={index}
+                                                    label={variation}
+                                                    onDelete={() => removeVariation(index)}
+                                                    color="primary"
+                                                    variant="outlined"
+                                                />
+                                            ))}
+                                        </Box>
+                                    )}
+                                </Box>
+                            )}
+
+                            <TextField
+                                label="Price"
+                                value={price}
+                                onChange={(e) => {
+                                    setPrice(e.target.value);
+                                    setErrors(prev => ({ ...prev, price: "" }));
+                                }}
+                                fullWidth
+                                error={!!errors.price}
+                                helperText={errors.price}
+                                InputProps={{
+                                    startAdornment: (
+                                        <InputAdornment position="start">$</InputAdornment>
+                                    ),
+                                }}
+                            />
+
+                            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                                <Typography variant="body1" sx={{ fontWeight: 500 }}>
+                                    Product Image
+                                </Typography>
+                                <Button
+                                    variant="outlined"
+                                    component="label"
+                                    startIcon={<CloudUploadIcon />}
+                                    sx={{
+                                        alignSelf: 'flex-start',
+                                        py: 1.5,
+                                        px: 3
+                                    }}
+                                >
+                                    Upload Image
+                                    <input
+                                        type="file"
+                                        hidden
+                                        accept="image/*"
+                                        onChange={handleImageChange}
+                                    />
+                                </Button>
+                                {image && (
+                                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mt: 1 }}>
+                                        <Avatar variant="rounded" sx={{ bgcolor: 'primary.main' }}>
+                                            <ImageIcon />
+                                        </Avatar>
+                                        <Typography variant="body2">
+                                            {image.name}
+                                        </Typography>
+                                    </Box>
+                                )}
+                                {errors.image && (
+                                    <Typography variant="caption" color="error">
+                                        {errors.image}
+                                    </Typography>
+                                )}
+                            </Box>
+
+                            <Divider sx={{ my: 2 }} />
+
+                            <Box sx={{
+                                display: 'flex',
+                                justifyContent: 'flex-end',
+                                gap: 2,
+                                pt: 2
+                            }}>
+                                <Button
+                                    variant="outlined"
+                                    startIcon={<CancelIcon />}
+                                    onClick={handleCancel}
+                                    sx={{ px: 4 }}
+                                >
+                                    Cancel
+                                </Button>
+                                <Button
+                                    type="submit"
+                                    variant="contained"
+                                    color="primary"
+                                    startIcon={<SaveIcon />}
+                                    sx={{ px: 4 }}
+                                >
+                                    Save Product
+                                </Button>
+                            </Box>
+                        </Box>
+                    </Paper>
+                </Box>
+            </Box>
+        </Box>
     );
 }
