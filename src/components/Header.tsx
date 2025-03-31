@@ -61,7 +61,11 @@ export const Header = ({
     };
 
     return (
-        <header className="bg-gradient-to-r from-blue-600 to-blue-800 text-white p-3 shadow-md">
+        <header
+            className="bg-gradient-to-r from-blue-600 to-blue-800 text-white p-3 shadow-md sticky top-0 z-10"
+            role="banner"
+        >
+        {/*<header className="bg-gradient-to-r from-blue-600 to-blue-800 text-white p-3 shadow-md sticky top-0">*/}
             <div className="max-w-7xl mx-auto flex justify-between items-center">
                 <div className="flex items-center space-x-4">
                     <IconButton

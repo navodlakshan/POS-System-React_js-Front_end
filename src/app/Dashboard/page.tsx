@@ -26,7 +26,7 @@ export default function Dashboard() {
     };
 
     return (
-        <div className={`flex min-h-screen ${darkMode ? 'dark' : ''}`}>
+        <div className={`flex min-h-screen ${darkMode ? 'dark bg-gray-900' : 'bg-gray-50'}`}>
             {isSidebarVisible && <Sidebar />}
             <div className="flex-1 transition-all">
                 <Header
@@ -53,7 +53,7 @@ export default function Dashboard() {
                             <SalesChart />
                         </div>
 
-                        <div className="lg:col-span-1">
+                        <div className={"lg:col-span-1 ${darkMode ? 'dark bg-gray-900' : 'bg-gray-50'}"}>
                             <h2 className="text-xl font-semibold mb-4 text-gray-800 dark:text-white">
                                 Recent Activity
                             </h2>
