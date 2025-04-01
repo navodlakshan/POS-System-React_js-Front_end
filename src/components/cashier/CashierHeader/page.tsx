@@ -1,34 +1,19 @@
-// src/components/Header.tsx
 "use client";
 
 import Link from 'next/link';
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import {
-    Avatar,
-    Menu,
-    MenuItem,
-    ListItemIcon,
-    Divider,
-    IconButton,
-    Tooltip,
-    Badge,
-    Box
+    Avatar, Menu, MenuItem, ListItemIcon, Divider,
+    IconButton, Tooltip, Badge, Box
 } from '@mui/material';
 import {
-    Settings,
-    Logout,
-    Person,
-    Menu as MenuIcon,
-    Notifications,
-    Dashboard,
-    Login,
-    HowToReg,
-    LightMode,
-    DarkMode
+    Settings, Logout, Person, Menu as MenuIcon,
+    Notifications, Dashboard as DashboardIcon,
+    Login, HowToReg, LightMode, DarkMode
 } from '@mui/icons-material';
 
-interface HeaderProps {
+interface CashierHeaderProps {
     onMenuClick: () => void;
     onThemeToggle: () => void;
     darkMode: boolean;
@@ -36,13 +21,13 @@ interface HeaderProps {
     notificationCount?: number;
 }
 
-export const Header = ({
-                           onMenuClick,
-                           onThemeToggle,
-                           darkMode,
-                           profileImage,
-                           notificationCount = 0
-                       }: HeaderProps) => {
+export default function CashierHeader({
+                                          onMenuClick,
+                                          onThemeToggle,
+                                          darkMode,
+                                          profileImage,
+                                          notificationCount = 0
+                                      }: CashierHeaderProps) {
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
     const router = useRouter();
@@ -61,25 +46,24 @@ export const Header = ({
     };
 
     return (
-        <header
-            className="bg-gradient-to-r from-blue-600 to-blue-800 text-white p-3 shadow-md sticky top-0 z-10"
-            role="banner"
-        >
-        {/*<header className="bg-gradient-to-r from-blue-600 to-blue-800 text-white p-3 shadow-md sticky top-0">*/}
+        <header className="bg-gradient-to-r from-blue-600 to-blue-800 text-white p-3 shadow-md sticky top-0 z-10">
             <div className="max-w-7xl mx-auto flex justify-between items-center">
                 <div className="flex items-center space-x-4">
-                    <IconButton
-                        color="inherit"
-                        onClick={onMenuClick}
-                        aria-label="Toggle sidebar"
-                        className="hover:bg-blue-700"
-                    >
-                        <MenuIcon />
-                    </IconButton>
+                    <Tooltip title="Toggle sidebar">
+                        <IconButton
+                            color="inherit"
+                            onClick={onMenuClick}
+                            aria-label="Toggle sidebar"
+                            className="hover:bg-blue-700"
+                            size="large"
+                        >
+                            <MenuIcon />
+                        </IconButton>
+                    </Tooltip>
 
-                    <Link href="/" className="flex items-center">
-                        <Dashboard className="mr-2" />
-                        <h1 className="text-xl font-bold hidden sm:block">Admin Dashboard</h1>
+                    <Link href="/cashier" passHref className="flex items-center">
+                        <DashboardIcon className="mr-2" />
+                        <h1 className="text-xl font-bold hidden sm:block">Cashier Dashboard</h1>
                     </Link>
                 </div>
 
@@ -89,13 +73,20 @@ export const Header = ({
                             color="inherit"
                             onClick={onThemeToggle}
                             className="hover:bg-blue-700"
+                            aria-label={darkMode ? "Switch to light mode" : "Switch to dark mode"}
+                            size="large"
                         >
                             {darkMode ? <LightMode /> : <DarkMode />}
                         </IconButton>
                     </Tooltip>
 
                     <Tooltip title="Notifications">
-                        <IconButton color="inherit" className="hover:bg-blue-700">
+                        <IconButton
+                            color="inherit"
+                            className="hover:bg-blue-700"
+                            aria-label={`Show ${notificationCount} notifications`}
+                            size="large"
+                        >
                             <Badge badgeContent={notificationCount} color="error">
                                 <Notifications />
                             </Badge>
@@ -112,6 +103,7 @@ export const Header = ({
                                 aria-controls={open ? 'account-menu' : undefined}
                                 aria-haspopup="true"
                                 aria-expanded={open ? 'true' : undefined}
+                                aria-label="Open user menu"
                             >
                                 <Avatar
                                     sx={{ width: 36, height: 36 }}
@@ -159,33 +151,33 @@ export const Header = ({
                         transformOrigin={{ horizontal: 'right', vertical: 'top' }}
                         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
                     >
-                        <MenuItem onClick={() => handleNavigation('/Profile')}>
+                        <MenuItem onClick={() => handleNavigation('/cashier/profile')}>
                             <ListItemIcon>
                                 <Person fontSize="small" />
                             </ListItemIcon>
                             My Profile
                         </MenuItem>
-                        <MenuItem onClick={() => handleNavigation('/Settings')}>
+                        <MenuItem onClick={() => handleNavigation('/cashier/settings')}>
                             <ListItemIcon>
                                 <Settings fontSize="small" />
                             </ListItemIcon>
                             Settings
                         </MenuItem>
                         <Divider />
-                        <MenuItem onClick={() => handleNavigation('/Login')}>
+                        <MenuItem onClick={() => handleNavigation('/login')}>
                             <ListItemIcon>
                                 <Login fontSize="small" />
                             </ListItemIcon>
                             Login
                         </MenuItem>
-                        <MenuItem onClick={() => handleNavigation('/SignUp')}>
+                        <MenuItem onClick={() => handleNavigation('/signup')}>
                             <ListItemIcon>
                                 <HowToReg fontSize="small" />
                             </ListItemIcon>
                             Register
                         </MenuItem>
                         <Divider />
-                        <MenuItem onClick={() => handleNavigation('/Login')}>
+                        <MenuItem onClick={() => handleNavigation('/logout')}>
                             <ListItemIcon>
                                 <Logout fontSize="small" color="error" />
                             </ListItemIcon>
@@ -196,4 +188,4 @@ export const Header = ({
             </div>
         </header>
     );
-};
+}
