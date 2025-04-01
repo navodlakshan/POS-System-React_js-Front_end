@@ -18,12 +18,14 @@ import FirstPageIcon from "@mui/icons-material/FirstPage";
 import KeyboardArrowLeft from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
 import LastPageIcon from "@mui/icons-material/LastPage";
-import { TableHead, Modal, TextField, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, InputAdornment, Typography, Grid, FormControl, InputLabel, Select, MenuItem, SelectChangeEvent } from "@mui/material";
+import { TableHead, Modal, TextField, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, InputAdornment, Typography, Grid } from "@mui/material";
 import Image from "next/image";
 import SearchIcon from "@mui/icons-material/Search";
-import PrintIcon from "@mui/icons-material/Print";
-import SaveIcon from "@mui/icons-material/Save";
+import { Select, MenuItem, FormControl, InputLabel } from "@mui/material";
+import { SelectChangeEvent } from "@mui/material/Select";
 import CancelIcon from "@mui/icons-material/Cancel";
+import SaveIcon from "@mui/icons-material/Save";
+import PrintIcon from "@mui/icons-material/Print";
 
 interface TablePaginationActionsProps {
     count: number;
@@ -86,62 +88,55 @@ function TablePaginationActions(props: TablePaginationActionsProps) {
     );
 }
 
-interface StaffMember {
+interface Product {
     id: number;
     image: string;
     name: string;
-    position: string;
-    totalSales: number;
-    totalRevenue: number;
-    joinDate: string;
-    status: 'active' | 'inactive';
+    sku: string;
+    price: string;
+    quantity: number;
+    currentQuantity: number;
+    refunded: number;
 }
 
-interface NewStaffMember {
+interface NewProduct {
     id: number;
     image: string;
     name: string;
-    position: string;
-    totalSales: number;
-    totalRevenue: number;
-    joinDate: string;
-    status: 'active' | 'inactive';
+    sku: string;
+    price: string;
+    quantity: number;
+    currentQuantity: number;
+    refunded: number;
 }
 
-const initialStaff: StaffMember[] = [
-    { id: 1, image: "", name: "John Doe", position: "Sales Manager", totalSales: 245, totalRevenue: 125000, joinDate: "2022-01-15", status: 'active' },
-    { id: 2, image: "", name: "Jane Smith", position: "Sales Associate", totalSales: 189, totalRevenue: 98750, joinDate: "2022-03-22", status: 'active' },
-    { id: 3, image: "", name: "Robert Johnson", position: "Sales Executive", totalSales: 312, totalRevenue: 156000, joinDate: "2021-11-05", status: 'active' },
-    { id: 4, image: "", name: "Emily Davis", position: "Marketing Specialist", totalSales: 120, totalRevenue: 60000, joinDate: "2022-05-18", status: 'inactive' },
-    { id: 5, image: "", name: "Michael Wilson", position: "Sales Director", totalSales: 420, totalRevenue: 210000, joinDate: "2020-08-30", status: 'active' },
-    { id: 6, image: "", name: "Sarah Brown", position: "Sales Coordinator", totalSales: 95, totalRevenue: 47500, joinDate: "2022-07-12", status: 'active' },
-    { id: 7, image: "", name: "David Lee", position: "Sales Consultant", totalSales: 276, totalRevenue: 138000, joinDate: "2021-09-25", status: 'inactive' },
-    { id: 8, image: "", name: "Jennifer Taylor", position: "Sales Representative", totalSales: 201, totalRevenue: 100500, joinDate: "2022-02-14", status: 'active' },
+const initialProducts: Product[] = [
+    { id: 1, image: "", name: "Laptop i7", sku: "lep001", price: "Rs.6000", quantity: 7, currentQuantity: 1, refunded: 1 },
+    { id: 2, image: "", name: "Laptop i5", sku: "lep002", price: "Rs.5000", quantity: 5, currentQuantity: 2, refunded: 0 },
+    { id: 3, image: "", name: "Laptop i9", sku: "lep003", price: "Rs.8000", quantity: 3, currentQuantity: 1, refunded: 2 },
 ];
 
-export default function StaffReportPage() {
+export default function ProductReportPage() {
     const [isSidebarVisible, setIsSidebarVisible] = useState(true);
-    const [staffState, setStaffState] = useState<StaffMember[]>(initialStaff);
+    const [productsState, setProductsState] = useState<Product[]>(initialProducts);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
     const [searchQuery, setSearchQuery] = useState("");
-    const [statusFilter, setStatusFilter] = useState<string>("all");
-    const [positionFilter, setPositionFilter] = useState<string>("all");
-    const [sortBy, setSortBy] = useState<string>("name");
+    const [sortBy, setSortBy] = useState("name");
     const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
-    const [editStaff, setEditStaff] = useState<StaffMember | null>(null);
-    const [deleteStaff, setDeleteStaff] = useState<StaffMember | null>(null);
-    const [isAddStaffModalOpen, setIsAddStaffModalOpen] = useState(false);
+    const [editProduct, setEditProduct] = useState<Product | null>(null);
+    const [deleteProduct, setDeleteProduct] = useState<Product | null>(null);
+    const [isAddProductModalOpen, setIsAddProductModalOpen] = useState(false);
     const [isPrintPreviewOpen, setIsPrintPreviewOpen] = useState(false);
-    const [newStaff, setNewStaff] = useState<NewStaffMember>({
+    const [newProduct, setNewProduct] = useState<NewProduct>({
         id: 0,
         image: "",
         name: "",
-        position: "",
-        totalSales: 0,
-        totalRevenue: 0,
-        joinDate: new Date().toISOString().split('T')[0],
-        status: 'active'
+        sku: "",
+        price: "",
+        quantity: 0,
+        currentQuantity: 0,
+        refunded: 0
     });
     const [errors, setErrors] = useState<Record<string, string>>({});
     const [darkMode, setDarkMode] = useState(false);
@@ -163,44 +158,34 @@ export default function StaffReportPage() {
         setPage(0);
     };
 
-    const handleEdit = (staff: StaffMember) => {
-        setEditStaff(staff);
+    const handleEdit = (product: Product) => {
+        setEditProduct(product);
     };
 
-    const handleDelete = (staff: StaffMember) => {
-        setDeleteStaff(staff);
+    const handleDelete = (product: Product) => {
+        setDeleteProduct(product);
     };
 
     const handleSave = () => {
-        if (editStaff) {
-            const updatedStaff = staffState.map((s) =>
-                s.id === editStaff.id ? editStaff : s
+        if (editProduct) {
+            const updatedProducts = productsState.map((p) =>
+                p.id === editProduct.id ? editProduct : p
             );
-            setStaffState(updatedStaff);
-            setEditStaff(null);
+            setProductsState(updatedProducts);
+            setEditProduct(null);
         }
     };
 
     const handleConfirmDelete = () => {
-        if (deleteStaff) {
-            const updatedStaff = staffState.filter((s) => s.id !== deleteStaff.id);
-            setStaffState(updatedStaff);
-            setDeleteStaff(null);
+        if (deleteProduct) {
+            const updatedProducts = productsState.filter((p) => p.id !== deleteProduct.id);
+            setProductsState(updatedProducts);
+            setDeleteProduct(null);
         }
     };
 
     const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
         setSearchQuery(event.target.value);
-        setPage(0);
-    };
-
-    const handleStatusFilterChange = (event: SelectChangeEvent<string>) => {
-        setStatusFilter(event.target.value);
-        setPage(0);
-    };
-
-    const handlePositionFilterChange = (event: SelectChangeEvent<string>) => {
-        setPositionFilter(event.target.value);
         setPage(0);
     };
 
@@ -220,10 +205,10 @@ export default function StaffReportPage() {
         const printWindow = window.open('', '_blank', 'width=800,height=600');
         if (printWindow) {
             printWindow.document.write(`
-                <!DOCTYPE html>
-                <html>
+            <!DOCTYPE html>
+            <html>
                 <head>
-                    <title>Staff Report</title>
+                    <title>Product Report</title>
                     <style>
                         body {
                             font-family: Arial, sans-serif;
@@ -295,7 +280,7 @@ export default function StaffReportPage() {
                 </head>
                 <body>
                     <div class="print-header">
-                        <div class="print-title">Staff Performance Report</div>
+                        <div class="print-title">Product Report</div>
                         <div class="print-date">Generated on: ${new Date().toLocaleDateString('en-US', {
                 year: 'numeric',
                 month: 'long',
@@ -305,32 +290,30 @@ export default function StaffReportPage() {
             })}</div>
                     </div>
                     
-                    <div class="print-summary">
-                        Total Staff Members: ${staffState.length} | 
-                        Active Staff: ${staffState.filter(s => s.status === 'active').length} | 
-                        Total Revenue: Rs.${staffState.reduce((sum, staff) => sum + staff.totalRevenue, 0).toLocaleString()}
-                    </div>
+                    <div class="print-summary">Total Products: ${productsState.length}</div>
                     
                     <table class="print-table">
                         <thead>
                             <tr>
+                                <th>Image</th>
                                 <th>Name</th>
-                                <th>Position</th>
-                                <th>Total Sales</th>
-                                <th>Total Revenue</th>
-                                <th>Join Date</th>
-                                <th>Status</th>
+                                <th>SKU</th>
+                                <th>Price</th>
+                                <th>Qty</th>
+                                <th>Curr Qty</th>
+                                <th>Refund</th>
                             </tr>
                         </thead>
                         <tbody>
-                            ${staffState.map(staff => `
+                            ${productsState.map(product => `
                                 <tr>
-                                    <td>${staff.name}</td>
-                                    <td>${staff.position}</td>
-                                    <td>${staff.totalSales}</td>
-                                    <td>Rs.${staff.totalRevenue.toLocaleString()}</td>
-                                    <td>${new Date(staff.joinDate).toLocaleDateString()}</td>
-                                    <td>${staff.status === 'active' ? 'Active' : 'Inactive'}</td>
+                                    <td>${product.image ? `<img src="${product.image}" alt="${product.name}" width="40" height="40" />` : '[ ]'}</td>
+                                    <td>${product.name}</td>
+                                    <td>${product.sku}</td>
+                                    <td>${product.price}</td>
+                                    <td>${product.quantity}</td>
+                                    <td>${product.currentQuantity}</td>
+                                    <td>${product.refunded}</td>
                                 </tr>
                             `).join('')}
                         </tbody>
@@ -338,7 +321,7 @@ export default function StaffReportPage() {
                     
                     <div class="print-footer">
                         This report was generated automatically by the system.<br>
-                        © ${new Date().getFullYear()} ABC Company. All rights reserved.
+                        © ${new Date().getFullYear()} ABC Product Services (Pvt) Ltd. All rights reserved.
                     </div>
                     
                     <div class="no-print" style="text-align: center; margin-top: 20px;">
@@ -351,10 +334,12 @@ export default function StaffReportPage() {
                     </div>
                     
                     <script>
+                        // Auto-print after a short delay
                         setTimeout(() => {
                             window.print();
                         }, 300);
                         
+                        // Close window after printing
                         window.onafterprint = function() {
                             setTimeout(() => {
                                 window.close();
@@ -362,8 +347,8 @@ export default function StaffReportPage() {
                         };
                     </script>
                 </body>
-                </html>
-            `);
+            </html>
+        `);
             printWindow.document.close();
         } else {
             alert('Popup blocker might be preventing the print window from opening. Please allow popups for this site.');
@@ -373,76 +358,64 @@ export default function StaffReportPage() {
 
     const validateForm = () => {
         const newErrors: Record<string, string> = {};
-        if (!newStaff.name) newErrors.name = "Staff name is required";
-        if (!newStaff.position) newErrors.position = "Position is required";
-        if (!newStaff.joinDate) newErrors.joinDate = "Join date is required";
+        if (!newProduct.name) newErrors.name = "Product name is required";
+        if (!newProduct.sku) newErrors.sku = "SKU is required";
+        if (!newProduct.price) newErrors.price = "Price is required";
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
     };
 
-    const handleAddStaff = () => {
+    const handleAddProduct = () => {
         if (!validateForm()) return;
 
-        const newStaffEntry: StaffMember = {
-            id: Math.max(...staffState.map(s => s.id), 0) + 1,
-            image: newStaff.image,
-            name: newStaff.name,
-            position: newStaff.position,
-            totalSales: newStaff.totalSales,
-            totalRevenue: newStaff.totalRevenue,
-            joinDate: newStaff.joinDate,
-            status: newStaff.status
+        const newProductEntry: Product = {
+            id: Math.max(...productsState.map(p => p.id), 0) + 1,
+            image: newProduct.image,
+            name: newProduct.name,
+            sku: newProduct.sku,
+            price: newProduct.price,
+            quantity: newProduct.quantity,
+            currentQuantity: newProduct.currentQuantity,
+            refunded: newProduct.refunded
         };
 
-        setStaffState([...staffState, newStaffEntry]);
-        setIsAddStaffModalOpen(false);
-        setNewStaff({
+        setProductsState([...productsState, newProductEntry]);
+        setIsAddProductModalOpen(false);
+        setNewProduct({
             id: 0,
             image: "",
             name: "",
-            position: "",
-            totalSales: 0,
-            totalRevenue: 0,
-            joinDate: new Date().toISOString().split('T')[0],
-            status: 'active'
+            sku: "",
+            price: "",
+            quantity: 0,
+            currentQuantity: 0,
+            refunded: 0
         });
     };
 
-    const filteredStaff = staffState.filter((staff) => {
-        const matchesSearch = staff.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            staff.position.toLowerCase().includes(searchQuery.toLowerCase());
+    const filteredProducts = productsState.filter((product) =>
+        product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        product.sku.toLowerCase().includes(searchQuery.toLowerCase())
+    );
 
-        const matchesStatus = statusFilter === "all" || staff.status === statusFilter;
-        const matchesPosition = positionFilter === "all" || staff.position === positionFilter;
-
-        return matchesSearch && matchesStatus && matchesPosition;
-    });
-
-    const sortedStaff = filteredStaff.sort((a, b) => {
+    const sortedProducts = filteredProducts.sort((a, b) => {
         if (sortBy === "name") {
             return sortOrder === "asc" ? a.name.localeCompare(b.name) : b.name.localeCompare(a.name);
-        } else if (sortBy === "position") {
-            return sortOrder === "asc" ? a.position.localeCompare(b.position) : b.position.localeCompare(a.position);
-        } else if (sortBy === "totalSales") {
-            return sortOrder === "asc" ? a.totalSales - b.totalSales : b.totalSales - a.totalSales;
-        } else if (sortBy === "totalRevenue") {
-            return sortOrder === "asc" ? a.totalRevenue - b.totalRevenue : b.totalRevenue - a.totalRevenue;
-        } else if (sortBy === "joinDate") {
-            return sortOrder === "asc" ?
-                new Date(a.joinDate).getTime() - new Date(b.joinDate).getTime() :
-                new Date(b.joinDate).getTime() - new Date(a.joinDate).getTime();
+        } else if (sortBy === "price") {
+            const priceA = parseFloat(a.price.replace(/[^0-9.-]+/g, ""));
+            const priceB = parseFloat(b.price.replace(/[^0-9.-]+/g, ""));
+            return sortOrder === "asc" ? priceA - priceB : priceB - priceA;
+        } else if (sortBy === "quantity") {
+            return sortOrder === "asc" ? a.quantity - b.quantity : b.quantity - a.quantity;
         }
         return 0;
     });
 
-    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - sortedStaff.length) : 0;
+    const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - sortedProducts.length) : 0;
 
     const startEntry = page * rowsPerPage + 1;
-    const endEntry = Math.min((page + 1) * rowsPerPage, sortedStaff.length);
-    const totalEntries = sortedStaff.length;
-
-    // Get unique positions for filter dropdown
-    const positions = Array.from(new Set(staffState.map(staff => staff.position)));
+    const endEntry = Math.min((page + 1) * rowsPerPage, sortedProducts.length);
+    const totalEntries = sortedProducts.length;
 
     return (
         <div className={`flex min-h-screen ${darkMode ? 'bg-gray-900' : 'bg-white'}`}>
@@ -455,13 +428,13 @@ export default function StaffReportPage() {
                 />
                 <div className="p-4">
                     <div className="flex items-center text-gray-500 dark:text-gray-300">
-                        <h2 className="text-2xl font-bold mb-4">Staff Performance Report</h2>
+                        <h2 className="text-2xl font-bold mb-4">Product Report</h2>
                     </div>
                     <div className="p-6 bg-background text-gray-500 dark:text-gray-300 rounded-lg shadow-md dark:bg-gray-800">
-                        <h2 className="text-xl font-bold mb-4">Staff Members</h2>
+                        <h2 className="text-xl font-bold mb-4">All Products</h2>
                         <div className="flex justify-between mb-4">
                             <TextField
-                                placeholder="Search staff..."
+                                placeholder="Search products..."
                                 variant="outlined"
                                 size="small"
                                 value={searchQuery}
@@ -479,9 +452,9 @@ export default function StaffReportPage() {
                                     variant="contained"
                                     color="primary"
                                     size="small"
-                                    onClick={() => setIsAddStaffModalOpen(true)}
+                                    onClick={() => setIsAddProductModalOpen(true)}
                                 >
-                                    Add Staff
+                                    Add Sale
                                 </Button>
                                 <Button
                                     variant="contained"
@@ -493,31 +466,6 @@ export default function StaffReportPage() {
                                     Print
                                 </Button>
                                 <FormControl variant="outlined" size="small">
-                                    <InputLabel>Status</InputLabel>
-                                    <Select
-                                        value={statusFilter}
-                                        onChange={handleStatusFilterChange}
-                                        label="Status"
-                                    >
-                                        <MenuItem value="all">All Status</MenuItem>
-                                        <MenuItem value="active">Active</MenuItem>
-                                        <MenuItem value="inactive">Inactive</MenuItem>
-                                    </Select>
-                                </FormControl>
-                                <FormControl variant="outlined" size="small">
-                                    <InputLabel>Position</InputLabel>
-                                    <Select
-                                        value={positionFilter}
-                                        onChange={handlePositionFilterChange}
-                                        label="Position"
-                                    >
-                                        <MenuItem value="all">All Positions</MenuItem>
-                                        {positions.map(position => (
-                                            <MenuItem key={position} value={position}>{position}</MenuItem>
-                                        ))}
-                                    </Select>
-                                </FormControl>
-                                <FormControl variant="outlined" size="small">
                                     <InputLabel>Sort By</InputLabel>
                                     <Select
                                         value={sortBy}
@@ -525,10 +473,9 @@ export default function StaffReportPage() {
                                         label="Sort By"
                                     >
                                         <MenuItem value="name">Name</MenuItem>
-                                        <MenuItem value="position">Position</MenuItem>
-                                        <MenuItem value="totalSales">Total Sales</MenuItem>
-                                        <MenuItem value="totalRevenue">Total Revenue</MenuItem>
-                                        <MenuItem value="joinDate">Join Date</MenuItem>
+                                        <MenuItem value="sku">SKU</MenuItem>
+                                        <MenuItem value="price">Price</MenuItem>
+                                        <MenuItem value="quantity">Quantity</MenuItem>
                                     </Select>
                                 </FormControl>
                                 <FormControl variant="outlined" size="small">
@@ -550,25 +497,25 @@ export default function StaffReportPage() {
                                     <TableRow>
                                         <TableCell>Image</TableCell>
                                         <TableCell>Name</TableCell>
-                                        <TableCell>Position</TableCell>
-                                        <TableCell>Total Sales</TableCell>
-                                        <TableCell>Total Revenue</TableCell>
-                                        <TableCell>Join Date</TableCell>
-                                        <TableCell>Status</TableCell>
+                                        <TableCell>SKU</TableCell>
+                                        <TableCell>Price</TableCell>
+                                        <TableCell>Qty</TableCell>
+                                        <TableCell>Curr Qty</TableCell>
+                                        <TableCell>Refund</TableCell>
                                         <TableCell>Actions</TableCell>
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
                                     {(rowsPerPage > 0
-                                            ? sortedStaff.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                                            : sortedStaff
-                                    ).map((staff) => (
-                                        <TableRow key={staff.id}>
+                                            ? sortedProducts.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                                            : sortedProducts
+                                    ).map((product) => (
+                                        <TableRow key={product.id}>
                                             <TableCell component="th" scope="row">
-                                                {staff.image ? (
+                                                {product.image ? (
                                                     <Image
-                                                        src={staff.image}
-                                                        alt={staff.name}
+                                                        src={product.image}
+                                                        alt={product.name}
                                                         width={40}
                                                         height={40}
                                                         className="rounded"
@@ -577,26 +524,18 @@ export default function StaffReportPage() {
                                                     <div className="w-10 h-10 bg-gray-200 rounded"></div>
                                                 )}
                                             </TableCell>
-                                            <TableCell>{staff.name}</TableCell>
-                                            <TableCell>{staff.position}</TableCell>
-                                            <TableCell>{staff.totalSales}</TableCell>
-                                            <TableCell>Rs.{staff.totalRevenue.toLocaleString()}</TableCell>
-                                            <TableCell>{new Date(staff.joinDate).toLocaleDateString()}</TableCell>
-                                            <TableCell>
-                                                <span className={`px-2 py-1 rounded-full text-xs ${
-                                                    staff.status === 'active'
-                                                        ? 'bg-green-100 text-green-800'
-                                                        : 'bg-red-100 text-red-800'
-                                                }`}>
-                                                    {staff.status === 'active' ? 'Active' : 'Inactive'}
-                                                </span>
-                                            </TableCell>
+                                            <TableCell>{product.name}</TableCell>
+                                            <TableCell>{product.sku}</TableCell>
+                                            <TableCell>{product.price}</TableCell>
+                                            <TableCell>{product.quantity}</TableCell>
+                                            <TableCell>{product.currentQuantity}</TableCell>
+                                            <TableCell>{product.refunded}</TableCell>
                                             <TableCell sx={{ display: 'flex', gap: 1 }}>
                                                 <Button
                                                     variant="contained"
                                                     color= "primary"
                                                     size="small"
-                                                    onClick={() => handleEdit(staff)}
+                                                    onClick={() => handleEdit(product)}
                                                 >
                                                     Update
                                                 </Button>
@@ -604,7 +543,7 @@ export default function StaffReportPage() {
                                                     variant="contained"
                                                     color="error"
                                                     size="small"
-                                                    onClick={() => handleDelete(staff)}
+                                                    onClick={() => handleDelete(product)}
                                                 >
                                                     Delete
                                                 </Button>
@@ -627,7 +566,7 @@ export default function StaffReportPage() {
                                                 <TablePagination
                                                     rowsPerPageOptions={[5, 10, 25, { label: "All", value: -1 }]}
                                                     colSpan={8}
-                                                    count={sortedStaff.length}
+                                                    count={sortedProducts.length}
                                                     rowsPerPage={rowsPerPage}
                                                     page={page}
                                                     slotProps={{
@@ -653,7 +592,7 @@ export default function StaffReportPage() {
             </div>
 
             {/* Update Modal */}
-            <Modal open={!!editStaff} onClose={() => setEditStaff(null)}>
+            <Modal open={!!editProduct} onClose={() => setEditProduct(null)}>
                 <Box sx={{
                     position: "absolute",
                     top: "50%",
@@ -665,59 +604,52 @@ export default function StaffReportPage() {
                     p: 4,
                     color: darkMode ? "text.primary" : "text.secondary"
                 }}>
-                    <h2 className="text-xl font-bold mb-4">Edit Staff Member</h2>
+                    <h2 className="text-xl font-bold mb-4">Edit Product</h2>
                     <TextField
                         label="Name"
-                        value={editStaff?.name || ""}
-                        onChange={(e) => setEditStaff({ ...editStaff!, name: e.target.value })}
+                        value={editProduct?.name || ""}
+                        onChange={(e) => setEditProduct({ ...editProduct!, name: e.target.value })}
                         fullWidth
                         margin="normal"
                     />
                     <TextField
-                        label="Position"
-                        value={editStaff?.position || ""}
-                        onChange={(e) => setEditStaff({ ...editStaff!, position: e.target.value })}
+                        label="SKU"
+                        value={editProduct?.sku || ""}
+                        onChange={(e) => setEditProduct({ ...editProduct!, sku: e.target.value })}
                         fullWidth
                         margin="normal"
                     />
                     <TextField
-                        label="Total Sales"
+                        label="Price"
+                        value={editProduct?.price || ""}
+                        onChange={(e) => setEditProduct({ ...editProduct!, price: e.target.value })}
+                        fullWidth
+                        margin="normal"
+                    />
+                    <TextField
+                        label="Quantity"
                         type="number"
-                        value={editStaff?.totalSales || 0}
-                        onChange={(e) => setEditStaff({ ...editStaff!, totalSales: parseInt(e.target.value) || 0 })}
+                        value={editProduct?.quantity || 0}
+                        onChange={(e) => setEditProduct({ ...editProduct!, quantity: parseInt(e.target.value) || 0 })}
                         fullWidth
                         margin="normal"
                     />
                     <TextField
-                        label="Total Revenue"
+                        label="Current Quantity"
                         type="number"
-                        value={editStaff?.totalRevenue || 0}
-                        onChange={(e) => setEditStaff({ ...editStaff!, totalRevenue: parseInt(e.target.value) || 0 })}
+                        value={editProduct?.currentQuantity || 0}
+                        onChange={(e) => setEditProduct({ ...editProduct!, currentQuantity: parseInt(e.target.value) || 0 })}
                         fullWidth
                         margin="normal"
                     />
                     <TextField
-                        label="Join Date"
-                        type="date"
-                        value={editStaff?.joinDate || ""}
-                        onChange={(e) => setEditStaff({ ...editStaff!, joinDate: e.target.value })}
+                        label="Refunded"
+                        type="number"
+                        value={editProduct?.refunded || 0}
+                        onChange={(e) => setEditProduct({ ...editProduct!, refunded: parseInt(e.target.value) || 0 })}
                         fullWidth
                         margin="normal"
-                        InputLabelProps={{
-                            shrink: true,
-                        }}
                     />
-                    <FormControl fullWidth margin="normal">
-                        <InputLabel>Status</InputLabel>
-                        <Select
-                            value={editStaff?.status || "active"}
-                            onChange={(e) => setEditStaff({ ...editStaff!, status: e.target.value as 'active' | 'inactive' })}
-                            label="Status"
-                        >
-                            <MenuItem value="active">Active</MenuItem>
-                            <MenuItem value="inactive">Inactive</MenuItem>
-                        </Select>
-                    </FormControl>
                     <DialogActions>
                         <Button variant="contained" color="primary" startIcon={<SaveIcon />} onClick={handleSave}>
                             Save
@@ -725,7 +657,7 @@ export default function StaffReportPage() {
                         <Button
                             variant="outlined"
                             startIcon={<CancelIcon />}
-                            onClick={() => setEditStaff(null)}
+                            onClick={() => setEditProduct(null)}
                         >
                             Cancel
                         </Button>
@@ -734,24 +666,23 @@ export default function StaffReportPage() {
             </Modal>
 
             {/* Delete Confirmation Dialog */}
-            <Dialog open={!!deleteStaff} onClose={() => setDeleteStaff(null)}>
-                <DialogTitle>Delete Staff Member</DialogTitle>
+            <Dialog open={!!deleteProduct} onClose={() => setDeleteProduct(null)}>
+                <DialogTitle>Delete Product</DialogTitle>
                 <DialogContent>
                     <DialogContentText>
-                        Are you sure you want to delete the staff member &quot;{deleteStaff?.name}&quot;?
-                        This action cannot be undone.
+                        Are you sure you want to delete the product &quot;{deleteProduct?.name}&quot;?
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
-                    <Button variant="outlined" onClick={() => setDeleteStaff(null)}>Cancel</Button>
+                    <Button variant="outlined" onClick={() => setDeleteProduct(null)}>Cancel</Button>
                     <Button color="error" variant="contained" onClick={handleConfirmDelete}>
                         Delete
                     </Button>
                 </DialogActions>
             </Dialog>
 
-            {/* Add Staff Modal */}
-            <Modal open={isAddStaffModalOpen} onClose={() => setIsAddStaffModalOpen(false)}>
+            {/* Add Product Modal */}
+            <Modal open={isAddProductModalOpen} onClose={() => setIsAddProductModalOpen(false)}>
                 <Grid sx={{
                     position: "absolute",
                     top: "50%",
@@ -765,15 +696,15 @@ export default function StaffReportPage() {
                     color: darkMode ? "text.primary" : "text.secondary"
                 }}>
                     <Typography variant="h6" component="h2" sx={{ mb: 3, fontWeight: 'bold' }}>
-                        Add New Staff Member
+                        Add New Product
                     </Typography>
 
                     <Grid container spacing={2}>
                         <Grid item xs={12}>
                             <TextField
-                                label="Full Name"
-                                value={newStaff.name}
-                                onChange={(e) => setNewStaff({ ...newStaff, name: e.target.value })}
+                                label="Product Name"
+                                value={newProduct.name}
+                                onChange={(e) => setNewProduct({ ...newProduct, name: e.target.value })}
                                 fullWidth
                                 margin="normal"
                                 error={!!errors.name}
@@ -782,62 +713,55 @@ export default function StaffReportPage() {
                         </Grid>
                         <Grid item xs={12}>
                             <TextField
-                                label="Position"
-                                value={newStaff.position}
-                                onChange={(e) => setNewStaff({ ...newStaff, position: e.target.value })}
+                                label="SKU"
+                                value={newProduct.sku}
+                                onChange={(e) => setNewProduct({ ...newProduct, sku: e.target.value })}
                                 fullWidth
                                 margin="normal"
-                                error={!!errors.position}
-                                helperText={errors.position}
+                                error={!!errors.sku}
+                                helperText={errors.sku}
+                            />
+                        </Grid>
+                        <Grid item xs={12}>
+                            <TextField
+                                label="Price"
+                                value={newProduct.price}
+                                onChange={(e) => setNewProduct({ ...newProduct, price: e.target.value })}
+                                fullWidth
+                                margin="normal"
+                                error={!!errors.price}
+                                helperText={errors.price}
                             />
                         </Grid>
                         <Grid item xs={6}>
                             <TextField
-                                label="Total Sales"
+                                label="Quantity"
                                 type="number"
-                                value={newStaff.totalSales}
-                                onChange={(e) => setNewStaff({ ...newStaff, totalSales: parseInt(e.target.value) || 0 })}
+                                value={newProduct.quantity}
+                                onChange={(e) => setNewProduct({ ...newProduct, quantity: parseInt(e.target.value) || 0 })}
                                 fullWidth
                                 margin="normal"
                             />
                         </Grid>
                         <Grid item xs={6}>
                             <TextField
-                                label="Total Revenue"
+                                label="Current Quantity"
                                 type="number"
-                                value={newStaff.totalRevenue}
-                                onChange={(e) => setNewStaff({ ...newStaff, totalRevenue: parseInt(e.target.value) || 0 })}
+                                value={newProduct.currentQuantity}
+                                onChange={(e) => setNewProduct({ ...newProduct, currentQuantity: parseInt(e.target.value) || 0 })}
                                 fullWidth
                                 margin="normal"
                             />
                         </Grid>
                         <Grid item xs={6}>
                             <TextField
-                                label="Join Date"
-                                type="date"
-                                value={newStaff.joinDate}
-                                onChange={(e) => setNewStaff({ ...newStaff, joinDate: e.target.value })}
+                                label="Refunded"
+                                type="number"
+                                value={newProduct.refunded}
+                                onChange={(e) => setNewProduct({ ...newProduct, refunded: parseInt(e.target.value) || 0 })}
                                 fullWidth
                                 margin="normal"
-                                InputLabelProps={{
-                                    shrink: true,
-                                }}
-                                error={!!errors.joinDate}
-                                helperText={errors.joinDate}
                             />
-                        </Grid>
-                        <Grid item xs={6}>
-                            <FormControl fullWidth margin="normal">
-                                <InputLabel>Status</InputLabel>
-                                <Select
-                                    value={newStaff.status}
-                                    onChange={(e) => setNewStaff({ ...newStaff, status: e.target.value as 'active' | 'inactive' })}
-                                    label="Status"
-                                >
-                                    <MenuItem value="active">Active</MenuItem>
-                                    <MenuItem value="inactive">Inactive</MenuItem>
-                                </Select>
-                            </FormControl>
                         </Grid>
                     </Grid>
                     <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2, mt: 3 }}>
@@ -845,14 +769,14 @@ export default function StaffReportPage() {
                             variant="contained"
                             color="primary"
                             startIcon={<SaveIcon />}
-                            onClick={handleAddStaff}
+                            onClick={handleAddProduct}
                         >
-                            Save Staff
+                            Save Product
                         </Button>
                         <Button
                             variant="outlined"
                             startIcon={<CancelIcon />}
-                            onClick={() => setIsAddStaffModalOpen(false)}
+                            onClick={() => setIsAddProductModalOpen(false)}
                         >
                             Cancel
                         </Button>
@@ -894,7 +818,7 @@ export default function StaffReportPage() {
 
                     <Box sx={{ mb: 3 }}>
                         <Typography variant="h6" component="h3" sx={{ fontWeight: 'bold', textAlign: 'center' }}>
-                            Staff Performance Report
+                            Product Report
                         </Typography>
                         <Typography variant="body2" sx={{ textAlign: 'center', color: 'text.secondary' }}>
                             Generated on: {new Date().toLocaleDateString()} at {new Date().toLocaleTimeString()}
@@ -902,32 +826,32 @@ export default function StaffReportPage() {
                     </Box>
 
                     <Typography variant="body1" sx={{ mb: 2 }}>
-                        Total Staff Members: {staffState.length} |
-                        Active Staff: {staffState.filter(s => s.status === 'active').length} |
-                        Total Revenue: Rs.{staffState.reduce((sum, staff) => sum + staff.totalRevenue, 0).toLocaleString()}
+                        Total Products: {productsState.length}
                     </Typography>
 
                     <TableContainer component={Paper} sx={{ mb: 3 }}>
                         <Table>
                             <TableHead>
                                 <TableRow>
+                                    <TableCell>Image</TableCell>
                                     <TableCell>Name</TableCell>
-                                    <TableCell>Position</TableCell>
-                                    <TableCell>Total Sales</TableCell>
-                                    <TableCell>Total Revenue</TableCell>
-                                    <TableCell>Join Date</TableCell>
-                                    <TableCell>Status</TableCell>
+                                    <TableCell>SKU</TableCell>
+                                    <TableCell>Price</TableCell>
+                                    <TableCell>Qty</TableCell>
+                                    <TableCell>Curr Qty</TableCell>
+                                    <TableCell>Refund</TableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
-                                {staffState.map((staff) => (
-                                    <TableRow key={staff.id}>
-                                        <TableCell>{staff.name}</TableCell>
-                                        <TableCell>{staff.position}</TableCell>
-                                        <TableCell>{staff.totalSales}</TableCell>
-                                        <TableCell>Rs.{staff.totalRevenue.toLocaleString()}</TableCell>
-                                        <TableCell>{new Date(staff.joinDate).toLocaleDateString()}</TableCell>
-                                        <TableCell>{staff.status === 'active' ? 'Active' : 'Inactive'}</TableCell>
+                                {productsState.map((product) => (
+                                    <TableRow key={product.id}>
+                                        <TableCell>[ ]</TableCell>
+                                        <TableCell>{product.name}</TableCell>
+                                        <TableCell>{product.sku}</TableCell>
+                                        <TableCell>{product.price}</TableCell>
+                                        <TableCell>{product.quantity}</TableCell>
+                                        <TableCell>{product.currentQuantity}</TableCell>
+                                        <TableCell>{product.refunded}</TableCell>
                                     </TableRow>
                                 ))}
                             </TableBody>
@@ -938,7 +862,7 @@ export default function StaffReportPage() {
                         This report was generated automatically by the system.
                     </Typography>
                     <Typography variant="body2" sx={{ textAlign: 'center', color: 'text.secondary' }}>
-                        © {new Date().getFullYear()} ABC Company. All rights reserved.
+                        © {new Date().getFullYear()} INFINITY TECHNOLOGY (Pvt) Ltd. All rights reserved.
                     </Typography>
 
                     <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2, mt: 4 }}>

@@ -1,4 +1,4 @@
-// src/app/Dashboard/page.tsx
+// src/app/Admin/page.tsx
 "use client";
 
 import { Sidebar } from "@/components/Sidebar";

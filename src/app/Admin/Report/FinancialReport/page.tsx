@@ -1324,7 +1324,7 @@ export default function FinancialReportPage() {
                         This report was generated automatically by the system.
                     </Typography>
                     <Typography variant="body2" sx={{ textAlign: 'center', color: 'text.secondary' }}>
-                        © {new Date().getFullYear()} ABC Company. All rights reserved.
+                        © {new Date().getFullYear()} INFINITY TECHNOLOGY (Pvt) Ltd. All rights reserved.
                     </Typography>
 
                     <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2, mt: 4 }}>

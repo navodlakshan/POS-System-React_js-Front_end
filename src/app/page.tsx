@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import Dashboard from "@/app/Dashboard/page";
+import Dashboard from "@/app/Admin/Admin/page";
 
 export default function Home() {
     return (
