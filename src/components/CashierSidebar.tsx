@@ -1,4 +1,4 @@
-// src/components/CashierCom/CashierSidebar.tsx
+// src/components/CashierSidebar.tsx
 
 "use client";
 
@@ -55,7 +55,7 @@ export default function CashierSidebar() {
         {
             name: "Settings",
             icon: <Settings className="w-5 h-5 mr-3" />,
-            path: "#",
+            path: "/CashierSettings",
             dropdown: null
         }
     ];

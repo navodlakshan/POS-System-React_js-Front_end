@@ -8,8 +8,8 @@ import {
     Smartphone, Laptop, Shirt, Dumbbell, ToyBrick, Sofa,
     Plus, Minus
 } from "lucide-react";
-import CashierHeader from "@/components/CashierCom/CashierHeader";
-import CashierSidebar from "@/components/CashierCom/CashierSidebar";
+import CashierHeader from "@/components/CashierHeader";
+import CashierSidebar from "@/components/CashierSidebar";
 
 interface MenuItem {
     id: string;
@@ -38,7 +38,6 @@ export default function CashierDashboard() {
         const newMode = !darkMode;
         setDarkMode(newMode);
         localStorage.setItem('darkMode', JSON.stringify(newMode));
-        setDarkMode(newMode);
     };
 
     const categories = [

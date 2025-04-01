@@ -1,4 +1,4 @@
-// src/components/CashierCom/CashierHeader.tsx
+// src/components/CashierHeader.tsx
 
 "use client";
 
@@ -159,13 +159,13 @@ export default function CashierHeader({
                         transformOrigin={{ horizontal: 'right', vertical: 'top' }}
                         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
                     >
-                        <MenuItem onClick={() => handleNavigation('/components/CashierCom/CashierProfile')}>
+                        <MenuItem onClick={() => handleNavigation('/CashierProfile')}>
                             <ListItemIcon>
                                 <Person fontSize="small" />
                             </ListItemIcon>
                             My Profile
                         </MenuItem>
-                        <MenuItem onClick={() => handleNavigation('/components/CashierCom/CashierSettings')}>
+                        <MenuItem onClick={() => handleNavigation('/CashierSettings')}>
                             <ListItemIcon>
                                 <Settings fontSize="small" />
                             </ListItemIcon>

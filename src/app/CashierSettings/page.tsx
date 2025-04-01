@@ -1,12 +1,12 @@
-// src/components/CashierCom/CashierSettings.tsx
+// src/app/CashierSettings/page.tsx
 
 "use client";
 
 import React, { useState, useRef } from "react";
 import { Camera, Check, Edit, Lock, Trash2, User } from "lucide-react";
 import Image from "next/image";
-import CashierSidebar from "@/components/CashierCom/CashierSidebar";
-import CashierHeader from "@/components/CashierCom/CashierHeader";
+import CashierSidebar from "@/components/CashierSidebar";
+import CashierHeader from "@/components/CashierHeader";
 
 export default function CashierSettings() {
     const [isSidebarVisible, setIsSidebarVisible] = useState(true);
