@@ -65,7 +65,6 @@ export const Header = ({
             className="bg-gradient-to-r from-blue-600 to-blue-800 text-white p-3 shadow-md sticky top-0 z-10"
             role="banner"
         >
-        {/*<header className="bg-gradient-to-r from-blue-600 to-blue-800 text-white p-3 shadow-md sticky top-0">*/}
             <div className="max-w-7xl mx-auto flex justify-between items-center">
                 <div className="flex items-center space-x-4">
                     <IconButton
@@ -77,7 +76,7 @@ export const Header = ({
                         <MenuIcon />
                     </IconButton>
 
-                    <Link href="/" className="flex items-center">
+                    <Link href="/Admin/Admin" className="flex items-center">
                         <Dashboard className="mr-2" />
                         <h1 className="text-xl font-bold hidden sm:block">Admin Dashboard</h1>
                     </Link>

@@ -1,19 +1,35 @@
+// src/components/CashierCom/CashierHeader.tsx
+
 "use client";
 
 import Link from 'next/link';
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import {
-    Avatar, Menu, MenuItem, ListItemIcon, Divider,
-    IconButton, Tooltip, Badge, Box
+    Avatar,
+    Menu,
+    MenuItem,
+    ListItemIcon,
+    Divider,
+    IconButton,
+    Tooltip,
+    Badge,
+    Box
 } from '@mui/material';
 import {
-    Settings, Logout, Person, Menu as MenuIcon,
-    Notifications, Dashboard as DashboardIcon,
-    Login, HowToReg, LightMode, DarkMode
+    Settings,
+    Logout,
+    Person,
+    Menu as MenuIcon,
+    Notifications,
+    Dashboard,
+    Login,
+    HowToReg,
+    LightMode,
+    DarkMode
 } from '@mui/icons-material';
 
-interface CashierHeaderProps {
+interface HeaderProps {
     onMenuClick: () => void;
     onThemeToggle: () => void;
     darkMode: boolean;
@@ -27,7 +43,7 @@ export default function CashierHeader({
                                           darkMode,
                                           profileImage,
                                           notificationCount = 0
-                                      }: CashierHeaderProps) {
+                                      }: HeaderProps) {
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
     const router = useRouter();
@@ -46,23 +62,23 @@ export default function CashierHeader({
     };
 
     return (
-        <header className="bg-gradient-to-r from-blue-600 to-blue-800 text-white p-3 shadow-md sticky top-0 z-10">
+        <header
+            className="bg-gradient-to-r from-blue-600 to-blue-800 text-white p-3 shadow-md sticky top-0 z-10"
+            role="banner"
+        >
             <div className="max-w-7xl mx-auto flex justify-between items-center">
                 <div className="flex items-center space-x-4">
-                    <Tooltip title="Toggle sidebar">
-                        <IconButton
-                            color="inherit"
-                            onClick={onMenuClick}
-                            aria-label="Toggle sidebar"
-                            className="hover:bg-blue-700"
-                            size="large"
-                        >
-                            <MenuIcon />
-                        </IconButton>
-                    </Tooltip>
+                    <IconButton
+                        color="inherit"
+                        onClick={onMenuClick}
+                        aria-label="Toggle sidebar"
+                        className="hover:bg-blue-700"
+                    >
+                        <MenuIcon />
+                    </IconButton>
 
-                    <Link href="/cashier" passHref className="flex items-center">
-                        <DashboardIcon className="mr-2" />
+                    <Link href="/Cashier/Cashier" className="flex items-center">
+                        <Dashboard className="mr-2" />
                         <h1 className="text-xl font-bold hidden sm:block">Cashier Dashboard</h1>
                     </Link>
                 </div>
@@ -73,20 +89,13 @@ export default function CashierHeader({
                             color="inherit"
                             onClick={onThemeToggle}
                             className="hover:bg-blue-700"
-                            aria-label={darkMode ? "Switch to light mode" : "Switch to dark mode"}
-                            size="large"
                         >
                             {darkMode ? <LightMode /> : <DarkMode />}
                         </IconButton>
                     </Tooltip>
 
                     <Tooltip title="Notifications">
-                        <IconButton
-                            color="inherit"
-                            className="hover:bg-blue-700"
-                            aria-label={`Show ${notificationCount} notifications`}
-                            size="large"
-                        >
+                        <IconButton color="inherit" className="hover:bg-blue-700">
                             <Badge badgeContent={notificationCount} color="error">
                                 <Notifications />
                             </Badge>
@@ -103,7 +112,6 @@ export default function CashierHeader({
                                 aria-controls={open ? 'account-menu' : undefined}
                                 aria-haspopup="true"
                                 aria-expanded={open ? 'true' : undefined}
-                                aria-label="Open user menu"
                             >
                                 <Avatar
                                     sx={{ width: 36, height: 36 }}
@@ -151,33 +159,33 @@ export default function CashierHeader({
                         transformOrigin={{ horizontal: 'right', vertical: 'top' }}
                         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
                     >
-                        <MenuItem onClick={() => handleNavigation('/cashier/profile')}>
+                        <MenuItem onClick={() => handleNavigation('/components/CashierCom/CashierProfile')}>
                             <ListItemIcon>
                                 <Person fontSize="small" />
                             </ListItemIcon>
                             My Profile
                         </MenuItem>
-                        <MenuItem onClick={() => handleNavigation('/cashier/settings')}>
+                        <MenuItem onClick={() => handleNavigation('/components/CashierCom/CashierSettings')}>
                             <ListItemIcon>
                                 <Settings fontSize="small" />
                             </ListItemIcon>
                             Settings
                         </MenuItem>
                         <Divider />
-                        <MenuItem onClick={() => handleNavigation('/login')}>
+                        <MenuItem onClick={() => handleNavigation('/Login')}>
                             <ListItemIcon>
                                 <Login fontSize="small" />
                             </ListItemIcon>
                             Login
                         </MenuItem>
-                        <MenuItem onClick={() => handleNavigation('/signup')}>
+                        <MenuItem onClick={() => handleNavigation('/SignUp')}>
                             <ListItemIcon>
                                 <HowToReg fontSize="small" />
                             </ListItemIcon>
                             Register
                         </MenuItem>
                         <Divider />
-                        <MenuItem onClick={() => handleNavigation('/logout')}>
+                        <MenuItem onClick={() => handleNavigation('/Login')}>
                             <ListItemIcon>
                                 <Logout fontSize="small" color="error" />
                             </ListItemIcon>
