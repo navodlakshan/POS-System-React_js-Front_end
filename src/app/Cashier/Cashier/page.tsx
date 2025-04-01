@@ -38,6 +38,7 @@ export default function CashierDashboard() {
         const newMode = !darkMode;
         setDarkMode(newMode);
         localStorage.setItem('darkMode', JSON.stringify(newMode));
+        setDarkMode(newMode);
     };
 
     const categories = [
