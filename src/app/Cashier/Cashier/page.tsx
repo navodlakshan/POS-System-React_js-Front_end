@@ -1,9 +1,15 @@
+// src/app/Cashier/Cashier/page.tsx
+
 "use client";
 
 import { useState } from "react";
-import { Search, ShoppingCart, Monitor, Headphones, Home, Smartphone, Laptop, Shirt, Dumbbell, ToyBrick, Sofa, Plus, Minus } from "lucide-react";
-import CashierHeader from "@/components/cashier/CashierHeader/page";
-import CashierSidebar from "@/components/cashier/CashierSidebar/page";
+import {
+    Search, ShoppingCart, Monitor, Headphones, Home,
+    Smartphone, Laptop, Shirt, Dumbbell, ToyBrick, Sofa,
+    Plus, Minus
+} from "lucide-react";
+import CashierHeader from "@/components/CashierCom/CashierHeader";
+import CashierSidebar from "@/components/CashierCom/CashierSidebar";
 
 interface MenuItem {
     id: string;
@@ -22,11 +28,12 @@ export default function CashierDashboard() {
     const [activeCategory, setActiveCategory] = useState("TV");
     const [cart, setCart] = useState<Array<MenuItem & { quantity: number }>>([]);
     const [customerName, setCustomerName] = useState("");
-    const [tableNumber, setTableNumber] = useState("");
+    const [orderNumber, setOrderNumber] = useState("");
     const [notes, setNotes] = useState("");
     const [searchQuery, setSearchQuery] = useState("");
 
     const toggleSidebar = () => setIsSidebarVisible(!isSidebarVisible);
+
     const toggleDarkMode = () => {
         const newMode = !darkMode;
         setDarkMode(newMode);
@@ -90,14 +97,14 @@ export default function CashierDashboard() {
 
     const addToCart = (item: MenuItem) => {
         setCart(prev => prev.some(i => i.id === item.id)
-            ? prev.map(i => i.id === item.id ? {...i, quantity: i.quantity + 1} : i)
-            : [...prev, {...item, quantity: 1}]);
+            ? prev.map(i => i.id === item.id ? { ...i, quantity: i.quantity + 1 } : i)
+            : [...prev, { ...item, quantity: 1 }]);
     };
 
     const updateQuantity = (id: string, change: number) => {
         setCart(prev => prev
             .map(item => item.id === id
-                ? {...item, quantity: Math.max(0, item.quantity + change)}
+                ? { ...item, quantity: Math.max(0, item.quantity + change) }
                 : item)
             .filter(item => item.quantity > 0));
     };
@@ -107,29 +114,31 @@ export default function CashierDashboard() {
     const total = subtotal + tax;
 
     const handlePayment = () => {
-        alert(`Payment processed for ${customerName}\nTotal: $${total.toFixed(2)}`);
+        alert(`Payment processed for ${customerName}\nOrder #${orderNumber}\nTotal: $${total.toFixed(2)}`);
         setCart([]);
         setCustomerName("");
-        setTableNumber("");
+        setOrderNumber("");
         setNotes("");
     };
 
     return (
         <div className={`flex min-h-screen ${darkMode ? 'dark bg-gray-900' : 'bg-gray-50'}`}>
             {isSidebarVisible && <CashierSidebar />}
-            <div className="flex-1 transition-all">
+
+            <div className="flex-1 flex flex-col overflow-hidden">
                 <CashierHeader
                     onMenuClick={toggleSidebar}
                     onThemeToggle={toggleDarkMode}
                     darkMode={darkMode}
                 />
 
-                <main className="p-4 md:p-6 space-y-6">
-                    <div className="flex flex-col md:flex-row gap-6">
-                        {/* Products Section */}
-                        <div className="w-full md:w-2/3 space-y-6">
+                <main className="flex-1 overflow-auto p-4 md:p-6">
+                    <div className="flex flex-col lg:flex-row gap-4 h-full">
+                        {/* Products Section - Left Side */}
+                        <div className="w-full lg:w-3/5 flex flex-col gap-4 h-full">
+                            {/* Search Bar */}
                             <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-4">
-                                <h2 className="text-xl font-bold mb-4 dark:text-white">Products</h2>
+                                <h2 className="text-xl font-bold mb-3 dark:text-white">Products</h2>
                                 <div className="relative">
                                     <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
                                     <input
@@ -146,8 +155,9 @@ export default function CashierDashboard() {
                                 </div>
                             </div>
 
-                            <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-4">
-                                <div className="flex space-x-2 mb-4 overflow-x-auto pb-2">
+                            {/* Categories and Products */}
+                            <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-4 flex-1 flex flex-col">
+                                <div className="flex space-x-2 mb-3 overflow-x-auto pb-2">
                                     {categories.map(category => (
                                         <button
                                             key={category.name}
@@ -155,7 +165,7 @@ export default function CashierDashboard() {
                                                 setActiveCategory(category.name);
                                                 setSearchQuery("");
                                             }}
-                                            className={`px-4 py-2 rounded-full flex items-center space-x-2 ${
+                                            className={`px-3 py-1.5 rounded-full flex items-center space-x-2 whitespace-nowrap text-sm ${
                                                 activeCategory === category.name
                                                     ? 'bg-blue-600 text-white'
                                                     : 'bg-gray-100 dark:bg-gray-700 dark:text-white'
@@ -168,73 +178,79 @@ export default function CashierDashboard() {
                                     ))}
                                 </div>
 
-                                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-3 flex-1 overflow-y-auto">
                                     {filteredProducts.map(item => (
                                         <button
                                             key={item.id}
-                                            className="border rounded-lg p-3 hover:shadow-md transition-shadow cursor-pointer dark:border-gray-600 dark:text-white text-left"
+                                            className="border rounded-lg p-2 hover:shadow-md transition-shadow cursor-pointer dark:border-gray-600 dark:text-white text-left flex flex-col"
                                             onClick={() => addToCart(item)}
                                             aria-label={`Add ${item.name} to cart`}
                                         >
-                                            <div className="h-24 bg-gray-100 rounded mb-2 flex items-center justify-center dark:bg-gray-700">
+                                            <div className="h-20 bg-gray-100 rounded mb-2 flex items-center justify-center dark:bg-gray-700">
                                                 {categories.find(c => c.name === item.category)?.icon ||
                                                     <Monitor className="text-gray-400" />}
                                             </div>
-                                            <h3 className="font-medium">{item.name}</h3>
-                                            <p className="text-blue-600 dark:text-blue-400">${item.price.toFixed(2)}</p>
+                                            <h3 className="font-medium text-sm line-clamp-2">{item.name}</h3>
+                                            <p className="text-blue-600 dark:text-blue-400 text-sm mt-1">${item.price.toFixed(2)}</p>
                                         </button>
                                     ))}
                                 </div>
                             </div>
                         </div>
 
-                        {/* Order Section */}
-                        <div className="w-full md:w-1/3 space-y-6">
+                        {/* Order Section - Right Side */}
+                        <div className="w-full lg:w-2/5 flex flex-col gap-4 h-full">
+                            {/* Customer Information */}
                             <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-4">
-                                <h2 className="text-xl font-bold mb-4 dark:text-white">Customer Information</h2>
-                                <div className="space-y-4">
+                                <h2 className="text-xl font-bold mb-3 dark:text-white">Customer Information</h2>
+                                <div className="space-y-3">
                                     <div>
-                                        <label htmlFor="customerName" className="block text-sm font-medium mb-1 dark:text-gray-300">Customer Name</label>
+                                        <label htmlFor="customerName" className="block text-sm font-medium mb-1 dark:text-gray-300">
+                                            Customer Name
+                                        </label>
                                         <input
                                             id="customerName"
                                             type="text"
                                             value={customerName}
                                             onChange={(e) => setCustomerName(e.target.value)}
-                                            className="w-full p-2 border rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                                            className="w-full p-2 border rounded-lg text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                                             placeholder="Enter customer name"
                                         />
                                     </div>
                                     <div>
-                                        <label htmlFor="tableNumber" className="block text-sm font-medium mb-1 dark:text-gray-300">Order Number</label>
+                                        <label htmlFor="orderNumber" className="block text-sm font-medium mb-1 dark:text-gray-300">
+                                            Order Number
+                                        </label>
                                         <input
-                                            id="tableNumber"
+                                            id="orderNumber"
                                             type="text"
-                                            value={tableNumber}
-                                            onChange={(e) => setTableNumber(e.target.value)}
-                                            className="w-full p-2 border rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                                            value={orderNumber}
+                                            onChange={(e) => setOrderNumber(e.target.value)}
+                                            className="w-full p-2 border rounded-lg text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                                             placeholder="Enter order number"
                                         />
                                     </div>
                                 </div>
                             </div>
 
-                            <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-4">
-                                <h2 className="text-xl font-bold mb-4 dark:text-white">Order Details</h2>
+                            {/* Order Details */}
+                            <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-4 flex-1 flex flex-col">
+                                <h2 className="text-xl font-bold mb-3 dark:text-white">Order Details</h2>
                                 {cart.length === 0 ? (
-                                    <div className="text-center py-8 text-gray-500 dark:text-gray-400">
+                                    <div className="text-center py-8 text-gray-500 dark:text-gray-400 flex-1 flex flex-col items-center justify-center">
                                         <ShoppingCart className="mx-auto mb-2" size={32} />
                                         <p>Your cart is empty</p>
                                     </div>
                                 ) : (
-                                    <div className="space-y-4">
-                                        <div className="max-h-64 overflow-y-auto">
+                                    <div className="flex flex-col h-full">
+                                        <div className="flex-1 overflow-y-auto max-h-[300px]">
                                             {cart.map(item => (
                                                 <div key={item.id} className="flex justify-between items-center py-2 border-b dark:border-gray-700">
-                                                    <div>
-                                                        <h3 className="font-medium dark:text-white">{item.name}</h3>
-                                                        <p className="text-sm text-gray-500 dark:text-gray-400">${item.price.toFixed(2)}</p>
+                                                    <div className="flex-1 min-w-0">
+                                                        <h3 className="font-medium text-sm dark:text-white truncate">{item.name}</h3>
+                                                        <p className="text-xs text-gray-500 dark:text-gray-400">${item.price.toFixed(2)}</p>
                                                     </div>
-                                                    <div className="flex items-center space-x-2">
+                                                    <div className="flex items-center space-x-2 ml-2">
                                                         <button
                                                             onClick={(e) => {
                                                                 e.stopPropagation();
@@ -243,9 +259,9 @@ export default function CashierDashboard() {
                                                             className="p-1 rounded-full bg-gray-100 dark:bg-gray-700"
                                                             aria-label={`Decrease quantity of ${item.name}`}
                                                         >
-                                                            <Minus size={16} />
+                                                            <Minus size={14} />
                                                         </button>
-                                                        <span className="w-6 text-center dark:text-white">{item.quantity}</span>
+                                                        <span className="w-6 text-center text-sm dark:text-white">{item.quantity}</span>
                                                         <button
                                                             onClick={(e) => {
                                                                 e.stopPropagation();
@@ -254,46 +270,50 @@ export default function CashierDashboard() {
                                                             className="p-1 rounded-full bg-gray-100 dark:bg-gray-700"
                                                             aria-label={`Increase quantity of ${item.name}`}
                                                         >
-                                                            <Plus size={16} />
+                                                            <Plus size={14} />
                                                         </button>
                                                     </div>
                                                 </div>
                                             ))}
                                         </div>
 
-                                        <div className="space-y-2 pt-4">
-                                            <div className="flex justify-between">
-                                                <span className="text-gray-600 dark:text-gray-300">Sub Total</span>
-                                                <span className="font-medium dark:text-white">${subtotal.toFixed(2)}</span>
+                                        <div className="mt-auto pt-3">
+                                            <div className="space-y-1 text-sm">
+                                                <div className="flex justify-between">
+                                                    <span className="text-gray-600 dark:text-gray-300">Sub Total</span>
+                                                    <span className="font-medium dark:text-white">${subtotal.toFixed(2)}</span>
+                                                </div>
+                                                <div className="flex justify-between">
+                                                    <span className="text-gray-600 dark:text-gray-300">Tax (10%)</span>
+                                                    <span className="font-medium dark:text-white">${tax.toFixed(2)}</span>
+                                                </div>
+                                                <div className="flex justify-between border-t pt-1">
+                                                    <span className="font-bold dark:text-white">Total</span>
+                                                    <span className="font-bold text-blue-600 dark:text-blue-400">${total.toFixed(2)}</span>
+                                                </div>
                                             </div>
-                                            <div className="flex justify-between">
-                                                <span className="text-gray-600 dark:text-gray-300">Tax (10%)</span>
-                                                <span className="font-medium dark:text-white">${tax.toFixed(2)}</span>
-                                            </div>
-                                            <div className="flex justify-between border-t pt-2">
-                                                <span className="font-bold dark:text-white">Total</span>
-                                                <span className="font-bold text-blue-600 dark:text-blue-400">${total.toFixed(2)}</span>
-                                            </div>
-                                        </div>
 
-                                        <div>
-                                            <label htmlFor="orderNotes" className="block text-sm font-medium mb-1 dark:text-gray-300">Order Notes</label>
-                                            <textarea
-                                                id="orderNotes"
-                                                value={notes}
-                                                onChange={(e) => setNotes(e.target.value)}
-                                                className="w-full p-2 border rounded-lg h-20 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                                                placeholder="Special instructions..."
-                                            />
-                                        </div>
+                                            <div className="mt-3">
+                                                <label htmlFor="orderNotes" className="block text-sm font-medium mb-1 dark:text-gray-300">
+                                                    Order Notes
+                                                </label>
+                                                <textarea
+                                                    id="orderNotes"
+                                                    value={notes}
+                                                    onChange={(e) => setNotes(e.target.value)}
+                                                    className="w-full p-2 border rounded-lg h-16 text-sm dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                                                    placeholder="Special instructions..."
+                                                />
+                                            </div>
 
-                                        <button
-                                            onClick={handlePayment}
-                                            className="w-full bg-blue-600 text-white py-3 rounded-lg font-bold hover:bg-blue-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
-                                            disabled={cart.length === 0}
-                                        >
-                                            Process Payment
-                                        </button>
+                                            <button
+                                                onClick={handlePayment}
+                                                className="w-full mt-3 bg-blue-600 text-white py-2 rounded-lg font-bold hover:bg-blue-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed text-sm"
+                                                disabled={cart.length === 0}
+                                            >
+                                                Process Payment
+                                            </button>
+                                        </div>
                                     </div>
                                 )}
                             </div>

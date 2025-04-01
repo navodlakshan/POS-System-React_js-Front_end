@@ -33,7 +33,7 @@ export const Sidebar = () => {
         {
             name: "Dashboard",
             icon: <LayoutDashboard className="w-5 h-5 mr-3" />,
-            path: "/Admin",
+            path: "/Admin/Admin",
             dropdown: null
         },
         {
@@ -143,7 +143,6 @@ export const Sidebar = () => {
 
                 <div className="mt-auto pt-4 border-t border-blue-500">
                     <div className="p-3 text-sm text-blue-200">
-                        v1.0.0
                     </div>
                 </div>
             </div>
