@@ -58,26 +58,45 @@ export default function CashierDashboard() {
         { id: "1", name: "Samsung QLED 4K TV", price: 999.99, category: "TV" },
         { id: "2", name: "LG OLED 55\"", price: 1299.99, category: "TV" },
         { id: "3", name: "Sony Bravia 65\"", price: 1499.99, category: "TV" },
+        { id: "4", name: "TCL 55\" 4K UHD", price: 499.99, category: "TV" },
+        { id: "5", name: "Vizio 50\" Smart TV", price: 399.99, category: "TV" },
+        { id: "6", name: "Hisense 55\" 4K UHD", price: 599.99, category: "TV" },
 
         // Audio & Video
-        { id: "4", name: "Bose Headphones 700", price: 379.99, category: "Audio & Video" },
-        { id: "5", name: "Sony WH-1000XM4", price: 349.99, category: "Audio & Video" },
+        { id: "7", name: "Bose Headphones 700", price: 379.99, category: "Audio & Video" },
+        { id: "8", name: "Sony WH-1000XM4", price: 349.99, category: "Audio & Video" },
 
         // Home Appliances
-        { id: "6", name: "Dyson Vacuum Cleaner", price: 399.99, category: "Home Appliances" },
-        { id: "7", name: "Instant Pot Duo", price: 89.99, category: "Home Appliances" },
+        { id: "9", name: "Dyson Vacuum Cleaner", price: 399.99, category: "Home Appliances" },
+        { id: "10", name: "Instant Pot Duo", price: 89.99, category: "Home Appliances" },
 
         // Mobile Phones
-        { id: "8", name: "iPhone 14 Pro", price: 999.99, category: "Mobile Phones & Devices" },
-        { id: "9", name: "Samsung Galaxy S23", price: 799.99, category: "Mobile Phones & Devices" },
+        { id: "11", name: "iPhone 14 Pro", price: 999.99, category: "Mobile Phones & Devices" },
+        { id: "12", name: "Samsung Galaxy S23", price: 799.99, category: "Mobile Phones & Devices" },
 
         // Apple
-        { id: "10", name: "MacBook Pro 14\"", price: 1999.99, category: "Apple" },
-        { id: "11", name: "iPad Pro 12.9\"", price: 1099.99, category: "Apple" },
+        { id: "13", name: "MacBook Pro 14\"", price: 1999.99, category: "Apple" },
+        { id: "14", name: "iPad Pro 12.9\"", price: 1099.99, category: "Apple" },
 
         // Computers
-        { id: "12", name: "Dell XPS 15", price: 1499.99, category: "Computers" },
-        { id: "13", name: "HP Spectre x360", price: 1299.99, category: "Computers" },
+        { id: "15", name: "Dell XPS 15", price: 1499.99, category: "Computers" },
+        { id: "16", name: "HP Spectre x360", price: 1299.99, category: "Computers" },
+
+        // Fashion & Lifestyle
+        { id: "17", name: "Nike Air Max 270", price: 149.99, category: "Fashion & Lifestyle" },
+        { id: "18", name: "Adidas Ultraboost", price: 179.99, category: "Fashion & Lifestyle" },
+
+        // Sports & Fitness
+        { id: "19", name: "Fitbit Charge 5", price: 149.99, category: "Sports & Fitness" },
+        { id: "20", name: "Peloton Bike", price: 1999.99, category: "Sports & Fitness" },
+
+        // Kids Toys
+        { id: "21", name: "LEGO Star Wars Set", price: 79.99, category: "Kids Toys" },
+        { id: "22", name: "Barbie Dreamhouse", price: 199.99, category: "Kids Toys" },
+
+        // Furniture & Home Style
+        { id: "23", name: "IKEA KALLAX Shelf", price: 99.99, category: "Furniture & Home Style" },
+        { id: "24", name: "West Elm Sofa", price: 1299.99, category: "Furniture & Home Style" },
     ];
 
     // Group products by category
@@ -184,14 +203,14 @@ export default function CashierDashboard() {
                                             key={item.id}
                                             className="border rounded-lg p-2 hover:shadow-md transition-shadow cursor-pointer dark:border-gray-600 dark:text-white text-left flex flex-col"
                                             onClick={() => addToCart(item)}
-                                            aria-label={`Add ${item.name} to cart`}
+                                            aria-label={`Add Rs.{item.name} to cart`}
                                         >
                                             <div className="h-20 bg-gray-100 rounded mb-2 flex items-center justify-center dark:bg-gray-700">
                                                 {categories.find(c => c.name === item.category)?.icon ||
                                                     <Monitor className="text-gray-400" />}
                                             </div>
                                             <h3 className="font-medium text-sm line-clamp-2">{item.name}</h3>
-                                            <p className="text-blue-600 dark:text-blue-400 text-sm mt-1">${item.price.toFixed(2)}</p>
+                                            <p className="text-blue-600 dark:text-blue-400 text-sm mt-1">Rs.{item.price.toFixed(2)}</p>
                                         </button>
                                     ))}
                                 </div>
@@ -248,7 +267,7 @@ export default function CashierDashboard() {
                                                 <div key={item.id} className="flex justify-between items-center py-2 border-b dark:border-gray-700">
                                                     <div className="flex-1 min-w-0">
                                                         <h3 className="font-medium text-sm dark:text-white truncate">{item.name}</h3>
-                                                        <p className="text-xs text-gray-500 dark:text-gray-400">${item.price.toFixed(2)}</p>
+                                                        <p className="text-xs text-gray-500 dark:text-gray-400">Rs.{item.price.toFixed(2)}</p>
                                                     </div>
                                                     <div className="flex items-center space-x-2 ml-2">
                                                         <button
@@ -257,7 +276,7 @@ export default function CashierDashboard() {
                                                                 updateQuantity(item.id, -1);
                                                             }}
                                                             className="p-1 rounded-full bg-gray-100 dark:bg-gray-700"
-                                                            aria-label={`Decrease quantity of ${item.name}`}
+                                                            aria-label={`Decrease quantity of Rs.{item.name}`}
                                                         >
                                                             <Minus size={14} />
                                                         </button>
@@ -268,7 +287,7 @@ export default function CashierDashboard() {
                                                                 updateQuantity(item.id, 1);
                                                             }}
                                                             className="p-1 rounded-full bg-gray-100 dark:bg-gray-700"
-                                                            aria-label={`Increase quantity of ${item.name}`}
+                                                            aria-label={`Increase quantity of Rs.{item.name}`}
                                                         >
                                                             <Plus size={14} />
                                                         </button>
@@ -281,15 +300,15 @@ export default function CashierDashboard() {
                                             <div className="space-y-1 text-sm">
                                                 <div className="flex justify-between">
                                                     <span className="text-gray-600 dark:text-gray-300">Sub Total</span>
-                                                    <span className="font-medium dark:text-white">${subtotal.toFixed(2)}</span>
+                                                    <span className="font-medium dark:text-white">Rs.{subtotal.toFixed(2)}</span>
                                                 </div>
                                                 <div className="flex justify-between">
                                                     <span className="text-gray-600 dark:text-gray-300">Tax (10%)</span>
-                                                    <span className="font-medium dark:text-white">${tax.toFixed(2)}</span>
+                                                    <span className="font-medium dark:text-white">Rs.{tax.toFixed(2)}</span>
                                                 </div>
                                                 <div className="flex justify-between border-t pt-1">
                                                     <span className="font-bold dark:text-white">Total</span>
-                                                    <span className="font-bold text-blue-600 dark:text-blue-400">${total.toFixed(2)}</span>
+                                                    <span className="font-bold text-blue-600 dark:text-blue-400">Rs.{total.toFixed(2)}</span>
                                                 </div>
                                             </div>
 
