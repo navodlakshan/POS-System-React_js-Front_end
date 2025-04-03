@@ -25,7 +25,7 @@ export default function CashierSidebar() {
         {
             name: "Products",
             icon: <Package className="w-5 h-5 mr-3" />,
-            path: "#",
+            path: "/Cashier/CashierProduct",
             dropdown: null
         },
         {
