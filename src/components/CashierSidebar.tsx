@@ -1,4 +1,4 @@
-// src/components/CashierCom/CashierSidebar.tsx
+// src/components/CashierSidebar.tsx
 
 "use client";
 
@@ -25,7 +25,7 @@ export default function CashierSidebar() {
         {
             name: "Products",
             icon: <Package className="w-5 h-5 mr-3" />,
-            path: "#",
+            path: "/Cashier/CashierProduct",
             dropdown: null
         },
         {
@@ -37,7 +37,7 @@ export default function CashierSidebar() {
         {
             name: "Customers",
             icon: <Users className="w-5 h-5 mr-3" />,
-            path: "#",
+            path: "/Cashier/CashierCustomer",
             dropdown: null
         },
         {
@@ -55,13 +55,18 @@ export default function CashierSidebar() {
         {
             name: "Settings",
             icon: <Settings className="w-5 h-5 mr-3" />,
-            path: "#",
+            path: "/CashierSettings",
             dropdown: null
         }
     ];
 
     return (
-        <aside className="w-64 bg-gradient-to-b from-blue-700 to-blue-800 text-white p-4 shadow-lg h-screen sticky top-0">
+        <aside className="w-64 bg-gradient-to-b from-blue-700 to-blue-800 text-white p-4 shadow-lg h-screen sticky top-0
+        ${isVisible ? 'w-64' : 'w-20'}
+            transition-all duration-500 ease-in-out
+        ">
+
+
             <div className="flex flex-col h-full">
                 <h2 className="text-3xl font-bold pb-6 pt-4 px-2">Cashier Panel</h2>
 

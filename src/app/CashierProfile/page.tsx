@@ -1,11 +1,11 @@
-// src/components/CashierCom/CashierProfile.tsx
+// src/app/CashierProfile/page.tsx
 
 "use client";
 
 import React, { useState, useRef } from "react";
 import { Camera, Edit2, Save } from "lucide-react";
-import CashierSidebar from "@/components/CashierCom/CashierSidebar";
-import CashierHeader from "@/components/CashierCom/CashierHeader";
+import CashierSidebar from "@/components/CashierSidebar";
+import CashierHeader from "@/components/CashierHeader";
 import Image from "next/image";
 
 export default function CashierProfile() {
