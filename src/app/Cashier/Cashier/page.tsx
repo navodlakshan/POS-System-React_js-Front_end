@@ -1,12 +1,10 @@
-// src/app/Cashier/Cashier/page.tsx
-
 "use client";
 
 import { useState } from "react";
 import {
     Search, ShoppingCart, Monitor, Headphones, Home,
     Smartphone, Laptop, Shirt, Dumbbell, ToyBrick, Sofa,
-    Plus, Minus
+    Plus, Minus, Printer
 } from "lucide-react";
 import CashierHeader from "@/components/CashierHeader";
 import CashierSidebar from "@/components/CashierSidebar";
@@ -31,6 +29,7 @@ export default function CashierDashboard() {
     const [orderNumber, setOrderNumber] = useState("");
     const [notes, setNotes] = useState("");
     const [searchQuery, setSearchQuery] = useState("");
+    const [showBillPreview, setShowBillPreview] = useState(false);
 
     const toggleSidebar = () => setIsSidebarVisible(!isSidebarVisible);
 
@@ -57,46 +56,49 @@ export default function CashierDashboard() {
         // TV
         { id: "1", name: "Samsung QLED 4K TV", price: 999.99, category: "TV" },
         { id: "2", name: "LG OLED 55\"", price: 1299.99, category: "TV" },
-        { id: "3", name: "Sony Bravia 65\"", price: 1499.99, category: "TV" },
-        { id: "4", name: "TCL 55\" 4K UHD", price: 499.99, category: "TV" },
-        { id: "5", name: "Vizio 50\" Smart TV", price: 399.99, category: "TV" },
-        { id: "6", name: "Hisense 55\" 4K UHD", price: 599.99, category: "TV" },
 
         // Audio & Video
-        { id: "7", name: "Bose Headphones 700", price: 379.99, category: "Audio & Video" },
-        { id: "8", name: "Sony WH-1000XM4", price: 349.99, category: "Audio & Video" },
+        { id: "3", name: "Sony 5.1 Channel Home Theater", price: 499.99, category: "Audio & Video" },
+        { id: "4", name: "Bose Soundbar 700", price: 799.99, category: "Audio & Video" },
 
         // Home Appliances
-        { id: "9", name: "Dyson Vacuum Cleaner", price: 399.99, category: "Home Appliances" },
-        { id: "10", name: "Instant Pot Duo", price: 89.99, category: "Home Appliances" },
+        { id: "5", name: "Dyson V11 Vacuum Cleaner", price: 599.99, category: "Home Appliances" },
+        { id: "6", name: "Samsung Smart Refrigerator", price: 1499.99, category: "Home Appliances" },
 
-        // Mobile Phones
-        { id: "11", name: "iPhone 14 Pro", price: 999.99, category: "Mobile Phones & Devices" },
-        { id: "12", name: "Samsung Galaxy S23", price: 799.99, category: "Mobile Phones & Devices" },
+        // Mobile Phones & Devices
+        { id: "7", name: "Apple iPhone 14 Pro", price: 999.99, category: "Mobile Phones & Devices" },
+        { id: "8", name: "Samsung Galaxy S22", price: 799.99, category: "Mobile Phones & Devices" },
 
         // Apple
-        { id: "13", name: "MacBook Pro 14\"", price: 1999.99, category: "Apple" },
-        { id: "14", name: "iPad Pro 12.9\"", price: 1099.99, category: "Apple" },
+        { id: "9", name: "Apple MacBook Pro 16\"", price: 2399.99, category: "Apple" },
+        { id: "10", name: "Apple iPad Pro 12.9\"", price: 1099.99, category: "Apple" },
 
         // Computers
-        { id: "15", name: "Dell XPS 15", price: 1499.99, category: "Computers" },
-        { id: "16", name: "HP Spectre x360", price: 1299.99, category: "Computers" },
+        { id: "11", name: "Dell XPS 13", price: 1299.99, category: "Computers" },
+        { id: "12", name: "HP Spectre x360", price: 1399.99, category: "Computers" },
 
         // Fashion & Lifestyle
-        { id: "17", name: "Nike Air Max 270", price: 149.99, category: "Fashion & Lifestyle" },
-        { id: "18", name: "Adidas Ultraboost", price: 179.99, category: "Fashion & Lifestyle" },
+        { id: "13", name: "Nike Air Max 270", price: 149.99, category: "Fashion & Lifestyle" },
+        { id: "14", name: "Adidas Ultraboost", price: 179.99, category: "Fashion & Lifestyle" },
 
         // Sports & Fitness
-        { id: "19", name: "Fitbit Charge 5", price: 149.99, category: "Sports & Fitness" },
-        { id: "20", name: "Peloton Bike", price: 1999.99, category: "Sports & Fitness" },
+        { id: "15", name: "Fitbit Charge 5", price: 149.99, category: "Sports & Fitness" },
+        { id: "16", name: "Peloton Bike+", price: 1999.99, category: "Sports & Fitness" },
 
         // Kids Toys
-        { id: "21", name: "LEGO Star Wars Set", price: 79.99, category: "Kids Toys" },
-        { id: "22", name: "Barbie Dreamhouse", price: 199.99, category: "Kids Toys" },
+        { id: "17", name: "LEGO Star Wars Millennium Falcon", price: 159.99, category: "Kids Toys" },
+        { id: "18", name: "Barbie Dreamhouse", price: 199.99, category: "Kids Toys" },
 
         // Furniture & Home Style
-        { id: "23", name: "IKEA KALLAX Shelf", price: 99.99, category: "Furniture & Home Style" },
-        { id: "24", name: "West Elm Sofa", price: 1299.99, category: "Furniture & Home Style" },
+        { id: "19", name: "IKEA Malm Bed Frame", price: 299.99, category: "Furniture & Home Style" },
+        { id: "20", name: "West Elm Sofa", price: 1299.99, category: "Furniture & Home Style" },
+        { id: "21", name: "CB2 Dining Table", price: 499.99, category: "Furniture & Home Style" },
+        { id: "22", name: "Wayfair Office Chair", price: 199.99, category: "Furniture & Home Style" },
+        { id: "23", name: "Ashley Furniture Recliner", price: 399.99, category: "Furniture & Home Style" },
+        { id: "24", name: "Pottery Barn Bookshelf", price: 599.99, category: "Furniture & Home Style" },
+
+
+
     ];
 
     // Group products by category
@@ -133,11 +135,94 @@ export default function CashierDashboard() {
     const total = subtotal + tax;
 
     const handlePayment = () => {
-        alert(`Payment processed for ${customerName}\nOrder #${orderNumber}\nTotal: $${total.toFixed(2)}`);
+        setShowBillPreview(true);
+    };
+
+    const handlePrint = () => {
+        const printWindow = window.open('', '', 'width=600,height=600');
+        if (printWindow) {
+            printWindow.document.write(`
+                <html>
+                    <head>
+                        <title>Bill Receipt</title>
+                        <style>
+                            body { font-family: Arial, sans-serif; padding: 20px; }
+                            .header { text-align: center; margin-bottom: 20px; }
+                            .store-name { font-size: 24px; font-weight: bold; }
+                            .bill-info { margin-bottom: 20px; }
+                            .items-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+                            .items-table th, .items-table td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+                            .total-section { text-align: right; font-weight: bold; }
+                            .footer { margin-top: 30px; text-align: center; font-size: 12px; }
+                        </style>
+                    </head>
+                    <body>
+                        <div class="header">
+                            <div class="store-name">My Store</div>
+                            <div>123 Main Street, City</div>
+                            <div>Phone: (123) 456-7890</div>
+                        </div>
+                        
+                        <div class="bill-info">
+                            <div><strong>Customer:</strong> ${customerName}</div>
+                            <div><strong>Order #:</strong> ${orderNumber}</div>
+                            <div><strong>Date:</strong> ${new Date().toLocaleString()}</div>
+                        </div>
+                        
+                        <table class="items-table">
+                            <thead>
+                                <tr>
+                                    <th>Item</th>
+                                    <th>Qty</th>
+                                    <th>Price</th>
+                                    <th>Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${cart.map(item => `
+                                    <tr>
+                                        <td>${item.name}</td>
+                                        <td>${item.quantity}</td>
+                                        <td>Rs.${item.price.toFixed(2)}</td>
+                                        <td>Rs.${(item.price * item.quantity).toFixed(2)}</td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                        
+                        <div class="total-section">
+                            <div>Subtotal: Rs.${subtotal.toFixed(2)}</div>
+                            <div>Tax (10%): Rs.${tax.toFixed(2)}</div>
+                            <div>Total: Rs.${total.toFixed(2)}</div>
+                        </div>
+                        
+                        ${notes ? `<div><strong>Notes:</strong> ${notes}</div>` : ''}
+                        
+                        <div class="footer">
+                            Thank you for your purchase!<br>
+                            Please come again
+                        </div>
+                        
+                        <script>
+                            setTimeout(() => {
+                                window.print();
+                                window.close();
+                            }, 200);
+                        </script>
+                    </body>
+                </html>
+            `);
+            printWindow.document.close();
+        }
+    };
+
+    const completePayment = () => {
+        alert(`Payment processed for ${customerName}\nOrder #${orderNumber}\nTotal: Rs.${total.toFixed(2)}`);
         setCart([]);
         setCustomerName("");
         setOrderNumber("");
         setNotes("");
+        setShowBillPreview(false);
     };
 
     return (
@@ -203,7 +288,7 @@ export default function CashierDashboard() {
                                             key={item.id}
                                             className="border rounded-lg p-2 hover:shadow-md transition-shadow cursor-pointer dark:border-gray-600 dark:text-white text-left flex flex-col"
                                             onClick={() => addToCart(item)}
-                                            aria-label={`Add Rs.{item.name} to cart`}
+                                            aria-label={`Add ${item.name} to cart`}
                                         >
                                             <div className="h-20 bg-gray-100 rounded mb-2 flex items-center justify-center dark:bg-gray-700">
                                                 {categories.find(c => c.name === item.category)?.icon ||
@@ -276,7 +361,7 @@ export default function CashierDashboard() {
                                                                 updateQuantity(item.id, -1);
                                                             }}
                                                             className="p-1 rounded-full bg-gray-100 dark:bg-gray-700"
-                                                            aria-label={`Decrease quantity of Rs.{item.name}`}
+                                                            aria-label={`Decrease quantity of ${item.name}`}
                                                         >
                                                             <Minus size={14} />
                                                         </button>
@@ -287,7 +372,7 @@ export default function CashierDashboard() {
                                                                 updateQuantity(item.id, 1);
                                                             }}
                                                             className="p-1 rounded-full bg-gray-100 dark:bg-gray-700"
-                                                            aria-label={`Increase quantity of Rs.{item.name}`}
+                                                            aria-label={`Increase quantity of ${item.name}`}
                                                         >
                                                             <Plus size={14} />
                                                         </button>
@@ -340,6 +425,90 @@ export default function CashierDashboard() {
                     </div>
                 </main>
             </div>
+
+            {/* Bill Preview Modal */}
+            {showBillPreview && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+                    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-md w-full max-h-[90vh] overflow-auto">
+                        <div className="p-6">
+                            <h2 className="text-xl font-bold mb-4 dark:text-white">Bill Preview</h2>
+
+                            <div className="bg-white p-4 rounded border dark:bg-gray-700 dark:border-gray-600">
+                                <div className="text-center mb-4">
+                                    <div className="font-bold text-lg">My Store</div>
+                                    <div className="text-sm">123 Main Street, City</div>
+                                    <div className="text-sm">Phone: (123) 456-7890</div>
+                                </div>
+
+                                <div className="mb-4">
+                                    <div><strong>Customer:</strong> {customerName}</div>
+                                    <div><strong>Order #:</strong> {orderNumber}</div>
+                                    <div><strong>Date:</strong> {new Date().toLocaleString()}</div>
+                                </div>
+
+                                <table className="w-full border-collapse mb-4">
+                                    <thead>
+                                    <tr className="border-b">
+                                        <th className="text-left py-2">Item</th>
+                                        <th className="text-left py-2">Qty</th>
+                                        <th className="text-left py-2">Price</th>
+                                        <th className="text-left py-2">Total</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {cart.map(item => (
+                                        <tr key={item.id} className="border-b">
+                                            <td className="py-2">{item.name}</td>
+                                            <td className="py-2">{item.quantity}</td>
+                                            <td className="py-2">Rs.{item.price.toFixed(2)}</td>
+                                            <td className="py-2">Rs.{(item.price * item.quantity).toFixed(2)}</td>
+                                        </tr>
+                                    ))}
+                                    </tbody>
+                                </table>
+
+                                <div className="text-right mb-4">
+                                    <div>Subtotal: Rs.{subtotal.toFixed(2)}</div>
+                                    <div>Tax (10%): Rs.{tax.toFixed(2)}</div>
+                                    <div className="font-bold">Total: Rs.{total.toFixed(2)}</div>
+                                </div>
+
+                                {notes && (
+                                    <div className="mb-4">
+                                        <strong>Notes:</strong> {notes}
+                                    </div>
+                                )}
+
+                                <div className="text-center text-sm italic">
+                                    Thank you for your purchase!
+                                </div>
+                            </div>
+
+                            <div className="flex gap-3 mt-6">
+                                <button
+                                    onClick={() => setShowBillPreview(false)}
+                                    className="flex-1 bg-gray-300 dark:bg-gray-600 text-gray-800 dark:text-white py-2 rounded-lg font-medium"
+                                >
+                                    Back
+                                </button>
+                                <button
+                                    onClick={handlePrint}
+                                    className="flex-1 bg-blue-600 text-white py-2 rounded-lg font-medium flex items-center justify-center gap-2"
+                                >
+                                    <Printer size={18} />
+                                    Print Bill
+                                </button>
+                                <button
+                                    onClick={completePayment}
+                                    className="flex-1 bg-green-600 text-white py-2 rounded-lg font-medium"
+                                >
+                                    Complete Payment
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

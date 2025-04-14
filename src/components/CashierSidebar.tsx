@@ -7,7 +7,6 @@ import Link from 'next/link';
 import {
     LayoutDashboard,
     Package,
-    ShoppingCart,
     Users,
     RefreshCw,
     FileText,
@@ -29,27 +28,21 @@ export default function CashierSidebar() {
             dropdown: null
         },
         {
-            name: "Orders",
-            icon: <ShoppingCart className="w-5 h-5 mr-3" />,
-            path: "#",
-            dropdown: null
-        },
-        {
             name: "Customers",
             icon: <Users className="w-5 h-5 mr-3" />,
-            path: "/Cashier/CashierCustomer",
+            path: "/Cashier/CashierCustomers",
             dropdown: null
         },
         {
             name: "Refunds",
             icon: <RefreshCw className="w-5 h-5 mr-3" />,
-            path: "#",
+            path: "/Cashier/CashierRefund",
             dropdown: null
         },
         {
             name: "Bills",
             icon: <FileText className="w-5 h-5 mr-3" />,
-            path: "#",
+            path: "/Cashier/CashierBill",
             dropdown: null
         },
         {
